@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Tilemap Creator")]
-[assembly: AssemblyDescription("Tilemap Creator")]
+[assembly: AssemblyDescription("Tilemap Creator 4.0")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("itari")]
 [assembly: AssemblyProduct("Tilemap Creator")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("dbf9c469-cdb9-4b55-a545-30e7fe868b51")]
+[assembly: Guid("8d0cd0b4-ff27-4c2c-99ac-1d6b6f1583e9")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.5.0.0")]
-[assembly: AssemblyFileVersion("3.5.0.0")]
+[assembly: AssemblyVersion("4.0.0.0")]
+[assembly: AssemblyFileVersion("4.0.0.0")]
