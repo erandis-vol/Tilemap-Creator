@@ -1,8 +1,0 @@
-c:\users\jack\documents\visual studio 2013\Projects\TMC\TMC\bin\Debug\TMC.exe
-c:\users\jack\documents\visual studio 2013\Projects\TMC\TMC\bin\Debug\TMC.pdb
-c:\users\jack\documents\visual studio 2013\Projects\TMC\TMC\obj\Debug\TMC.csprojResolveAssemblyReference.cache
-c:\users\jack\documents\visual studio 2013\Projects\TMC\TMC\obj\Debug\TMC.Properties.Resources.resources
-c:\users\jack\documents\visual studio 2013\Projects\TMC\TMC\obj\Debug\TMC.csproj.GenerateResource.Cache
-c:\users\jack\documents\visual studio 2013\Projects\TMC\TMC\obj\Debug\TMC.exe
-c:\users\jack\documents\visual studio 2013\Projects\TMC\TMC\obj\Debug\TMC.pdb
-c:\users\jack\documents\visual studio 2013\Projects\TMC\TMC\obj\Debug\TMC.Form1.resources
