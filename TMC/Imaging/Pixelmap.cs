@@ -93,6 +93,36 @@ namespace TMC.Imaging
             }
         }
 
+        public Pixelmap(Bitmap bmp)
+        {
+            // This will only be used with indexed images
+            if (bmp.Palette == null || bmp.Palette.Entries.Length == 0) throw new Exception("Bitmap not indexed!");
+
+            this.width = bmp.Width;
+            this.height = bmp.Height;
+            this.pixels = new byte[bmp.Width * bmp.Height];
+
+            this.cachedImg = null;
+
+            // Get palette!
+            this.palette = new Color[bmp.Palette.Entries.Length];
+            for (int p = 0; p < bmp.Palette.Entries.Length; p++)
+            {
+                palette[p] = bmp.Palette.Entries[p];
+            }
+
+            // Get pixels~
+            for (int y = 0; y < bmp.Height; y++)
+            {
+                for (int x = 0; x < bmp.Width; x++)
+                {
+                    Color c = bmp.GetPixel(x, y);
+                    int index = Helper.GetClosestColorFromPalette(c, palette);
+                    pixels[x + y * bmp.Width] = (byte)index;
+                }
+            }
+        }
+
         ~Pixelmap()
         {
             if (cachedImg != null) cachedImg.Dispose();
@@ -103,6 +133,32 @@ namespace TMC.Imaging
             for (int y = 0; y < height; y++)
                 for (int x = 0; x < width; x++)
                     pixels[x + y * width] = color;
+        }
+
+        public Pixelmap[] Tile()
+        {
+            int tiledWidth = width / 8;
+            int tiledHeight = height / 8;
+            int count = tiledWidth * tiledHeight;
+            Pixelmap[] tiles = new Pixelmap[count];
+            for (int y = 0; y < tiledHeight; y++)
+            {
+                for (int x = 0; x < tiledWidth; x++)
+                {
+                    Pixelmap t = new Pixelmap(8, 8, palette);
+                    for (int yy = 0; yy < 8; yy++)
+                    {
+                        for (int xx = 0; xx < 8; xx++)
+                        {
+                            // woot~!
+                            byte b = GetPixel(xx + x * 8, yy + y * 8);
+                            t.SetPixel(xx, yy, b);
+                        }
+                    }
+                    tiles[x + y * tiledWidth] = t;
+                }
+            }
+            return tiles;
         }
 
         // Draw this pixelmap
@@ -129,6 +185,22 @@ namespace TMC.Imaging
                 g.Dispose();
                 return bmp;
             }
+        }
+
+        public void SetPixel(int x, int y, byte pixel)
+        {
+            pixels[x + y * width] = pixel;
+        }
+
+        public void SetPixel(int x, int y, Color pixel)
+        {
+            byte p = (byte)Helper.GetClosestColorFromPalette(pixel, palette);
+            pixels[x + y * width] = p;
+        }
+
+        public byte GetPixel(int x, int y)
+        {
+            return pixels[x + y * width];
         }
 
         #region Properties

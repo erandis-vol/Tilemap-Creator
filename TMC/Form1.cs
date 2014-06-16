@@ -12,7 +12,7 @@ namespace TMC
 {
     public partial class Form1 : Form
     {
-        Imaging.Pixelmap pixelmap;
+        Tileset tileset;
    
         public Form1()
         {
@@ -41,8 +41,9 @@ namespace TMC
             Application.DoEvents();
 
             Bitmap bmp = new Bitmap(open.FileName);
-            pixelmap = new Imaging.Pixelmap(bmp, Imaging.PaletteGenerationMethod.Frequency, 16);
-            pTileset.Image = pixelmap.Draw(2);
+            Imaging.Pixelmap pixelmap = new Imaging.Pixelmap(bmp, Imaging.PaletteGenerationMethod.First, 256);
+            tileset = new Tileset(pixelmap);
+            pTileset.Image = tileset.Draw(4, 4);
 
             this.Cursor = Cursors.Default;
         }
