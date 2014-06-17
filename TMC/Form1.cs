@@ -35,17 +35,14 @@ namespace TMC
             open.Filter = "Supported Images|*.bmp;*.png";
             open.Title = "Open Tileset";
 
-            if (open.ShowDialog() != DialogResult.OK) return;
+            if (open.ShowDialog() == DialogResult.OK)
+            {
+                OpenTilesetForm otf = new OpenTilesetForm(open.FileName);
+                if (otf.ShowDialog() != DialogResult.OK) return;
 
-            this.Cursor = Cursors.WaitCursor;
-            Application.DoEvents();
-
-            Bitmap bmp = new Bitmap(open.FileName);
-            Imaging.Pixelmap pixelmap = new Imaging.Pixelmap(bmp, Imaging.PaletteGenerationMethod.First, 256);
-            tileset = new Tileset(pixelmap);
-            pTileset.Image = tileset.Draw(4, 4);
-
-            this.Cursor = Cursors.Default;
+                // do stuff~
+                tileset = otf.Tileset;
+            }
         }
     }
 }
