@@ -62,7 +62,10 @@ namespace TMC
                 // Check if a good tileset was loaded
                 if (otf.Tileset == null) return;
 
+                mc = true;
+
                 // Do stuff~
+                tileset = null;
                 tileset = otf.Tileset;
 
                 // Show the perfect sizes...
@@ -70,6 +73,12 @@ namespace TMC
                 cTilesetWidth.Items.Clear();
                 for (int i = 0; i < goodWidths.Length; i++) cTilesetWidth.Items.Add(goodWidths[i].ToString());
                 cTilesetWidth.SelectedIndex = goodWidths.Length / 2;
+
+                // Do tileset info.
+                lTilesetInfo.Text = "Tiles: " + tileset.Length +
+                    "\nBit Depth: " + tileset.GetBitDepthDescription();
+
+                mc = false;
 
                 // Draw tileset...
                 UpdateTilesetStuff();
@@ -99,7 +108,17 @@ namespace TMC
 
             // Do stuff
             lTilesetHeight.Text = "x " + (tileset.Length / drawWidth);
-            pTileset.Image = tileset.Draw(drawWidth, 2); // fixed width for testing
+            pTileset.Image = tileset.Draw(drawWidth, 1); // fixed width for testing
+        }
+
+        private void cTilesetWidth_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateTilesetStuff();
+        }
+
+        private void cTilesetWidth_TextUpdate(object sender, EventArgs e)
+        {
+            UpdateTilesetStuff();
         }
     }
 }

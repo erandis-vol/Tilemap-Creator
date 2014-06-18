@@ -110,5 +110,11 @@ namespace TMC
         {
             get { return tiles.Length; }
         }
+
+        public string GetBitDepthDescription()
+        {
+            if (tiles[0].Palette.Length <= 16) return "4 BPP (16 Colors)";
+            else return "8 BPP (256 Colors)";
+        }
     }
 }

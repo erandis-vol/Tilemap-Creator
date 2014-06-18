@@ -56,6 +56,8 @@ namespace TMC
             this.mnuOpenTileset = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuTilesetSave = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lTilesetInfo = new System.Windows.Forms.Label();
             this.lTilesetHeight = new System.Windows.Forms.Label();
             this.cTilesetWidth = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -66,6 +68,7 @@ namespace TMC
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pTileset)).BeginInit();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -131,20 +134,18 @@ namespace TMC
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel2.Controls.Add(this.pTileset);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(0, 94);
+            this.panel2.Location = new System.Drawing.Point(0, 78);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(199, 257);
+            this.panel2.Size = new System.Drawing.Size(199, 273);
             this.panel2.TabIndex = 1;
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.lTilesetHeight);
-            this.panel1.Controls.Add(this.cTilesetWidth);
-            this.panel1.Controls.Add(this.label3);
+            this.panel1.Controls.Add(this.groupBox1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(199, 94);
+            this.panel1.Size = new System.Drawing.Size(199, 78);
             this.panel1.TabIndex = 0;
             // 
             // open
@@ -187,30 +188,54 @@ namespace TMC
             this.mnuAbout.Text = "About";
             this.mnuAbout.Click += new System.EventHandler(this.mnuAbout_Click);
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.lTilesetInfo);
+            this.groupBox1.Controls.Add(this.lTilesetHeight);
+            this.groupBox1.Controls.Add(this.cTilesetWidth);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Location = new System.Drawing.Point(3, 3);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(193, 72);
+            this.groupBox1.TabIndex = 0;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Tileset";
+            // 
+            // lTilesetInfo
+            // 
+            this.lTilesetInfo.AutoSize = true;
+            this.lTilesetInfo.Location = new System.Drawing.Point(6, 43);
+            this.lTilesetInfo.Name = "lTilesetInfo";
+            this.lTilesetInfo.Size = new System.Drawing.Size(83, 13);
+            this.lTilesetInfo.TabIndex = 13;
+            this.lTilesetInfo.Text = "Load a Tileset...";
+            // 
             // lTilesetHeight
             // 
             this.lTilesetHeight.AutoSize = true;
-            this.lTilesetHeight.Location = new System.Drawing.Point(105, 6);
+            this.lTilesetHeight.Location = new System.Drawing.Point(99, 22);
             this.lTilesetHeight.Name = "lTilesetHeight";
             this.lTilesetHeight.Size = new System.Drawing.Size(21, 13);
-            this.lTilesetHeight.TabIndex = 8;
+            this.lTilesetHeight.TabIndex = 12;
             this.lTilesetHeight.Text = "x ?";
             // 
             // cTilesetWidth
             // 
             this.cTilesetWidth.FormattingEnabled = true;
-            this.cTilesetWidth.Location = new System.Drawing.Point(48, 3);
+            this.cTilesetWidth.Location = new System.Drawing.Point(42, 19);
             this.cTilesetWidth.Name = "cTilesetWidth";
             this.cTilesetWidth.Size = new System.Drawing.Size(51, 21);
-            this.cTilesetWidth.TabIndex = 7;
+            this.cTilesetWidth.TabIndex = 11;
+            this.cTilesetWidth.SelectedIndexChanged += new System.EventHandler(this.cTilesetWidth_SelectedIndexChanged);
+            this.cTilesetWidth.TextUpdate += new System.EventHandler(this.cTilesetWidth_TextUpdate);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 6);
+            this.label3.Location = new System.Drawing.Point(6, 22);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(30, 13);
-            this.label3.TabIndex = 6;
+            this.label3.TabIndex = 10;
             this.label3.Text = "Size:";
             // 
             // Form1
@@ -236,8 +261,9 @@ namespace TMC
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pTileset)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -258,6 +284,8 @@ namespace TMC
         private System.Windows.Forms.ToolStripMenuItem mnuOpenTileset;
         private System.Windows.Forms.ToolStripMenuItem mnuAbout;
         private System.Windows.Forms.ToolStripMenuItem mnuTilesetSave;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label lTilesetInfo;
         private System.Windows.Forms.Label lTilesetHeight;
         private System.Windows.Forms.ComboBox cTilesetWidth;
         private System.Windows.Forms.Label label3;
