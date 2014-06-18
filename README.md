@@ -1,6 +1,6 @@
 Tilemap Creator 4.0!
 --------------------
-(c) 2014 itari
+Copyright (c) 2014 itari
 
 A tool that allows for the creation of 8x8 tilesets and tilemaps for use in GBA and NDS ROMs!
 
