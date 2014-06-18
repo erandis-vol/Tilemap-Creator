@@ -110,12 +110,12 @@ namespace TMC.Imaging
         {
             QuantizeColor(ref color);
 
-            int diff = 765;
+            float diff = GetColorDifferenceHSB(Color.White, Color.Black); // max difference
 
             int result = 0;
             for (int index = 0; index < palette.Length; index++)
             {
-                int colorDiff = GetColorDifference(color, palette[index]);
+                float colorDiff = GetColorDifferenceHSB(color, palette[index]);
                 if (colorDiff < diff)
                 {
                     diff = colorDiff;
@@ -125,12 +125,21 @@ namespace TMC.Imaging
             return result;
         }
 
-        public static int GetColorDifference(Color c1, Color c2)
+        public static int GetColorDifferenceRGB(Color c1, Color c2)
         {
             int r = c1.R - c2.R;
             int g = c1.G - c2.G;
             int b = c1.B - c2.B;
             return (r * r + g * g + b * b);
+        }
+
+        public static float GetColorDifferenceHSB(Color c1, Color c2)
+        {
+            float h = c1.GetHue() - c2.GetHue();
+            float s = c1.GetSaturation() - c2.GetSaturation();
+            float b = c1.GetBrightness() - c2.GetBrightness();
+            double diff = Math.Sqrt(Math.Pow(h, 2) + Math.Pow(s, 2) + Math.Pow(b, 2));
+            return (float)diff;
         }
 
         public static void QuantizeColor(ref Color color)

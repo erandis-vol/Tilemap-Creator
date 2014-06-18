@@ -72,6 +72,10 @@ namespace TMC
             button1.Enabled = false;
             button2.Enabled = false;
 
+            comboBox1.Enabled = false;
+            comboBox2.Enabled = false;
+            comboBox3.Enabled = false;
+
             backgroundWorker1.RunWorkerAsync();
         }
 
@@ -134,6 +138,10 @@ namespace TMC
 
             button1.Enabled = true;
             button2.Enabled = true;
+
+            comboBox1.Enabled = true;
+            comboBox2.Enabled = true;
+            comboBox3.Enabled = true;
 
             mc = false;
         }
