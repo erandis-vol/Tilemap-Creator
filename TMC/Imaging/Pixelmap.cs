@@ -25,6 +25,13 @@ namespace TMC.Imaging
     // Only two methods so far...
     public enum PaletteGenerationMethod { First, Frequency }
 
+    // Used for saving a Pixelmap...
+    // Maybe for loading later?
+    public enum PixelmapFormat { Bitmap, NSCR }
+
+    // Used for Palette export...
+    public enum PaletteFormat { ACT, PAL, NCLR }
+
     // This will handle image manipulation
     // It will hopefully replace the Bitmap stuff, and allow a linked up palette...
     public class Pixelmap
@@ -149,6 +156,29 @@ namespace TMC.Imaging
                     pixels[x + y * width] = color;
         }
 
+        public void Save(string filePath, PixelmapFormat format)
+        {
+            
+        }
+
+        public void SavePalette(string filePath, PaletteFormat format)
+        {
+            if (format == PaletteFormat.ACT)
+            {
+                Helper.SaveACT(filePath, palette);
+            }
+            else if (format == PaletteFormat.PAL)
+            {
+                Helper.SavePAL(filePath, palette);
+            }
+            else if (format == PaletteFormat.NCLR)
+            {
+                Color[][] cc = new Color[1][];
+                cc[0] = palette;
+                Helper.SaveNCLR(filePath, cc, GetColorMode());
+            }
+        }
+
         public Pixelmap[] Tile()
         {
             int tiledWidth = width / 8;
@@ -215,6 +245,12 @@ namespace TMC.Imaging
         public byte GetPixel(int x, int y)
         {
             return pixels[x + y * width];
+        }
+
+        public ColorMode GetColorMode()
+        {
+            if (palette.Length <= 16) return ColorMode.Color16;
+            else return ColorMode.Color256;
         }
 
         #region Properties

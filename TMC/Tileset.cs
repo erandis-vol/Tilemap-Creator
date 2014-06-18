@@ -79,6 +79,7 @@ namespace TMC
 
         public Bitmap Draw(int width, int zoom)
         {
+            // Check if what we want is already good.
             if (width == cachedImgWidth && cachedImg != null && zoom == cachedZoom)
             {
                 return cachedImg;
@@ -104,6 +105,36 @@ namespace TMC
                 cachedZoom = zoom;
                 return bmp;
             }
+        }
+
+        /// <summary>
+        /// Combine all tiles into a single Pixelmap.
+        /// </summary>
+        /// <param name="tilesPerRow">Number of tiles per row.</param>
+        /// <returns></returns>
+        public Pixelmap Smoosh(int tilesPerRow)
+        {
+            int width = tilesPerRow;
+            int height = tiles.Length / width;
+            if (tiles.Length % width > 0) height++; // over flow
+
+            // Draw
+            Pixelmap pm = new Pixelmap(width * 8, height * 8, tiles[0].Palette);
+            for (int t = 0; t < tiles.Length; t++)
+            {
+                int x = t % width;
+                int y = t / width;
+
+                Pixelmap tile = tiles[t];
+                for (int xx = 0; xx < 8; xx++)
+                {
+                    for (int yy = 0; yy < 8; yy++)
+                    {
+                        pm.SetPixel(xx + x * 8, yy + y * 8, tile.GetPixel(xx, yy));
+                    }
+                }
+            }
+            return pm;
         }
 
         public int Length

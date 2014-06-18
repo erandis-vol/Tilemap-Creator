@@ -59,6 +59,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Imaging\Color15Bit.cs" />
     <Compile Include="Imaging\Helpers.cs" />
     <Compile Include="Imaging\Pixelmap.cs" />
     <Compile Include="OpenTilesetForm.cs">

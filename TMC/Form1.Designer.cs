@@ -46,29 +46,32 @@ namespace TMC
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.mnuTilemap = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuTileset = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuOpenTileset = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuTilesetSave = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuHelp = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.open = new System.Windows.Forms.OpenFileDialog();
             this.pTileset = new System.Windows.Forms.PictureBox();
-            this.mnuOpenTileset = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuTilesetSave = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.lTilesetInfo = new System.Windows.Forms.Label();
             this.lTilesetHeight = new System.Windows.Forms.Label();
             this.cTilesetWidth = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.open = new System.Windows.Forms.OpenFileDialog();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.panel2.SuspendLayout();
-            this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pTileset)).BeginInit();
+            this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -98,6 +101,24 @@ namespace TMC
             this.mnuTileset.Size = new System.Drawing.Size(53, 20);
             this.mnuTileset.Text = "Tileset";
             // 
+            // mnuOpenTileset
+            // 
+            this.mnuOpenTileset.Image = global::TMC.Properties.Resources.folder_open_image;
+            this.mnuOpenTileset.Name = "mnuOpenTileset";
+            this.mnuOpenTileset.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.mnuOpenTileset.Size = new System.Drawing.Size(163, 22);
+            this.mnuOpenTileset.Text = "Open";
+            this.mnuOpenTileset.Click += new System.EventHandler(this.mnuOpenTileset_Click);
+            // 
+            // mnuTilesetSave
+            // 
+            this.mnuTilesetSave.Image = global::TMC.Properties.Resources.disks;
+            this.mnuTilesetSave.Name = "mnuTilesetSave";
+            this.mnuTilesetSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.mnuTilesetSave.Size = new System.Drawing.Size(163, 22);
+            this.mnuTilesetSave.Text = "Save As...";
+            this.mnuTilesetSave.Click += new System.EventHandler(this.mnuTilesetSave_Click);
+            // 
             // mnuHelp
             // 
             this.mnuHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -105,6 +126,15 @@ namespace TMC
             this.mnuHelp.Name = "mnuHelp";
             this.mnuHelp.Size = new System.Drawing.Size(44, 20);
             this.mnuHelp.Text = "Help";
+            // 
+            // mnuAbout
+            // 
+            this.mnuAbout.Image = global::TMC.Properties.Resources.information;
+            this.mnuAbout.Name = "mnuAbout";
+            this.mnuAbout.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+            this.mnuAbout.Size = new System.Drawing.Size(149, 22);
+            this.mnuAbout.Text = "About";
+            this.mnuAbout.Click += new System.EventHandler(this.mnuAbout_Click);
             // 
             // statusStrip1
             // 
@@ -124,6 +154,10 @@ namespace TMC
             // 
             this.splitContainer1.Panel1.Controls.Add(this.panel2);
             this.splitContainer1.Panel1.Controls.Add(this.panel1);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.pictureBox1);
             this.splitContainer1.Size = new System.Drawing.Size(597, 351);
             this.splitContainer1.SplitterDistance = 199;
             this.splitContainer1.TabIndex = 2;
@@ -139,19 +173,6 @@ namespace TMC
             this.panel2.Size = new System.Drawing.Size(199, 273);
             this.panel2.TabIndex = 1;
             // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.groupBox1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(199, 78);
-            this.panel1.TabIndex = 0;
-            // 
-            // open
-            // 
-            this.open.FileName = "openFileDialog1";
-            // 
             // pTileset
             // 
             this.pTileset.Location = new System.Drawing.Point(0, 0);
@@ -161,32 +182,14 @@ namespace TMC
             this.pTileset.TabIndex = 0;
             this.pTileset.TabStop = false;
             // 
-            // mnuOpenTileset
+            // panel1
             // 
-            this.mnuOpenTileset.Image = global::TMC.Properties.Resources.folder_open_image;
-            this.mnuOpenTileset.Name = "mnuOpenTileset";
-            this.mnuOpenTileset.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.mnuOpenTileset.Size = new System.Drawing.Size(163, 22);
-            this.mnuOpenTileset.Text = "Open";
-            this.mnuOpenTileset.Click += new System.EventHandler(this.mnuOpenTileset_Click);
-            // 
-            // mnuTilesetSave
-            // 
-            this.mnuTilesetSave.Image = global::TMC.Properties.Resources.disks;
-            this.mnuTilesetSave.Name = "mnuTilesetSave";
-            this.mnuTilesetSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.mnuTilesetSave.Size = new System.Drawing.Size(163, 22);
-            this.mnuTilesetSave.Text = "Save As...";
-            this.mnuTilesetSave.Click += new System.EventHandler(this.mnuTilesetSave_Click);
-            // 
-            // mnuAbout
-            // 
-            this.mnuAbout.Image = global::TMC.Properties.Resources.information;
-            this.mnuAbout.Name = "mnuAbout";
-            this.mnuAbout.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.mnuAbout.Size = new System.Drawing.Size(152, 22);
-            this.mnuAbout.Text = "About";
-            this.mnuAbout.Click += new System.EventHandler(this.mnuAbout_Click);
+            this.panel1.Controls.Add(this.groupBox1);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(199, 78);
+            this.panel1.TabIndex = 0;
             // 
             // groupBox1
             // 
@@ -238,6 +241,19 @@ namespace TMC
             this.label3.TabIndex = 10;
             this.label3.Text = "Size:";
             // 
+            // open
+            // 
+            this.open.FileName = "openFileDialog1";
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(100, 50);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pictureBox1.TabIndex = 0;
+            this.pictureBox1.TabStop = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -256,14 +272,17 @@ namespace TMC
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pTileset)).EndInit();
+            this.panel1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -289,6 +308,7 @@ namespace TMC
         private System.Windows.Forms.Label lTilesetHeight;
         private System.Windows.Forms.ComboBox cTilesetWidth;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 
