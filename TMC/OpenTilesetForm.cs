@@ -35,6 +35,7 @@ namespace TMC
         private Tileset result16, result256;
 
         private bool open = false;
+        private bool error = false;
 
         private bool mc = false;
 
@@ -61,6 +62,7 @@ namespace TMC
         private void OpenTilesetForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             if (open) DialogResult = DialogResult.OK;
+            else if (error) DialogResult = DialogResult.Abort;
             else DialogResult = DialogResult.Cancel;
         }
 
@@ -116,6 +118,12 @@ namespace TMC
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            if (error)
+            {
+                Close();
+                return; // Yeah... Not sure why this works, but it does.
+            }
+
             mc = true;
 
             if (img16Color != null) comboBox1.Items.Add("16 Colors (4 BPP)");
@@ -148,38 +156,60 @@ namespace TMC
 
         private void LoadImage()
         {
-            // Open image
-            string ext = Path.GetExtension(imgPath).ToLower();
-            if (ext == ".png" || ext == ".bmp")
+            try
             {
-                // The bigger the image, the longer the wait.
-                Bitmap bmp = new Bitmap(imgPath);
-                if (bmp.PixelFormat == PixelFormat.Format4bppIndexed)
+                // Open image
+                string ext = Path.GetExtension(imgPath).ToLower();
+                if (ext == ".png" || ext == ".bmp")
                 {
-                    preIndexed = true;
-                    img16Color = new Pixelmap(bmp);
+                    // The bigger the image, the longer the wait.
+                    Bitmap bmp = new Bitmap(imgPath);
+                    if (bmp.PixelFormat == PixelFormat.Format4bppIndexed)
+                    {
+                        preIndexed = true;
+                        img16Color = new Pixelmap(bmp);
+                    }
+                    else if (bmp.PixelFormat == PixelFormat.Format8bppIndexed)
+                    {
+                        preIndexed = true;
+                        img256Color = new Pixelmap(bmp);
+                    }
+                    else
+                    {
+                        // This will take the most time~   
+                        img16Color = new Pixelmap(bmp, PaletteGenerationMethod.First, 16);
+                        img256Color = new Pixelmap(bmp, PaletteGenerationMethod.First, 256);
+                    }
+                    bmp.Dispose();
                 }
-                else if (bmp.PixelFormat == PixelFormat.Format8bppIndexed)
+                else if (ext == ".ncgr")
                 {
+                    Pixelmap temp = Helper.LoadNCGR(imgPath);
+
                     preIndexed = true;
-                    img256Color = new Pixelmap(bmp);
+                    if (temp.GetColorMode() == Imaging.ColorMode.Color16)
+                    {
+                        img16Color = temp;
+                    }
+                    else
+                    {
+                        img256Color = temp;
+                    }
                 }
                 else
                 {
-                    // This will take the most time~   
-                    img16Color = new Pixelmap(bmp, PaletteGenerationMethod.First, 16);
-                    img256Color = new Pixelmap(bmp, PaletteGenerationMethod.First, 256);
+                    throw new Exception("Unsupported image format!");
                 }
-                bmp.Dispose();
-            }
-            else
-            {
-                throw new Exception("Unsupported image format!");
-            }
 
-            // Load tilesets
-            if (img16Color != null) result16 = new Tileset(img16Color);
-            if (img256Color != null) result256 = new Tileset(img256Color);
+                // Load tilesets
+                if (img16Color != null) result16 = new Tileset(img16Color);
+                if (img256Color != null) result256 = new Tileset(img256Color);
+            }
+            catch (Exception ex)
+            {
+                error = true;
+                MessageBox.Show(ex.Message, "Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)

@@ -117,12 +117,12 @@ namespace TMC.Imaging
         {
             QuantizeColor(ref color);
 
-            float diff = GetColorDifferenceHSB(Color.White, Color.Black); // max difference
+            int diff = GetColorDifference(Color.White, Color.Black); // max difference
 
             int result = 0;
             for (int index = 0; index < palette.Length; index++)
             {
-                float colorDiff = GetColorDifferenceHSB(color, palette[index]);
+                int colorDiff = GetColorDifference(color, palette[index]);
                 if (colorDiff < diff)
                 {
                     diff = colorDiff;
@@ -132,21 +132,12 @@ namespace TMC.Imaging
             return result;
         }
 
-        public static int GetColorDifferenceRGB(Color c1, Color c2)
+        public static int GetColorDifference(Color c1, Color c2)
         {
             int r = c1.R - c2.R;
             int g = c1.G - c2.G;
             int b = c1.B - c2.B;
             return (r * r + g * g + b * b);
-        }
-
-        public static float GetColorDifferenceHSB(Color c1, Color c2)
-        {
-            float h = c1.GetHue() - c2.GetHue();
-            float s = c1.GetSaturation() - c2.GetSaturation();
-            float b = c1.GetBrightness() - c2.GetBrightness();
-            double diff = Math.Sqrt(Math.Pow(h, 2) + Math.Pow(s, 2) + Math.Pow(b, 2));
-            return (float)diff;
         }
 
         public static void QuantizeColor(ref Color color)
@@ -158,7 +149,8 @@ namespace TMC.Imaging
         {
             Color[] palette = new Color[colors];
             int gap = 256 / colors;
-            for (int i = 0; i < colors; i++) palette[i] = Color.FromArgb(256 - i * gap, 256 - i * gap, 256 - i * gap);
+            for (int i = 0; i < colors; i++) palette[i] = Color.FromArgb(255 - i * gap, 255 - i * gap, 255 - i * gap);
+            //for (int i = 0; i < colors; i++) palette[i] = Color.FromArgb(i * gap, i * gap, i * gap);
 
             return palette;
         }
@@ -381,6 +373,301 @@ namespace TMC.Imaging
             br.Dispose();
 
             return palettes;
+        }
+
+        #endregion
+
+        #region Image Saving
+
+        public static void SaveNCGR(string file, Pixelmap pm)
+        {
+            BinaryWriter bw = new BinaryWriter(File.Create(file));
+            ColorMode mode = pm.GetColorMode();
+
+            // Generic header
+            bw.Write((uint)0x4E434752); // NCGR
+            bw.Write((uint)0x0001FEFF); // format info.
+            bw.Write(0x0); // file size -- write at end
+            bw.Write((ushort)0x10); // header size
+            bw.Write((ushort)0x2); // section count
+
+            // CHAR section
+            // Responsible for holding the image data
+            bw.Write((uint)0x43484152);
+
+            ushort tiledHeight = (ushort)(pm.Height / 8);
+            ushort tiledWidth = (ushort)(pm.Width / 8);
+            // section size
+            if (mode == ColorMode.Color16) bw.Write((uint)(tiledHeight * tiledWidth * 32) + 0x20u);
+            else bw.Write((uint)(tiledHeight * tiledWidth * 64) + 0x20u);
+            // dimension
+            bw.Write(tiledHeight);
+            bw.Write(tiledWidth);
+
+            // Bit Depth (3 = 4 bpp, 4 = 8 bpp)
+            if (mode == ColorMode.Color16) bw.Write((uint)3);
+            else bw.Write((uint)4);
+
+            bw.Write((ushort)0); // unknown
+            bw.Write((ushort)0); // unknown
+            bw.Write((uint)0); // flags
+            // section size
+            if (mode == ColorMode.Color16) bw.Write((uint)(tiledHeight * tiledWidth * 32));
+            else bw.Write((uint)(tiledWidth * tiledHeight * 64));
+            bw.Write((uint)0x18); // section offset (relative) -- always 0x18
+
+            // Write tile data (this is a monstrosity)
+            // I write this in "horizontal tile mode"
+            // If I was writing in "no tile mode" I would just write
+            // The pixels straight out
+            for (int y = 0; y < tiledHeight; y++)
+            {
+                for (int x = 0; x < tiledWidth; x++)
+                {
+                    // write a tile
+                    for (int yy = 0; yy < 8; yy++)
+                    {
+                        if (mode == ColorMode.Color16) // This is probably correct. It loads right, though.
+                        {
+                            for (int xx = 0; xx < 8; xx += 2)
+                            {
+                                byte l = pm.GetPixel(xx + x * 8, yy + y * 8);
+                                byte r = pm.GetPixel(xx + 1 + x * 8, yy + y * 8);
+                                bw.Write((byte)(((r & 15) << 4) | (l & 15)));
+                            }
+                        }
+                        else // 8 BPP -- not sure if this actually works or not...
+                        {
+                            for (int xx = 0; xx < 8; xx++)
+                            {
+                                byte p = pm.GetPixel(xx + x * 8, yy + y * 8);
+                                bw.Write(p);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // SOPC section
+            // I don't really know what this does...
+            bw.Write((uint)0x43504F53);
+            bw.Write((uint)0x10); // ???
+            bw.Write((uint)0x0); // ???
+            bw.Write((ushort)tiledWidth); // width in tiles
+            bw.Write((ushort)tiledHeight); // height in tiels
+
+            // Write file size
+            bw.BaseStream.Seek(8L, SeekOrigin.Begin);
+            bw.Write((uint)bw.BaseStream.Length);
+
+            bw.Close();
+            bw.Dispose();
+        }
+
+        public static void SaveBitmap4BPP(string file, Pixelmap pm)
+        {
+            // Safety?
+            if (pm.GetColorMode() != ColorMode.Color16)
+                throw new Exception("Bad Pixelmap Bit Depth!");
+
+            // Custom, using a palette!
+            // Uses stuff found in NSE 2.X for a base.
+            int pixelArraySize = (pm.Width / 2) * pm.Height;
+            byte[] data = new byte[118 + pixelArraySize];
+
+            // Write header
+            data[0xA] = 0x76;
+
+            data[0x1C] = 4;
+            byte[] ilength = BitConverter.GetBytes(pixelArraySize);
+
+            data[0] = (byte)'B';
+            data[1] = (byte)'M';
+
+            byte[] flength = BitConverter.GetBytes(data.Length);
+            flength.CopyTo(data, 2);
+
+            data[6] = (byte)'T';
+            data[7] = (byte)'M';
+            data[8] = (byte)'C';
+            data[9] = (byte)'4';
+
+            data[0xE] = 40;
+
+            byte[] w = BitConverter.GetBytes(pm.Width);
+            w.CopyTo(data, 0x12);
+
+            byte[] h = BitConverter.GetBytes(pm.Height);
+            h.CopyTo(data, 0x16);
+
+            data[0x1A] = 1;
+
+            ilength.CopyTo(data, 0x22);
+
+            // Write palette table
+            for (int i = 0; i < pm.Palette.Length; i++)
+            {
+                data[0x36 + i * 4] = pm.Palette[i].B;
+                data[0x37 + i * 4] = pm.Palette[i].G;
+                data[0x38 + i * 4] = pm.Palette[i].R;
+            }
+
+            // Write pixels
+            for (int y = 0; y < pm.Height; y++)
+            {
+                for (int x = 0; x < pm.Width; x += 2)
+                {
+                    byte left = pm.GetPixel(x, y);
+                    byte right = pm.GetPixel(x + 1, y);
+
+                    data[118 + (x / 2) + ((pm.Height - y - 1) * (pm.Width / 2))] = (byte)((byte)(left << 4) + right);
+                }
+            }
+
+            // Save to file
+            File.WriteAllBytes(file, data);
+        }
+
+        // Sort of works...
+        public static void SaveBitmap8BPP(string file, Pixelmap pm)
+        {
+            // Safety?
+            if (pm.GetColorMode() != ColorMode.Color256)
+                throw new Exception("Bad Pixelmap Bit Depth!");
+
+            // Custom, using a palette!
+            // Uses stuff found in NSE 2.X for a base.
+            int pixelArraySize = pm.Width * pm.Height;
+            byte[] data = new byte[1114 + pixelArraySize];
+
+            // Write header
+            data[0xA] = 0x54;
+            data[0xB] = 0x4;
+
+            data[0x1C] = 8;
+            byte[] ilength = BitConverter.GetBytes(pixelArraySize);
+
+            data[0] = (byte)'B';
+            data[1] = (byte)'M';
+
+            byte[] flength = BitConverter.GetBytes(data.Length);
+            flength.CopyTo(data, 2);
+
+            data[6] = (byte)'T';
+            data[7] = (byte)'M';
+            data[8] = (byte)'C';
+            data[9] = (byte)'4';
+
+            data[0xE] = 40;
+
+            byte[] w = BitConverter.GetBytes(pm.Width);
+            w.CopyTo(data, 0x12);
+
+            byte[] h = BitConverter.GetBytes(pm.Height);
+            h.CopyTo(data, 0x16);
+
+            data[0x1A] = 1;
+
+            ilength.CopyTo(data, 0x22);
+
+            // Write palette table
+            for (int i = 0; i < pm.Palette.Length; i++)
+            {
+                data[0x36 + i * 4] = pm.Palette[i].B;
+                data[0x37 + i * 4] = pm.Palette[i].G;
+                data[0x38 + i * 4] = pm.Palette[i].R;
+            }
+
+            // Write pixels
+            for (int y = 0; y < pm.Height; y++)
+            {
+                for (int x = 0; x < pm.Width; x++)
+                {
+                    data[1114 + x + ((pm.Height - y - 1) * pm.Width)] = pm.GetPixel(x, y);
+                }
+            }
+
+            // Save to file
+            File.WriteAllBytes(file, data);
+        }
+
+
+        #endregion
+
+        #region Image Loading
+
+        // Bitmap handled with default libraries
+
+        // Now, onto NCGR files...
+        public static Pixelmap LoadNCGR(string file)
+        {
+            BinaryReader br = new BinaryReader(File.OpenRead(file));
+            Pixelmap pm;
+
+            // header
+            if (br.ReadUInt32() != 0x4E434752) throw new Exception("This is an NCGR!");
+            br.BaseStream.Position += 10L;
+            ushort sections = br.ReadUInt16();
+
+            // char section
+            // header
+            if (br.ReadUInt32() != 0x43484152) throw new Exception("Bad NCGR format!");
+            br.ReadUInt32(); // section size
+            ushort tiledHeight = br.ReadUInt16();
+            ushort tiledWidth = br.ReadUInt16();
+
+            if (tiledHeight == 0xFFFF || tiledWidth == 0xFFFF) throw new Exception("Unsupported NCGR format!");
+
+            ColorMode mode = ColorMode.Color16;
+            if (br.ReadUInt32() == 0x3) mode = ColorMode.Color16;
+            else mode = ColorMode.Color256;
+
+            pm = new Pixelmap(tiledWidth * 8, tiledHeight * 8, (int)mode);
+            br.ReadUInt16(); // unknown
+            br.ReadUInt16(); // unknown
+            if (br.ReadUInt32() != 0) throw new Exception("Unsupported NCGR format!"); // flags
+            uint size = br.ReadUInt32();
+            br.ReadUInt32(); // 0x18
+
+            // read tile data
+            for (int y = 0; y < tiledHeight; y++)
+            {
+                for (int x = 0; x < tiledWidth; x++)
+                {
+                    for (int yy = 0; yy < 8; yy++)
+                    {
+                        if (mode == ColorMode.Color16)
+                        {
+                            for (int xx = 0; xx < 8; xx += 2)
+                            {
+                                byte b = br.ReadByte();
+                                int l = b & 15;
+                                int r = (b >> 4) & 15;
+                                pm.SetPixel(xx + x * 8, yy + y * 8, (byte)l);
+                                pm.SetPixel(xx + 1 + x * 8, yy + y * 8, (byte)r);
+                            }
+                        }
+                        else
+                        {
+                            for (int xx = 0; xx < 8; xx++)
+                            {
+                                pm.SetPixel(xx + x * 8, yy + y * 8, br.ReadByte());
+                            }
+                        }
+                    }
+                }
+            }
+
+            // not sure on this one
+            if (sections > 1)
+            {
+                // pass
+            }
+
+            br.Close();
+            br.Dispose();
+
+            return pm;
         }
 
         #endregion

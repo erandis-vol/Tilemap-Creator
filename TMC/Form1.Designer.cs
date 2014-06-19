@@ -60,8 +60,9 @@ namespace TMC
             this.lTilesetHeight = new System.Windows.Forms.Label();
             this.cTilesetWidth = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.open = new System.Windows.Forms.OpenFileDialog();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.open = new System.Windows.Forms.OpenFileDialog();
+            this.save = new System.Windows.Forms.SaveFileDialog();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -193,6 +194,8 @@ namespace TMC
             // 
             // groupBox1
             // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.lTilesetInfo);
             this.groupBox1.Controls.Add(this.lTilesetHeight);
             this.groupBox1.Controls.Add(this.cTilesetWidth);
@@ -241,10 +244,6 @@ namespace TMC
             this.label3.TabIndex = 10;
             this.label3.Text = "Size:";
             // 
-            // open
-            // 
-            this.open.FileName = "openFileDialog1";
-            // 
             // pictureBox1
             // 
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
@@ -253,6 +252,10 @@ namespace TMC
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
+            // 
+            // open
+            // 
+            this.open.FileName = "openFileDialog1";
             // 
             // Form1
             // 
@@ -309,6 +312,7 @@ namespace TMC
         private System.Windows.Forms.ComboBox cTilesetWidth;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.SaveFileDialog save;
     }
 }
 

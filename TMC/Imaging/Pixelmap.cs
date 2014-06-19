@@ -27,7 +27,7 @@ namespace TMC.Imaging
 
     // Used for saving a Pixelmap...
     // Maybe for loading later?
-    public enum PixelmapFormat { Bitmap, NSCR }
+    public enum PixelmapFormat { Bitmap, NCGR }
 
     // Used for Palette export...
     public enum PaletteFormat { ACT, PAL, NCLR }
@@ -158,7 +158,22 @@ namespace TMC.Imaging
 
         public void Save(string filePath, PixelmapFormat format)
         {
-            
+            ColorMode mode = GetColorMode();
+            if (format == PixelmapFormat.NCGR) // I should separate these into functions
+            {
+                Helper.SaveNCGR(filePath, this);
+            }
+            else if (format == PixelmapFormat.Bitmap)
+            {
+                if (mode == ColorMode.Color16)
+                {
+                    Helper.SaveBitmap4BPP(filePath, this);
+                }
+                else // I still need to get around to 8 BPP Bitmaps...
+                {
+                    Helper.SaveBitmap8BPP(filePath, this);
+                }
+            }
         }
 
         public void SavePalette(string filePath, PaletteFormat format)
@@ -263,6 +278,16 @@ namespace TMC.Imaging
                 //if (palette.Length == value.Length) palette = value; // -- maybe?
                 palette = value;
             }
+        }
+
+        public int Width
+        {
+            get { return width; }
+        }
+
+        public int Height
+        {
+            get { return height; }
         }
 
         #endregion
