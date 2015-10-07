@@ -82,6 +82,9 @@ namespace TMC
         private Tile[] tiles;
         private int width, height;
 
+        private Bitmap image;
+        private int zoom;
+
         /// <summary>
         /// Initializes a new Tilemap with the given width and height.
         /// </summary>
@@ -143,6 +146,11 @@ namespace TMC
                     }
                 }
 
+        }
+
+        ~Tilemap()
+        {
+            if (image != null) image.Dispose();
         }
 
         public Tile this[int x, int y]
@@ -224,17 +232,70 @@ namespace TMC
             }
         }
 
-        public Bitmap Render(Tileset tileset, int zoom = 2)
+        public Bitmap Render(Tileset tileset, int zoom)
         {
-            Bitmap bmp = new Bitmap(width * TILE_SIZE * zoom, height * TILE_SIZE * zoom);
-            using (Graphics g = Graphics.FromImage(bmp))
+            if (this.zoom != zoom || image == null)
+            {
+                image = new Bitmap(width * TILE_SIZE * zoom, height * TILE_SIZE * zoom);
+                this.zoom = zoom;
+            }
+
+            //Bitmap bmp = new Bitmap(width * TILE_SIZE * zoom, height * TILE_SIZE * zoom);
+            using (Graphics g = Graphics.FromImage(image))
             for (int y = 0; y < height; y++)
                 for (int x = 0; x < width; x++)
                 {
-                    Tile t = tiles[x + y * width];
-                    g.DrawImage(tileset[t.Value].RenderFlipped(t.FlipX, t.FlipY, zoom), x * TILE_SIZE * zoom, y * TILE_SIZE * zoom);
+                    Tile t = this[x, y];
+
+                    // I think this should speed things up a bit
+                    if (t.FlipX || t.FlipY)
+                    {
+                        g.DrawImage(tileset[t.Value].Render(t.FlipX, t.FlipY, zoom), x * TILE_SIZE * zoom, y * TILE_SIZE * zoom);
+                    }
+                    else
+                    {
+                        g.DrawImage(tileset[t.Value].Render(zoom), x * TILE_SIZE * zoom, y * TILE_SIZE * zoom);
+                    }
+                    //g.DrawImage(tileset[t.Value].RenderFlipped(t.FlipX, t.FlipY, zoom), x * TILE_SIZE * zoom, y * TILE_SIZE * zoom);
                 }
-            return bmp;
+            //return bmp;
+
+            return image;
+        }
+
+        public Bitmap Render(Tileset tileset, Rectangle window, int zoom)
+        {
+            // JIC
+            if (this.zoom != zoom || image == null)
+            {
+                return Render(tileset, zoom);
+            }
+
+            // Otherwise, let's go
+            using (Graphics g = Graphics.FromImage(image))
+                for (int y = 0; y < window.Height; y++)
+                    for (int x = 0; x < window.Width; x++)
+                    {
+                        int aX = window.X + x;
+                        int aY = window.Y + y;
+
+                        if (aX >= width || aY >= height) continue;
+
+                        Tile t = this[aX, aY];
+
+                        // I think this should speed things up a bit
+                        if (t.FlipX || t.FlipY)
+                        {
+                            g.DrawImage(tileset[t.Value].Render(t.FlipX, t.FlipY, zoom), aX * TILE_SIZE * zoom, aY * TILE_SIZE * zoom);
+                        }
+                        else
+                        {
+                            g.DrawImage(tileset[t.Value].Render(zoom), aX * TILE_SIZE * zoom, aY * TILE_SIZE * zoom);
+                        }
+                        //g.DrawImage(tileset[t.Value].RenderFlipped(t.FlipX, t.FlipY, zoom), x * TILE_SIZE * zoom, y * TILE_SIZE * zoom);
+                    }
+
+            return image;
         }
 
         /// <summary>

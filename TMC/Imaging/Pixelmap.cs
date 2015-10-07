@@ -521,6 +521,20 @@ namespace TMC.Imaging
                             using (var brush = new SolidBrush(palette[pixels[index]]))
                                 g.FillRectangle(brush, x * zoom, y * zoom, zoom, zoom);
                         }
+                
+
+                /*FastPixel fp = new FastPixel(bmp);
+                fp.Lock();
+
+                for (int y = 0; y < _height; y++)
+                    for (int x = 0; x < _width; x++)
+                        for (int yy = 0; yy < zoom; yy++)
+                            for (int xx = 0; xx < zoom; xx++)
+                            {
+                                fp.SetPixel(xx + x * zoom, yy + y * zoom, palette[pixels[x + y * _width]]);
+                            }
+
+                fp.Unlock(true);*/
 
                 // Save in cache
                 if (cache.Image != null) cache.Dispose();
@@ -532,11 +546,18 @@ namespace TMC.Imaging
             }
         }
 
-        public Bitmap RenderFlipped(bool flipX, bool flipY, int zoom = 2)
+        /// <summary>
+        /// Draws the Pixelmap on a System.Drawing.Bitmap with the specified zoom and flipping.
+        /// </summary>
+        /// <param name="flipX"></param>
+        /// <param name="flipY"></param>
+        /// <param name="zoom"></param>
+        /// <returns></returns>
+        public Bitmap Render(bool flipX, bool flipY, int zoom = 2)
         {
             //! You have to make a new Bitmap
             //! Or the cached one will be flipped too
-            Bitmap bmp = new Bitmap(Render(zoom));
+            /*Bitmap bmp = new Bitmap(Render(zoom));
 
             // TODO: looping and shit
 
@@ -544,8 +565,40 @@ namespace TMC.Imaging
             else if (flipY) bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
             else if (flipX) bmp.RotateFlip(RotateFlipType.RotateNoneFlipX);
 
+            return bmp;*/
+
+            // Initialize
+            Bitmap bmp = new Bitmap(_width * zoom, _height * zoom);
+
+            // This is faster than setting individual pixels
+            // TODO: test against FastPixel
+            using (Graphics g = Graphics.FromImage(bmp))
+                for (int y = 0; y < _height; y++)
+                    for (int x = 0; x < _width; x++)
+                    {
+                        // A small safety check
+                        int index = y * _width + x;
+                        if (index > pixels.Length) continue;
+
+                        // apply flipping stuff
+                        int aX = x, aY = y;
+                        if (flipX) aX = _width - x - 1;
+                        if (flipY) aY = _height - y - 1;
+
+                        // And paint
+                        using (var brush = new SolidBrush(palette[pixels[index]]))
+                            g.FillRectangle(brush, aX * zoom, aY * zoom, zoom, zoom);
+                    }
+
+            // Save in cache
+            //if (cache.Image != null) cache.Dispose();
+            //cache.Zoom = zoom;
+            //cache.Image = bmp;
+
+            // Return
             return bmp;
         }
+        
 
         /// <summary>
         /// Create a sub-Pixelmap of this Pixelmap.

@@ -199,6 +199,11 @@ namespace TMC
             }
         }
 
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (AboutForm af = new AboutForm()) af.ShowDialog();
+        }
+
         private void UpdateTileset()
         {
             // Basically, redraw and shit
@@ -463,13 +468,9 @@ namespace TMC
                         {
                             tile = (tilesetSelection.X + xx) + ((tilesetSelection.Y + (tilesetSelection.Height - 1 - yy)) * tilesPerRow);
                         }
-                        //else
-                        //{
-                            // pass
-                        //}
-                        
                         
                         tilemap[x + xx, y + yy].Value = (tile < tileset.Count ? tile : 0);
+
                         //? change this?
                         tilemap[x + xx, y + yy].FlipX = chkFlipX.Checked;
                         tilemap[x + xx, y + yy].FlipY = chkFlipY.Checked;
@@ -477,7 +478,7 @@ namespace TMC
                 }
 
                 // redraw or w/e
-                pTilemap.Image = tilemap.Render(tileset, zoom);
+                pTilemap.Image = tilemap.Render(tileset, new Rectangle(x, y, tilesetSelection.Width, tilesetSelection.Height), zoom);
             }
             else if (mouseOnTilemap)
             {
