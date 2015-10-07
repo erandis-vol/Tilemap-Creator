@@ -126,6 +126,55 @@ namespace TMC
             }
         }
 
+        private void importToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (tileset == null) return;
+
+            saveFileDialog.Title = "Export Tileset Palette";
+            saveFileDialog.Filter = "TMC Palette|*.tmcp|Windows Palette|*.pal|Adobe Color Table|*.act|NCLR Palette|*.nclr";
+            saveFileDialog.FileName = "";
+
+            if (saveFileDialog.ShowDialog() != DialogResult.OK) return;
+
+            if (saveFileDialog.FilterIndex == 1) // tmpc
+            {
+                tileset[0].Palette.Save(saveFileDialog.FileName, PaletteFormat.TMCP);
+            }
+            else if (saveFileDialog.FilterIndex == 2) // pal
+            {
+                tileset[0].Palette.Save(saveFileDialog.FileName, PaletteFormat.PAL);
+            }
+            else if (saveFileDialog.FilterIndex == 3) // act
+            {
+                tileset[0].Palette.Save(saveFileDialog.FileName, PaletteFormat.ACT);
+            }
+            else if (saveFileDialog.FilterIndex == 4) // nclr
+            {
+                tileset[0].Palette.Save(saveFileDialog.FileName, PaletteFormat.NCLR);
+            }
+        }
+
+        private void editToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (tileset == null) return;
+
+            using (PaletteDialog pd = new PaletteDialog(tileset[0].Palette))
+            {
+                pd.ShowDialog();
+                // TODO: edit palettes ^_^
+
+                if (tileset[0].Palette.IsSameAs(pd.Palette))
+                {
+                    MessageBox.Show("Cool!\nNo changes made!");
+                }
+            }
+        }
+
         private void zoomInToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (zoom < 12)

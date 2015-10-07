@@ -60,6 +60,12 @@
     <Compile Include="OpenImageDialog.Designer.cs">
       <DependentUpon>OpenImageDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="PaletteDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PaletteDialog.Designer.cs">
+      <DependentUpon>PaletteDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tilemap.cs" />
@@ -69,6 +75,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="OpenImageDialog.resx">
       <DependentUpon>OpenImageDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PaletteDialog.resx">
+      <DependentUpon>PaletteDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -295,6 +295,23 @@ namespace TMC.Imaging
             return colors.Contains(color);
         }
 
+        /// <summary>
+        /// Returns whether this Palette is exactly the same as another Palette.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public bool IsSameAs(Palette other)
+        {
+            if (colors.Length != other.Length) return false;
+
+            for (int i = 0; i < colors.Length; i++)
+            {
+                if (colors[i] != other[i]) return false;
+            }
+
+            return true;
+        }
+
         public int Length
         {
             get { return colors.Length; }
