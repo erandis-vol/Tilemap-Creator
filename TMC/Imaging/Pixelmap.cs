@@ -534,7 +534,9 @@ namespace TMC.Imaging
 
         public Bitmap RenderFlipped(bool flipX, bool flipY, int zoom = 2)
         {
-            Bitmap bmp = Render(zoom);
+            //! You have to make a new Bitmap
+            //! Or the cached one will be flipped too
+            Bitmap bmp = new Bitmap(Render(zoom));
 
             // TODO: looping and shit
 

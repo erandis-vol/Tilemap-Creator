@@ -322,6 +322,9 @@ namespace TMC
                     //selectionSizeTS = new Size(1, 1);
                     tilesetSelection = new Rectangle(mouseTileset, new Size(1, 1));
                 }
+
+                int tile = tilesetSelection.X + (tilesetSelection.Y * tilesPerRow);
+                lblTile.Text = "First Tile: " + tile;
             }
         }
 
@@ -386,6 +389,10 @@ namespace TMC
                 // TODO: palettemap
 
                 // loop selection
+                // normal direction
+                // if flipy, go from top to bottom instead
+                // flipx, go from right to left instead
+                
                 for (int yy = 0; yy < tilesetSelection.Height; yy++)
                 {
                     for (int xx = 0; xx < tilesetSelection.Width; xx++)
@@ -393,8 +400,30 @@ namespace TMC
                         if (y + yy >= tilemap.Height || x + xx >= tilemap.Width)
                             continue;
 
+                        //? This is the only thing that actually needs to be changed, I think
                         int tile = (tilesetSelection.X + xx) + ((tilesetSelection.Y + yy) * tilesPerRow);
+                        if (chkFlipX.Checked && chkFlipY.Checked)
+                        {
+                            tile = (tilesetSelection.X + (tilesetSelection.Width - 1 - xx)) + ((tilesetSelection.Y + (tilesetSelection.Height - 1 - yy)) * tilesPerRow);
+                        }
+                        else if (chkFlipX.Checked)
+                        {
+                            tile = (tilesetSelection.X + (tilesetSelection.Width - 1 - xx)) + ((tilesetSelection.Y + yy) * tilesPerRow);
+                        }
+                        else if (chkFlipY.Checked)
+                        {
+                            tile = (tilesetSelection.X + xx) + ((tilesetSelection.Y + (tilesetSelection.Height - 1 - yy)) * tilesPerRow);
+                        }
+                        //else
+                        //{
+                            // pass
+                        //}
+                        
+                        
                         tilemap[x + xx, y + yy].Value = (tile < tileset.Count ? tile : 0);
+                        //? change this?
+                        tilemap[x + xx, y + yy].FlipX = chkFlipX.Checked;
+                        tilemap[x + xx, y + yy].FlipY = chkFlipY.Checked;
                     }
                 }
 

@@ -232,7 +232,7 @@ namespace TMC
                 for (int x = 0; x < width; x++)
                 {
                     Tile t = tiles[x + y * width];
-                    g.DrawImage(tileset[t.Value].RenderFlipped(t.FlipX, t.FlipX, zoom), x * TILE_SIZE * zoom, y * TILE_SIZE * zoom);
+                    g.DrawImage(tileset[t.Value].RenderFlipped(t.FlipX, t.FlipY, zoom), x * TILE_SIZE * zoom, y * TILE_SIZE * zoom);
                 }
             return bmp;
         }
