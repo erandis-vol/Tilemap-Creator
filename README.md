@@ -1,7 +1,7 @@
-Tilemap Creator 4.0!
---------------------
-Copyright (c) 2014 itari
+Tilemap Creator (TMC) 2015
+--------------------------
+Copyright (c) 2013-2015 Hopeless Masquerade
 
 A tool that allows for the creation of 8x8 tilesets and tilemaps for use in GBA and NDS ROMs!
 
-Version 4.0 will include an improved GUI, enhanced image handling, and support for NDS formats!
+The new 2015 version will be a complete overhaul of the old TMC 3.4.1.
