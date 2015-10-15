@@ -21,6 +21,11 @@ namespace TMC
             tiles = ExplodeTiles(pixelmap);
         }
 
+        public Tileset(Pixelmap[] tiles)
+        {
+            this.tiles = tiles;
+        }
+
         public void Dispose()
         {
             // Destroy all the tiles
@@ -33,11 +38,18 @@ namespace TMC
         }
 
         // Use SubPixelmap a bunch to explode a large pixelmap ^^
-        private Pixelmap[] ExplodeTiles(Pixelmap pmp)
+        public static Pixelmap[] ExplodeTiles(Pixelmap pmp)
         {
-            if (pmp.Width % 8 > 0 || pmp.Height % 8 > 0)
+            // Ignore 8 x 8 size requirements
+            // Just cut stuff
+            /*if (pmp.Width % 8 > 0 || pmp.Height % 8 > 0)
             {
                 MessageBox.Show("Uh-oh");
+            }*/
+
+            if (pmp.Width < 8 || pmp.Height < 8)
+            {
+                throw new Exception("Image must be at least 8 x 8 pixels!");
             }
 
             List<Pixelmap> tiles = new List<Pixelmap>();
@@ -53,6 +65,87 @@ namespace TMC
             }
 
             return tiles.ToArray();
+        }
+
+        public static void Create(Pixelmap pmp, out Tileset tileset, out Tilemap tilemap)
+        {
+            // First, create a blank tilemap
+            tilemap = new Tilemap(pmp.Width / 8, pmp.Height / 8);
+            
+            // Create the initial tileset
+            // The first tile is always unique, so remember it
+            Pixelmap[] allTiles = ExplodeTiles(pmp);
+            List<Pixelmap> uniqueTiles = new List<Pixelmap>();
+            uniqueTiles.Add(allTiles[0]);
+
+            // Check for unique tiles
+            // And set the tilemap data
+            // It's a bit convoluted
+            // But *much* faster than in the past
+            int i = 1; // ~~~ unique tile count
+            for (int t = 1; t < allTiles.Length; t++)
+            {
+                //! Compare it against all known unique tiles
+                //! Meaning this gets slower with each new tile... :c
+                Pixelmap tile = allTiles[t];
+                bool tileIsUnique = true;
+
+                for (int t2 = 0; t2 < uniqueTiles.Count; t2++)
+                {
+                    // Skip this one
+                    if (t == t2) continue;
+
+                    Pixelmap tile2 = uniqueTiles[t2];
+
+                    // Otherwise perform checks
+                    if (tile.IsSameAs(tile2))
+                    {
+                        tilemap[t].Value = t2;
+
+                        tileIsUnique = false;
+                        break;
+                    }
+                        // TODO: some formats don't allow flipping, so make this optional
+                    else if (tile.IsSameAsFlipped(tile2, true, false))
+                    {
+                        tilemap[t].Value = t2;
+                        tilemap[t].FlipX = true;
+
+                        tileIsUnique = false;
+                        break;
+                    }
+                    else if (tile.IsSameAsFlipped(tile2, false, true))
+                    {
+                        tilemap[t].Value = t2;
+                        tilemap[t].FlipY = true;
+                        
+                        tileIsUnique = false;
+                        break;
+                    }
+                    else if (tile.IsSameAsFlipped(tile2, true, true))
+                    {
+                        tilemap[t].Value = t2;
+                        tilemap[t].FlipX = true;
+                        tilemap[t].FlipY = true;
+
+                        tileIsUnique = false;
+                        break;
+                    }
+                }
+
+                // Set the tile in the tilemap
+                // And remember the unique tiles
+                if (tileIsUnique)
+                {
+                    tilemap[t].Value = i;
+
+                    uniqueTiles.Add(allTiles[t]);
+                    i++;
+                }
+            }
+
+            // Finally, set tileset
+            tileset = new Tileset(uniqueTiles.ToArray());
         }
 
         /// <summary>

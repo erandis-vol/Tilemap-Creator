@@ -54,7 +54,7 @@ namespace TMC
 
                     using (Brush brush = new SolidBrush(palette[c]))
                     {
-                        e.Graphics.FillRectangle(brush, x * 8, y * 8, 8, 8);
+                        e.Graphics.FillRectangle(brush, x * 32, y * 32, 32, 32);
                     }
                 }
             }

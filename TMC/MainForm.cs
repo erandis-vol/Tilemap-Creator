@@ -57,7 +57,46 @@ namespace TMC
 
         private void createToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            openFileDialog.FileName = "";
+            openFileDialog.Filter = "Supported Files|*.bmp;*.png;*.gif;*.tiff;*.ncgr";
+            openFileDialog.Title = "Open Image (Create Tileset)";
 
+            if (openFileDialog.ShowDialog() != DialogResult.OK) return;
+
+            // Do it
+            using (var oid = new OpenImageDialog(openFileDialog.FileName))
+            {
+                oid.Text = "Open Image (Create Tileset)";
+                if (oid.ShowDialog() != DialogResult.OK) return;
+
+                // wooooooooo~~~~
+                try
+                {
+                    Tileset.Create(oid.Image, out tileset, out tilemap);
+
+                    // New tileset calculations
+                    int[] perfectWidths = tileset.CalculatePerfectWidths();
+                    tilesPerRow = perfectWidths[perfectWidths.Length / 2];
+
+                    mc = true;
+                    cTilesetSizes.Items.Clear();
+                    for (int i = 0; i < perfectWidths.Length; i++)
+                    {
+                        cTilesetSizes.Items.Add(perfectWidths[i].ToString());
+                    }
+                    cTilesetSizes.SelectedIndex = perfectWidths.Length / 2;
+                    mc = false;
+                    
+
+                    // And display
+                    UpdateTileset();
+                    UpdateTilemap();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message + "\n\n" + ex.StackTrace);
+                }
+            }
         }
 
         private void openToolStripMenuItem1_Click(object sender, EventArgs e)

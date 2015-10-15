@@ -85,7 +85,7 @@ namespace TMC.Imaging
             _width = bmp.Width;
             _height = bmp.Height;
 
-            palette = bmp.CreatePalette2(paletteSize);//.ToGreyscale();
+            palette = bmp.CreatePalette(paletteSize);//.ToGreyscale();
 
             for (int y = 0; y < bmp.Height; y++)
             {
@@ -489,6 +489,36 @@ namespace TMC.Imaging
             return true;
         }
 
+        // A somewhat slower version that checks compares two Pixelmaps
+        // While flippiny this one too
+        // This is used after the first method
+        public bool IsSameAsFlipped(Pixelmap p2, bool flipX, bool flipY)
+        {
+            // First, check size equality
+            if (_width != p2._width || _height != p2._height) return false;
+
+            // Then compare pixels
+            for (int y2 = 0; y2 < _height; y2++)
+                for (int x2 = 0; x2 < _width; x2++)
+                {
+                    // Get the X/Y position on this tilemap
+                    // Flipping taken into account
+                    int x1 = x2, y1 = y2;
+                    if (flipX) x1 = _width - x2 - 1;
+                    if (flipY) y1 = _height - y2 - 1;
+
+                    // For now, don't bother checking for safety
+                    int index1 = x1 + _width * y1;
+                    int index2 = x2 + _width * y2;
+
+                    // Compare the pixels
+                    if (pixels[index1] != p2.pixels[index2]) return false;
+                }
+
+            // Otherwise
+            return true;
+        }
+
         /// <summary>
         /// Draws the Pixelmap on a System.Drawing.Bitmap with the specified zoom.
         /// </summary>
@@ -648,6 +678,22 @@ namespace TMC.Imaging
         public Pixelmap Clone()
         {
             return new Pixelmap(_width, _height, pixels, palette);
+        }
+
+        /// <summary>
+        /// Swap the pixel data for two colors.
+        /// </summary>
+        /// <param name="color1"></param>
+        /// <param name="color2"></param>
+        public void SwapColors(byte color1, byte color2)
+        {
+            // Easy-peasy
+            for (int i = 0; i < pixels.Length; i++)
+            {
+                if (pixels[i] == color1) pixels[i] = color2;
+                else if (pixels[i] == color2) pixels[i] = color1;
+            }
+
         }
 
         #region Properties

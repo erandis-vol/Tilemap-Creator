@@ -153,6 +153,12 @@ namespace TMC
             if (image != null) image.Dispose();
         }
 
+        public Tile this[int index]
+        {
+            get { return tiles[index]; }
+            set { tiles[index] = value; }
+        }
+
         public Tile this[int x, int y]
         {
             get
