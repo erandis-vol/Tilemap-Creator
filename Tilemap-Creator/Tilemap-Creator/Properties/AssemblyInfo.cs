@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TMC")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Tilemap Creator")]
+[assembly: AssemblyDescription("Tilemap Creator")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("TMC")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCompany("Lost")]
+[assembly: AssemblyProduct("Tilemap Creator")]
+[assembly: AssemblyCopyright("Copyright © Lost 2013-2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("35093641-9430-4d0c-8820-592f2835c26a")]
+[assembly: Guid("622257ec-4bb1-4957-8b77-b5ef9f13c02e")]
 
 // Version information for an assembly consists of the following four values:
 //

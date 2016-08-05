@@ -1,16 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0A195D70-10FC-4025-B423-40A84F189CEF}</ProjectGuid>
+    <ProjectGuid>{622257EC-4BB1-4957-8B77-B5EF9F13C02E}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TMC</RootNamespace>
-    <AssemblyName>TMC</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <AssemblyName>tmc</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -40,53 +41,22 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AboutForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AboutForm.Designer.cs">
-      <DependentUpon>AboutForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Imaging\Extensions.cs" />
-    <Compile Include="Imaging\FastPixel.cs" />
-    <Compile Include="Imaging\Palette.cs" />
-    <Compile Include="Imaging\Pixelmap.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="OpenImageDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="OpenImageDialog.Designer.cs">
-      <DependentUpon>OpenImageDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PaletteDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PaletteDialog.Designer.cs">
-      <DependentUpon>PaletteDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tilemap.cs" />
-    <Compile Include="Tileset.cs" />
-    <EmbeddedResource Include="AboutForm.resx">
-      <DependentUpon>AboutForm.cs</DependentUpon>
-    </EmbeddedResource>
+    <Compile Include="Sprite.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OpenImageDialog.resx">
-      <DependentUpon>OpenImageDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PaletteDialog.resx">
-      <DependentUpon>PaletteDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -109,40 +79,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\information.png" />
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\folder-open-image.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\disks.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\folder-open.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\map--plus.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\image-map.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\magnifier-zoom-in.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\transparent_dark.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\magnifier-zoom-in1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\magnifier-zoom-out.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\magnifier-zoom-out1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\palette.png" />
+    <Content Include="remilia.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
