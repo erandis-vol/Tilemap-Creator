@@ -20,17 +20,6 @@ namespace TMC
         int[] pixels;
         Color[] palette;
 
-        public Sprite(int width, int height, int colors = 256)
-        {
-            this.width = width;
-            this.height = height;
-            pixels = new int[width * height];
-
-            palette = new Color[colors];
-
-            image = new Bitmap(width, height, PixelFormat.Format24bppRgb);
-        }
-
         public Sprite(int width, int height, Color[] palette)
         {
             this.width = width;
@@ -57,53 +46,62 @@ namespace TMC
             // get image data from source
             // create new Bitmap holding source but in 24bpp format
             // TODO: preserve indexed bitmaps
-            if (source.PixelFormat == PixelFormat.Format8bppIndexed)
+            Console.WriteLine($"format: {source.PixelFormat}");
+            using (var source24 = source.ChangeFormat(PixelFormat.Format24bppRgb))
             {
-                throw new NotImplementedException();
-            }
-            else
-            {
-                using (var source24 = source.ChangeFormat(PixelFormat.Format24bppRgb))
+                // grab pixel data
+                var sourceData = source24.LockBits(PixelFormat.Format24bppRgb);
+                var buffer = new byte[width * height * 3];
+                Marshal.Copy(sourceData.Scan0, buffer, 0, width * height * 3);
+
+                // create a palette, copy pixel data
+                // if the image is already indexed, that palette should be used
+                if ((source.PixelFormat & PixelFormat.Indexed) == PixelFormat.Indexed)
                 {
-                    // grab pixel data
-                    var sourceData = source24.LockBits(PixelFormat.Format24bppRgb);
-                    var buffer = new byte[width * height * 3];
-                    Marshal.Copy(sourceData.Scan0, buffer, 0, width * height * 3);
-
-                    // generate image data, including a palette
-                    // palette generation is the slow part,
-                    // but use of a int list is not bad even for a huge image
-                    var colors = new List<int>();
-                    for (int y = 0; y < height; y++)
+                    // TODO: copy source palette                    
+                    foreach (var color in source.Palette.Entries)
                     {
-                        for (int x = 0; x < width; x++)
-                        {
-                            // get pixel data for (x, y)
-                            // and quantize it
-                            var i = (x + y * width) * 3;
-                            var r = (buffer[i] / 8) * 8;
-                            var g = (buffer[i + 1] / 8) * 8;
-                            var b = (buffer[i + 2] / 8) * 8;
-                            var c = (r << 16) | (g << 8) | b;
+                        var r = color.R / 8 * 8;
+                        var g = color.G / 8 * 8;
+                        var b = color.B / 8 * 8;
 
-                            // try to add to palette
-                            if (!colors.Contains(c)) colors.Add(c);
-
-                            // set color data
-                            pixels[x + y * width] = colors.IndexOf(c);
-                        }
+                        Console.WriteLine("color = [{0}, {1}, {2}]", r, g, b);
                     }
-
-                    // create palette now
-                    palette = new Color[colors.Count];
-                    for (int i = 0; i < colors.Count; i++)
-                        palette[i] = Color.FromArgb(colors[i]);
-
-                    // !!! don't forget to unlock source
-                    source24.UnlockBits(sourceData);
                 }
+
+                var colors = new List<int>();
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        // get pixel data for (x, y)
+                        // and quantize it
+                        var i = (x + y * width) * 3;
+                        var r = buffer[i] / 8 * 8;
+                        var g = buffer[i + 1] / 8 * 8;
+                        var b = buffer[i + 2] / 8 * 8;
+                        var c = (r << 16) | (g << 8) | b;
+
+                        // update palette as needed
+                        var index = colors.IndexOf(c);
+                        if (index < 0)
+                        {
+                            colors.Add(c);
+                            index = colors.Count - 1;
+                        }
+                        pixels[x + y * width] = index;
+                    }
+                }
+
+                // create palette now
+                palette = new Color[colors.Count];
+                for (int i = 0; i < colors.Count; i++)
+                    palette[i] = Color.FromArgb(colors[i]);
+
+
+                // !!! don't forget to unlock source
+                source24.UnlockBits(sourceData);
             }
-            
 
             // fills the image cache for the first time
             Lock(); Unlock();
@@ -155,8 +153,7 @@ namespace TMC
             locked = true;
 
             // lock bits
-            imageData = image.LockBits(new Rectangle(0, 0, width, height),
-                ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+            imageData = image.LockBits(PixelFormat.Format24bppRgb);
         }
 
         /// <summary>
@@ -233,10 +230,17 @@ namespace TMC
         /// </summary>
         /// <param name="x">The x-coordinate of the pixel to retrieve.</param>
         /// <param name="y">The x-coordinate of the pixel to retrieve.</param>
-        /// <returns>A Color from the palette for the data at the given position.</returns>
-        public Color GetPixel(int x, int y)
+        /// <returns>An index within the palette for the pixel at the given position..</returns>
+        public int GetPixel(int x, int y)
         {
-            return palette[pixels[x + y * width]];
+            return pixels[x + y * width];
+        }
+
+        public void SetPixel(int x, int y, int paletteIndex)
+        {
+            if (!locked) throw new Exception("Sprite not locked!");
+
+            pixels[x + y * width] = paletteIndex;
         }
 
         /// <summary>
@@ -280,6 +284,16 @@ namespace TMC
         public Color[] Palette
         {
             get { return palette; }
+        }
+
+        public int Width
+        {
+            get { return width; }
+        }
+
+        public int Height
+        {
+            get { return height; }
         }
 
         // ease of use conversion:

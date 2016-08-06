@@ -12,8 +12,8 @@ namespace TMC
 {
     public partial class MainForm : Form
     {
-        Bitmap original;
-        Sprite sprite;
+        Tileset tileset;
+        Sprite tilesetSprite;
 
         public MainForm()
         {
@@ -27,28 +27,38 @@ namespace TMC
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            original?.Dispose();
-            sprite?.Dispose();
+            tilesetSprite?.Dispose();
+            tileset?.Dispose();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             try
             {
-                // test zooming the picturebox
-                original = new Bitmap("remilia.jpg");
-                sprite = new Sprite(original);
+                tilesetSprite?.Dispose();
+                tileset?.Dispose();
 
-                pictureBox1.Size = new Size(original.Width, original.Height);
-                pictureBox2.Size = new Size(original.Width * 2, original.Height * 2);
+                // test making a tileset
+                using (var bmp = new Bitmap("remilia.jpg"))
+                using (var spr = new Sprite(bmp))
+                {
+                    // info about the loaded sprite
+                    Console.WriteLine("sprite: size=({0}x{1}), colors={2}", spr.Width, spr.Height, spr.Palette.Length);
 
-                pictureBox1.Image = original;
+                    // create a new tileset
+                    tileset = new Tileset(spr);
+                    Console.WriteLine("tileset:", tileset.Size);
+                    foreach (var size in tileset.PerfectSizes)
+                    {
+                        Console.WriteLine("> ({0} x {1})", size.Width, size.Height);
+                    }
 
-                sprite.Lock();
-                sprite.SwapColors(0, sprite.Palette.Length - 1, false);
-                sprite.Unlock();
+                    // smoosh into fixed size for now
+                    tilesetSprite = tileset.Smoosh(640);
 
-                pictureBox2.Image = sprite;
+                    pictureBox1.Size = new Size(tilesetSprite.Width * 4, tilesetSprite.Height * 4);
+                    pictureBox1.Image = tilesetSprite;
+                }
             }
             catch (Exception ex)
             {
