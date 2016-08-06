@@ -12,8 +12,12 @@ namespace TMC
 {
     public partial class MainForm : Form
     {
+        Tilemap tilemap;
         Tileset tileset;
-        Sprite tilesetSprite;
+
+        Sprite tilesetImage;
+        Bitmap tilemapImage;
+
 
         public MainForm()
         {
@@ -27,13 +31,15 @@ namespace TMC
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            tilesetSprite?.Dispose();
+            tilesetImage?.Dispose();
             tileset?.Dispose();
+
+            tilemapImage?.Dispose();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            try
+            /*try
             {
                 tilesetSprite?.Dispose();
                 tileset?.Dispose();
@@ -56,8 +62,46 @@ namespace TMC
                     // smoosh into fixed size for now
                     tilesetSprite = tileset.Smoosh(640);
 
-                    pictureBox1.Size = new Size(tilesetSprite.Width * 4, tilesetSprite.Height * 4);
-                    pictureBox1.Image = tilesetSprite;
+                    pTileset.Size = new Size(tilesetSprite.Width * 4, tilesetSprite.Height * 4);
+                    pTileset.Image = tilesetSprite;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"{ex.Message}\n{ex.StackTrace}");
+            }*/
+
+
+            // test creating a Tilemap/Tileset
+            try
+            {
+                using (var bmp = new Bitmap("heiwa.png"))
+                using (var spr = new Sprite(bmp))
+                {
+                    // create tileset from image
+                    Tileset.Create(spr, false, out tileset, out tilemap);
+
+                    // render tileset
+                    tilesetImage = tileset.Smoosh(8);
+
+                    pTileset.Size = new Size(tilesetImage.Width * 2, tilesetImage.Height * 2);
+                    pTileset.Image = tilesetImage;
+
+                    // render tilemap
+                    tilemapImage = new Bitmap(tilemap.Width * Tileset.TileSize, tilemap.Height * Tileset.TileSize);
+                    using (var g = Graphics.FromImage(tilemapImage))
+                    {
+                        for (int y = 0; y < tilemap.Height; y++)
+                        {
+                            for (int x = 0; x < tilemap.Width; x++)
+                            {
+                                g.DrawImage(tileset[tilemap[x, y].TilesetIndex], x * Tileset.TileSize, y * Tileset.TileSize);
+                            }
+                        }
+                    }
+
+                    pTilemap.Size = new Size(tilemapImage.Width * 2, tilemapImage.Height * 2);
+                    pTilemap.Image = tilemapImage;
                 }
             }
             catch (Exception ex)
