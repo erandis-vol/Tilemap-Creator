@@ -43,7 +43,7 @@ namespace TMC
         }
 
         // creates a new sprite for use with the GBA/NDS from a regular image
-        // note
+        //? should there be an option to limit palette size...
         public Sprite(Bitmap source)
         {
             // create image data
@@ -56,47 +56,88 @@ namespace TMC
 
             // get image data from source
             // create new Bitmap holding source but in 24bpp format
-            using (var image = source.ChangeFormat(PixelFormat.Format24bppRgb))
+            // TODO: preserve indexed bitmaps
+            if (source.PixelFormat == PixelFormat.Format8bppIndexed)
             {
-                // grab pixel data
-                var imageData = image.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
-                var buffer = new byte[width * height  * 3];
-                Marshal.Copy(imageData.Scan0, buffer, 0, width * height * 3);
-
-                // generate image data, including a palette
-                // palette generation is the slow part,
-                // but use of a int list is not bad even for a huge image
-                var colors = new List<int>();
-                for (int y = 0; y < height; y++)
-                {
-                    for (int x = 0; x < width; x++)
-                    {
-                        // get pixel data for (x, y)
-                        // and quantize it
-                        var i = (x + y * width) * 3;
-                        var r = (buffer[i] / 8) * 8;
-                        var g = (buffer[i + 1] / 8) * 8;
-                        var b = (buffer[i + 2] / 8) * 8;
-                        var c = (r << 16) | (g << 8) | b;
-
-                        // try to add to palette
-                        if (!colors.Contains(c)) colors.Add(c);
-
-                        // set color data
-                        pixels[x + y * width] = colors.IndexOf(c);
-                    }
-                }
-
-                // create palette now
-                palette = new Color[colors.Count];
-                for (int i = 0; i < colors.Count; i++)
-                    palette[i] = Color.FromArgb(colors[i]);
-
-                // !!! don't forget to unlock source
-                image.UnlockBits(imageData);
+                throw new NotImplementedException();
             }
+            else
+            {
+                using (var source24 = source.ChangeFormat(PixelFormat.Format24bppRgb))
+                {
+                    // grab pixel data
+                    var sourceData = source24.LockBits(PixelFormat.Format24bppRgb);
+                    var buffer = new byte[width * height * 3];
+                    Marshal.Copy(sourceData.Scan0, buffer, 0, width * height * 3);
+
+                    // generate image data, including a palette
+                    // palette generation is the slow part,
+                    // but use of a int list is not bad even for a huge image
+                    var colors = new List<int>();
+                    for (int y = 0; y < height; y++)
+                    {
+                        for (int x = 0; x < width; x++)
+                        {
+                            // get pixel data for (x, y)
+                            // and quantize it
+                            var i = (x + y * width) * 3;
+                            var r = (buffer[i] / 8) * 8;
+                            var g = (buffer[i + 1] / 8) * 8;
+                            var b = (buffer[i + 2] / 8) * 8;
+                            var c = (r << 16) | (g << 8) | b;
+
+                            // try to add to palette
+                            if (!colors.Contains(c)) colors.Add(c);
+
+                            // set color data
+                            pixels[x + y * width] = colors.IndexOf(c);
+                        }
+                    }
+
+                    // create palette now
+                    palette = new Color[colors.Count];
+                    for (int i = 0; i < colors.Count; i++)
+                        palette[i] = Color.FromArgb(colors[i]);
+
+                    // !!! don't forget to unlock source
+                    source24.UnlockBits(sourceData);
+                }
+            }
+            
 
             // fills the image cache for the first time
+            Lock(); Unlock();
+        }
+
+        // creates a sprite with data from a region within the source
+        public Sprite(Sprite source, Rectangle region)
+        {
+            // create pixels
+            width = region.Width;
+            height = region.Height;
+            pixels = new int[width * height];
+
+            // copy palette
+            palette = source.palette;
+
+            // init cache
+            image = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+
+            // copy image data from source
+            for (int y = 0; y < region.Height; y++)
+            {
+                for (int x = 0; x < region.Width; x++)
+                {
+                    int x2 = x + region.X;
+                    int y2 = y + region.Y;
+
+                    if (x2 >= source.width || y2 >= source.height) continue;
+
+                    pixels[x + y * width] = source.pixels[x2 + y2 * source.width];
+                }
+            }
+
+            // cache drawing
             Lock(); Unlock();
         }
 
@@ -139,6 +180,52 @@ namespace TMC
 
             Marshal.Copy(buffer, 0, imageData.Scan0, buffer.Length);
             image.UnlockBits(imageData);
+        }
+
+        // TODO: we can use Compare to help override Equals
+
+        /// <summary>
+        /// Returns whether the given <c>Sprite</c> is equivalent to this <c>Sprite</c>.
+        /// </summary>
+        /// <param name="other">The other <c>Sprite</c> to compare.</param>
+        /// <returns>Whether the given Sprite is equivalent to this.</returns>
+        public bool Compare(Sprite other)
+        {
+            if (other.width != width || other.height != height) return false;
+
+            // probably faster than the below method
+            for (int i = 0; i < pixels.Length; i++)
+            {
+                if (pixels[i] != other.pixels[i]) return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Returns whether the given <c>Sprite</c> is equivalent to this <c>Sprite</c>.
+        /// </summary>
+        /// <param name="other">The other <c>Sprite</c> to compare.</param>
+        /// <param name="flipX">Whether this <c>Sprite</c> should be flipped on the x-axis during comparison.</param>
+        /// <param name="flipY">Whether this <c>Sprite</c> should be flipped on the y-axis during comparison.</param>
+        /// <returns>Whether the given Sprite is equivalent to this.</returns>
+        public bool Compare(Sprite other, bool flipX, bool flipY)
+        {
+            if (other.width != width || other.height != height) return false;
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    int x2 = flipX ? (width - x - 1) : x;
+                    int y2 = flipY ? (height - y - 1) : y;
+
+                    int indexThis = x2 + y2 * width;
+                    int indexOther = x + y * width;
+
+                    if (other.pixels[indexOther] != pixels[indexThis]) return false;
+                }
+            }
+            return true;
         }
 
         /// <summary>
@@ -240,6 +327,14 @@ namespace TMC
                 gfx?.Dispose();
             }
             return result;
+        }
+
+        /// <summary>
+        /// Locks a Bitmap into system memory.
+        /// </summary>
+        public static BitmapData LockBits(this Bitmap bmp, PixelFormat format)
+        {
+            return bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadWrite, format);
         }
     }
 }

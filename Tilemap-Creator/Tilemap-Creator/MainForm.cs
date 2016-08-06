@@ -40,12 +40,15 @@ namespace TMC
                 sprite = new Sprite(original);
 
                 pictureBox1.Size = new Size(original.Width, original.Height);
-                pictureBox2.Size = new Size(original.Width, original.Height);
+                pictureBox2.Size = new Size(original.Width * 2, original.Height * 2);
 
                 pictureBox1.Image = original;
-                pictureBox2.Image = sprite;
 
-                Console.WriteLine("number of colors: {0}", sprite.Palette.Length);
+                sprite.Lock();
+                sprite.SwapColors(0, sprite.Palette.Length - 1, false);
+                sprite.Unlock();
+
+                pictureBox2.Image = sprite;
             }
             catch (Exception ex)
             {
