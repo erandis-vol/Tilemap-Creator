@@ -10,6 +10,13 @@ using System.Threading.Tasks;
 
 namespace TMC
 {
+    [Flags]
+    public enum SpriteFormat
+    {
+        BMP = 0x0000,
+        PNG = 0x0001,
+    }
+
     public class Sprite : IDisposable
     {
         Bitmap image;
@@ -142,6 +149,199 @@ namespace TMC
         public void Dispose()
         {
             image?.Dispose();
+        }
+
+        public void Save(string filename, SpriteFormat format)
+        {
+            // selects the best bitdepth
+            int bitDepth = 24;
+            if (palette.Length <= 256) bitDepth = 8;
+            if (palette.Length <= 16) bitDepth = 4;
+
+            Save(filename, format, bitDepth);
+        }
+
+        public void Save(string filename, SpriteFormat format, int bitDepth)
+        {
+            if (locked) throw new Exception("Cannot save a locked Sprite!");
+
+            switch (format)
+            {
+                case SpriteFormat.BMP:
+                    SaveBitmap(filename, bitDepth);
+                    break;
+
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        void SaveBitmap(string filename, int bitDepth)
+        {
+            // https://en.wikipedia.org/wiki/BMP_file_format
+
+            // some calculations
+            int rowSize = ((bitDepth * width + 31) / 32) * 4;   // number of bytes per row
+            int pixelSize = rowSize * height;                   // number of pixels in bytes
+            int paddingSize = rowSize % 4;                      // number of extra bytes per row
+
+            Console.WriteLine("Saving Bitmap:");
+            Console.WriteLine("- bitdepth={0}", bitDepth);
+            Console.WriteLine("- rowSize={0}", rowSize);
+            Console.WriteLine("- pixelSize={0}", pixelSize);
+            Console.WriteLine("- paddingSize={0}", paddingSize);
+
+            using (var bw = new BinaryWriter(File.Create(filename)))
+            {
+                // TODO: Indexed images may be compressed using RLE of Huffma
+                if (bitDepth == 4)
+                {
+                    // Bitmap file header
+                    bw.Write((ushort)0x4D42);               // 'BM'
+                    bw.Write(pixelSize + (16 * 4) + 54);    // filesize = header + color table + pixel data
+                    bw.Write(0x293A);                       // embed a friendly message
+                    bw.Write(54 + (16 * 4));                // offset of pixel data
+
+                    // BITMAPINFOHEADER
+                    bw.Write(40);               // header size = 40 bytes
+                    bw.Write(width);            // width in pixels
+                    bw.Write(height);           // height in pixels
+                    bw.Write((ushort)1);        // 1 color plane
+                    bw.Write((ushort)4);        // 8 bpp
+                    bw.Write(0);                // no compression
+                    bw.Write(pixelSize);        // size of raw data + padding
+                    bw.Write(2835);             // print resoltion of image (~72 dpi)
+                    bw.Write(2835);             //
+                    bw.Write(16);               // color table size, 16 because MUST be 2^n
+                    bw.Write(0);                // all colors are important
+
+                    // color table
+                    for (int i = 0; i < 16; i++)
+                    {
+                        var color = (i < palette.Length ? palette[i] : Color.Black);
+
+                        bw.Write(color.R);
+                        bw.Write(color.G);
+                        bw.Write(color.B);
+                        bw.Write(byte.MaxValue);
+                    }
+
+                    // pixel data
+                    for (int y = height - 1; y >= 0; y--)
+                    {
+                        // copy colors for this row
+                        for (int x = 0; x < width; x += 2)
+                        {
+                            var left = pixels[x + y * width];
+                            var right = pixels[x + y * width + 1];
+                            var pixel = (left << 4) | right;
+                            bw.Write((byte)pixel);
+                        }
+
+                        // include the last pixel in odd number widths
+                        if (width % 2 != 0)
+                        {
+                            bw.Write((byte)(pixels[(width - 1) + y * width] << 4));
+                        }
+
+                        // pad end of row with 0's
+                        for (int x = 0; x < paddingSize; x++)
+                        {
+                            bw.Write(byte.MinValue);
+                        }
+                    }
+                }
+
+                if (bitDepth == 8)
+                {
+                    // Bitmap file header
+                    bw.Write((ushort)0x4D42);               // 'BM'
+                    bw.Write(pixelSize + (256 * 4) + 54);   // filesize = header + color table + pixel data
+                    bw.Write(0x293A);                       // embed a friendly message
+                    bw.Write(54 + (256 * 4));               // offset of pixel data
+
+                    // BITMAPINFOHEADER
+                    bw.Write(40);               // header size = 40 bytes
+                    bw.Write(width);            // width in pixels
+                    bw.Write(height);           // height in pixels
+                    bw.Write((ushort)1);        // 1 color plane
+                    bw.Write((ushort)8);        // 8 bpp
+                    bw.Write(0);                // no compression
+                    bw.Write(pixelSize);        // size of raw data + padding
+                    bw.Write(2835);             // print resoltion of image (~72 dpi)
+                    bw.Write(2835);             //
+                    bw.Write(256);              // color table size, 256 because MUST be 2^n
+                    bw.Write(0);                // all colors are important
+
+                    // color table
+                    for (int i = 0; i < 256; i++)
+                    {
+                        var color = (i < palette.Length ? palette[i] : Color.Black);
+
+                        bw.Write(color.R);
+                        bw.Write(color.G);
+                        bw.Write(color.B);
+                        bw.Write(byte.MaxValue);
+                    }
+
+                    // pixel data
+                    for (int y = height - 1; y >= 0; y--)
+                    {
+                        // copy colors for this row
+                        for (int x = 0; x < width; x++)
+                        {
+                            bw.Write((byte)pixels[x + y * width]);
+                        }
+
+                        // pad end of row with 0's
+                        for (int x = 0; x < paddingSize; x++)
+                        {
+                            bw.Write(byte.MinValue);
+                        }
+                    }
+                }
+
+                if (bitDepth == 24)
+                {
+                    // Bitmap file header
+                    bw.Write((ushort)0x4D42);   // 'BM'
+                    bw.Write(pixelSize + 54);   // filesize = header + pixel data
+                    bw.Write(0x293A);           // embed a friendly message
+                    bw.Write(54);               // offset of pixel data
+
+                    // BITMAPINFOHEADER
+                    bw.Write(40);               // header size = 40 bytes
+                    bw.Write(width);            // width in pixels
+                    bw.Write(height);           // height in pixels
+                    bw.Write((ushort)1);        // 1 color plane
+                    bw.Write((ushort)24);       // 24 bpp
+                    bw.Write(0);                // no compression
+                    bw.Write(pixelSize);        // size of raw data + padding
+                    bw.Write(2835);             // print resoltion of image (~72 dpi)
+                    bw.Write(2835);             //
+                    bw.Write(0);                // empty color table
+                    bw.Write(0);                // all colors are important
+
+                    // pixel data
+                    for (int y = height - 1; y >= 0; y--)
+                    {
+                        // copy colors for this row
+                        for (int x = 0; x < width; x++)
+                        {
+                            var color = palette[pixels[x + y * width]];
+                            bw.Write(color.R);
+                            bw.Write(color.G);
+                            bw.Write(color.B);
+                        }
+
+                        // pad end of row with 0's
+                        for (int x = 0; x < paddingSize; x++)
+                        {
+                            bw.Write(byte.MinValue);
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>

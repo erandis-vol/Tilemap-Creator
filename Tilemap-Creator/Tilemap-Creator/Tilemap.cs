@@ -62,8 +62,10 @@ namespace TMC
                 }
             }
 
-            // replace tiles
+            // all done
             tiles = newTiles;
+            width = newWidth;
+            height = newHeight;
         }
 
         public int Width

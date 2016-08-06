@@ -75,11 +75,12 @@ namespace TMC
             // test creating a Tilemap/Tileset
             try
             {
-                using (var bmp = new Bitmap("heiwa.png"))
+                using (var bmp = new Bitmap("psychicf.bmp"))
                 using (var spr = new Sprite(bmp))
                 {
                     // create tileset from image
                     Tileset.Create(spr, false, out tileset, out tilemap);
+                    Console.WriteLine("tileset size: {0}, original size: {1}", tileset.Size, tilemap.Width * tilemap.Height);
 
                     // render tileset
                     tilesetImage = tileset.Smoosh(8);
@@ -108,6 +109,11 @@ namespace TMC
             {
                 MessageBox.Show($"{ex.Message}\n{ex.StackTrace}");
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            tilesetImage?.Save("test.bmp", SpriteFormat.BMP);
         }
     }
 }
