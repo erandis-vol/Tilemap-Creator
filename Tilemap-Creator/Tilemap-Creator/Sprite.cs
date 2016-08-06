@@ -4,200 +4,242 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace TMC
 {
-    struct Color15
+    public class Sprite : IDisposable
     {
-        public ushort Value;
+        Bitmap image;
+        BitmapData imageData;
+        bool locked = false;
 
-        public byte R
-        {
-            get { return (byte)((Value & 0x1F) << 3); }
-        }
-
-        public byte G
-        {
-            get { return (byte)((Value >> 5 & 0x1F) << 3); }
-        }
-
-        public byte B
-        {
-            get { return (byte)((Value >> 10 & 0x1F) << 3); }
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is Color15)
-                return ((Color15)obj).Value == Value;
-            return false;
-        }
-
-        public override int GetHashCode()
-        {
-            // warning: if setting of value is enabled, this
-            return Value;
-        }
-
-        public override string ToString()
-        {
-            return $"color15 [value={Value:X4},r={R}, g={G}, b={B}]";
-        }
-
-        public static implicit operator Color15(Color color)
-        {
-            return new Color15 { Value = (ushort)((color.R >> 3) | ((color.G >> 3) * 0x20) | ((color.B >> 3) * 0x400)) };
-        }
-
-        public static implicit operator Color(Color15 color)
-        {
-            return Color.FromArgb(color.R, color.G, color.B);
-        }
-
-        // todo: convert these to getters
-        public static Color15 Black = Color.Black;
-        public static Color15 Red = Color.Red;
-        public static Color15 Orange = Color.Orange;
-        public static Color15 Yellow = Color.Yellow;
-        public static Color15 Green = Color.Green;
-        public static Color15 Blue = Color.Blue;
-        public static Color15 Indigo = Color.Indigo;
-        public static Color15 Violet = Color.Violet;
-        public static Color15 White = Color.White;
-    }
-
-    class Palette
-    {
-        List<Color15> colors = new List<Color15>();
-
-        public Color15 this[int index]
-        {
-            get { return colors[index]; }
-        }
-
-        public bool Contains(Color15 color)
-        {
-            return colors.Contains(color);
-        }
-
-        public int IndexOf(Color15 color)
-        {
-            return colors.IndexOf(color);
-        }
-
-        public void Add(Color15 color)
-        {
-            colors.Add(color);
-        }
-
-        public int Length
-        {
-            get { return colors.Count; }
-        }
-    }
-
-    // stores image data for a GBA/NDS sprite
-    // 
-    class Sprite : IDisposable
-    {
         int width, height;
-        int[] data;
-        Palette colors = new Palette();
+        int[] pixels;
+        Color[] palette;
 
-        Bitmap cachedImage;
-        int cachedZoom;
-        bool needsRedraw = false;
-
-        public Sprite(int width, int height)
+        public Sprite(int width, int height, int colors = 256)
         {
             this.width = width;
             this.height = height;
-            data = new int[width * height];
+            pixels = new int[width * height];
 
-            UpdateCache(1, true);
+            palette = new Color[colors];
+
+            image = new Bitmap(width, height, PixelFormat.Format24bppRgb);
         }
 
+        public Sprite(int width, int height, Color[] palette)
+        {
+            this.width = width;
+            this.height = height;
+            pixels = new int[width * height];
+
+            this.palette = palette;
+
+            image = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+        }
+
+        // creates a new sprite for use with the GBA/NDS from a regular image
+        // note
         public Sprite(Bitmap source)
         {
+            // create image data
             width = source.Width;
             height = source.Height;
-            data = new int[width * height];
+            pixels = new int[width * height];
 
-            // speed this up, too
-            for (int y = 0; y < height; y++)
+            // init cache
+            image = new Bitmap(source.Width, source.Height, PixelFormat.Format24bppRgb);
+
+            // get image data from source
+            // create new Bitmap holding source but in 24bpp format
+            using (var image = source.ChangeFormat(PixelFormat.Format24bppRgb))
             {
-                for (int x = 0; x < width; x++)
+                // grab pixel data
+                var imageData = image.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+                var buffer = new byte[width * height  * 3];
+                Marshal.Copy(imageData.Scan0, buffer, 0, width * height * 3);
+
+                // generate image data, including a palette
+                // palette generation is the slow part,
+                // but use of a int list is not bad even for a huge image
+                var colors = new List<int>();
+                for (int y = 0; y < height; y++)
                 {
-                    SetPixel(x, y, source.GetPixel(x, y));
-                }
-            }
-
-            Console.WriteLine("Total colors in Sprite: {0} colors", colors.Length);
-
-            UpdateCache(1, true);
-        }
-
-        void UpdateCache(int zoom, bool force = false)
-        {
-            if (force || cachedZoom != zoom)
-            {
-                cachedImage?.Dispose();
-                cachedImage = new Bitmap(width * zoom, height * zoom);
-
-                cachedZoom = zoom;
-                needsRedraw = true;
-            }
-        }
-
-        public Bitmap Draw(int zoom)
-        {
-            if (zoom <= 0) throw new Exception("Zoom must be >= 1!");
-
-            UpdateCache(zoom);
-            if (needsRedraw)
-            {
-                // create a cache for the brushes we'll need
-                // saves memory compared to making a new brush per pixel
-                var brushes = new SolidBrush[colors.Length];
-                for (int i = 0; i < brushes.Length; i++) brushes[i] = new SolidBrush(colors[i]);
-
-                using (var gfx = Graphics.FromImage(cachedImage))
-                {
-                    for (int i = 0; i < width * height; i++)
+                    for (int x = 0; x < width; x++)
                     {
-                        gfx.FillRectangle(brushes[data[i]], (i % width) * zoom, (i / width) * zoom, zoom, zoom);
+                        // get pixel data for (x, y)
+                        // and quantize it
+                        var i = (x + y * width) * 3;
+                        var r = (buffer[i] / 8) * 8;
+                        var g = (buffer[i + 1] / 8) * 8;
+                        var b = (buffer[i + 2] / 8) * 8;
+                        var c = (r << 16) | (g << 8) | b;
+
+                        // try to add to palette
+                        if (!colors.Contains(c)) colors.Add(c);
+
+                        // set color data
+                        pixels[x + y * width] = colors.IndexOf(c);
                     }
                 }
 
-                for (int i = 0; i < brushes.Length; i++) brushes[i].Dispose();
+                // create palette now
+                palette = new Color[colors.Count];
+                for (int i = 0; i < colors.Count; i++)
+                    palette[i] = Color.FromArgb(colors[i]);
+
+                // !!! don't forget to unlock source
+                image.UnlockBits(imageData);
             }
-            return cachedImage;
-        }
 
-        public Color15 GetPixel(int x, int y)
-        {
-            if (x >= 0 && x < width && y >= 0 && y < height)
-                return colors[data[x + y * width]];
-
-            return Color15.Black;
-        }
-
-        public void SetPixel(int x , int y, Color15 color)
-        {
-            if (x >= 0 && x < width && y >= 0 && y < height)
-            {
-                if (!colors.Contains(color))
-                    colors.Add(color);
-
-                data[x + y * width] = colors.IndexOf(color); ;
-            }
+            // fills the image cache for the first time
+            Lock(); Unlock();
         }
 
         public void Dispose()
         {
-            cachedImage?.Dispose();
+            image?.Dispose();
+        }
+
+        /// <summary>
+        /// Locks the Sprite's cache and prepares it for pixel writing.
+        /// </summary>
+        public void Lock()
+        {
+            if (locked) return;
+            locked = true;
+
+            // lock bits
+            imageData = image.LockBits(new Rectangle(0, 0, width, height),
+                ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+        }
+
+        /// <summary>
+        /// Unlocks the Sprite's pixel data, updating the cached Bitmap.
+        /// </summary>
+        public void Unlock()
+        {
+            if (!locked) return;
+            locked = false;
+
+            // update image cache, unlock bits
+            var buffer = new byte[width * height * 3];
+            for (int i = 0; i < width * height; i++)
+            {
+                var color = palette[pixels[i]];
+
+                buffer[i * 3] = color.R;
+                buffer[i * 3 + 1] = color.G;
+                buffer[i * 3 + 2] = color.B;
+            }
+
+            Marshal.Copy(buffer, 0, imageData.Scan0, buffer.Length);
+            image.UnlockBits(imageData);
+        }
+
+        /// <summary>
+        /// Returns the pixel at the given position. The Sprite does not need to be locked.
+        /// </summary>
+        /// <param name="x">The x-coordinate of the pixel to retrieve.</param>
+        /// <param name="y">The x-coordinate of the pixel to retrieve.</param>
+        /// <returns>A Color from the palette for the data at the given position.</returns>
+        public Color GetPixel(int x, int y)
+        {
+            return palette[pixels[x + y * width]];
+        }
+
+        /// <summary>
+        /// Sets every pixel to the first in the palette.
+        /// </summary>
+        public void Clear()
+        {
+            if (!locked) throw new Exception("Sprite not locked!");
+
+            for (int i = 0; i < width * height; i++)
+            {
+                pixels[i] = 0;
+            }
+        }
+
+        public void SwapColors(int color1, int color2, bool updateImage)
+        {
+            if (!locked) throw new Exception("Sprite not locked!");
+
+            // move colors around in palette
+            var temp = palette[color1];
+            palette[color1] = palette[color2];
+            palette[color2] = temp;
+
+            // update image data only if told to
+            if (updateImage)
+            {
+                for (int i = 0; i < width * height; i++)
+                {
+                    if (pixels[i] == color1) pixels[i] = color2;
+                    else if (pixels[i] == color2) pixels[i] = color1;
+                }
+            }
+        }
+
+        public bool Locked
+        {
+            get { return locked; }
+        }
+
+        public Color[] Palette
+        {
+            get { return palette; }
+        }
+
+        // ease of use conversion:
+        public static implicit operator Image(Sprite s)
+        {
+            return s.image;
+        }
+
+        public static implicit operator Bitmap(Sprite s)
+        {
+            return s.image;
+        }
+    }
+
+    public static class BitmapExtensions
+    {
+        /// <summary>
+        /// Creates a new Bitmap from the given Bitmap with a given PixelFormat.
+        /// </summary>
+        /// <param name="bmp">The source Bitmap to copy.</param>
+        /// <param name="newFormat">The new PixelFormat for the Bitmap.</param>
+        /// <returns>A new Bitmap with the given PixelFormat.</returns>
+        public static Bitmap ChangeFormat(this Bitmap bmp, PixelFormat newFormat)
+        {
+            // convert a Bitmap to Format24bppRgb
+            if (bmp.PixelFormat == newFormat)
+                return new Bitmap(bmp);
+
+            Bitmap result = null;
+            Graphics gfx = null;
+            try
+            {
+                // create new bitmap with desired format
+                result = new Bitmap(bmp.Width, bmp.Height, newFormat);
+                gfx = Graphics.FromImage(result);
+
+                // copy image to newly formatted bitmap
+                Rectangle bounds = new Rectangle(0, 0, bmp.Width, bmp.Height);
+                gfx.DrawImage(bmp, bounds, bounds, GraphicsUnit.Pixel);
+
+                // guess that works
+            }
+            finally
+            {
+                gfx?.Dispose();
+            }
+            return result;
         }
     }
 }

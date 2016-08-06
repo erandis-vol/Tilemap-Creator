@@ -13,6 +13,7 @@ namespace TMC
     public partial class MainForm : Form
     {
         Bitmap original;
+        Sprite sprite;
 
         public MainForm()
         {
@@ -27,6 +28,7 @@ namespace TMC
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             original?.Dispose();
+            sprite?.Dispose();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -35,12 +37,15 @@ namespace TMC
             {
                 // test zooming the picturebox
                 original = new Bitmap("remilia.jpg");
+                sprite = new Sprite(original);
 
                 pictureBox1.Size = new Size(original.Width, original.Height);
-                pictureBox2.Size = new Size(original.Width * 4, original.Height * 4);
+                pictureBox2.Size = new Size(original.Width, original.Height);
 
                 pictureBox1.Image = original;
-                pictureBox2.Image = original;
+                pictureBox2.Image = sprite;
+
+                Console.WriteLine("number of colors: {0}", sprite.Palette.Length);
             }
             catch (Exception ex)
             {
