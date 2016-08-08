@@ -18,7 +18,7 @@ namespace TMC
         Sprite tilesetImage;
         Bitmap tilemapImage;
 
-        int zoom = 2; // default zoom is 200%
+        int zoom = 3; // default zoom is 200%
         bool ignore = false;
 
         Color gridColor = Color.FromArgb(128, Color.White);
@@ -163,7 +163,7 @@ namespace TMC
 
                 // create Tilemap/Tileset
                 tileset?.Dispose();
-                Tileset.Create(sprite, false, out tileset, out tilemap);
+                Tileset.Create(sprite, true, out tileset, out tilemap);
             }
 
             // fill sizes for Tileset
@@ -229,9 +229,10 @@ namespace TMC
                 {
                     for (int x = 0; x < tilemap.Width; x++)
                     {
-                        var tileIndex = tilemap[x, y].TilesetIndex;
-                        var tile = tileset[tileIndex];
-                        g.DrawImage(tile, x * Tileset.TileSize, y * Tileset.TileSize);
+                        var tile = tilemap[x, y];
+                        g.DrawImageFlipped(tileset[tile.TilesetIndex],
+                            x * Tileset.TileSize, y * Tileset.TileSize, 
+                            tile.FlipX, tile.FlipY);
                     }
                 }
             }

@@ -835,30 +835,6 @@ namespace TMC
         /// <returns>A new Bitmap with the given PixelFormat.</returns>
         public static Bitmap ChangeFormat(this Bitmap bmp, PixelFormat newFormat)
         {
-            // convert bmp to newFormat
-
-            /*if (bmp.PixelFormat == newFormat)
-                return new Bitmap(bmp);
-
-            Bitmap result = null;
-            Graphics gfx = null;
-            try
-            {
-                // create new bitmap with desired format
-                result = new Bitmap(bmp.Width, bmp.Height, newFormat);
-                gfx = Graphics.FromImage(result);
-
-                // copy image to newly formatted bitmap
-                gfx.DrawImage(bmp, new Rectangle(0, 0, bmp.Width, bmp.Height));
-
-                // guess that works
-            }
-            finally
-            {
-                gfx?.Dispose();
-            }
-            return result;*/
-
             // better?
             using (var temp = new Bitmap(bmp))
             {
@@ -872,6 +848,40 @@ namespace TMC
         public static BitmapData LockBits(this Bitmap bmp, PixelFormat format)
         {
             return bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadWrite, format);
+        }
+    }
+
+    public static class GraphcisExtensions
+    {
+        // should safely draw an image flipped
+        public static void DrawImageFlipped(this Graphics gfx, Image image, int x, int y, bool flipX, bool flipY)
+        {
+            // TODO: remove if's and put them in this vv
+            // no flipping:
+            var dest = new Point[]
+            {
+                new Point(x, y),                    // upper-left corner
+                new Point(x + image.Width, y),      // upper-right corner
+                new Point(x, y + image.Height),     // lower-left corner
+            };
+
+            // if we flipX, swap left and right X values
+            if (flipX)
+            {
+                dest[0].X = x + image.Width;
+                dest[1].X = x;
+                dest[2].X = x + image.Width;
+            }
+
+            // if we flipY, swap up and down Y values
+            if (flipY)
+            {
+                dest[0].Y = y + image.Height;
+                dest[1].Y = y + image.Height;
+                dest[2].Y = y;
+            }
+
+            gfx.DrawImage(image, dest);
         }
     }
 }
