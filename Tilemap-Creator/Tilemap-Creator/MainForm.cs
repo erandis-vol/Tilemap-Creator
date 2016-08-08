@@ -17,6 +17,25 @@ namespace TMC
         
         Sprite tilesetImage;
         Bitmap tilemapImage;
+        Color[] palettemapColors = new Color[]
+        {
+            Color.FromArgb(176, Color.White),
+            Color.FromArgb(176, Color.Yellow),
+            Color.FromArgb(176, Color.Red),
+            Color.FromArgb(176, Color.Gray),
+            Color.FromArgb(176, Color.Cyan),
+            Color.FromArgb(176, Color.Blue),
+            Color.FromArgb(176, Color.Magenta),
+            Color.FromArgb(176, Color.LightYellow),
+            Color.FromArgb(176, Color.Teal),
+            Color.FromArgb(176, Color.LightSteelBlue),
+            Color.FromArgb(176, Color.Violet),
+            Color.FromArgb(176, Color.Orange),
+            Color.FromArgb(176, Color.LightGray),
+            Color.FromArgb(176, Color.SandyBrown),
+            Color.FromArgb(176, Color.Purple),
+            Color.FromArgb(176, Color.LightPink),
+        };
 
         int zoom = 3; // default zoom is 200%
         bool ignore = false;
@@ -218,6 +237,17 @@ namespace TMC
             tTilemapWidth.Value = tilemap.Width;
             tTilemapHeight.Value = tilemap.Height;
 
+            // draw tilemap image :D
+            DrawTilemap();
+
+            // finished
+            pTilemap.Size = new Size(tilemapImage.Width * zoom, tilemapImage.Height * zoom);
+            pTilemap.Image = tilemapImage;
+            ignore = false;
+        }
+
+        void DrawTilemap()
+        {
             // recreate Tilemap image
             tilemapImage?.Dispose();
             tilemapImage = new Bitmap(tilemap.Width * Tileset.TileSize, tilemap.Height * Tileset.TileSize);
@@ -225,24 +255,45 @@ namespace TMC
             // render Tilemap fully
             using (var g = Graphics.FromImage(tilemapImage))
             {
+                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
+
                 for (int y = 0; y < tilemap.Height; y++)
                 {
                     for (int x = 0; x < tilemap.Width; x++)
                     {
                         var tile = tilemap[x, y];
                         g.DrawImageFlipped(tileset[tile.TilesetIndex],
-                            x * Tileset.TileSize, y * Tileset.TileSize, 
+                            x * Tileset.TileSize, y * Tileset.TileSize,
                             tile.FlipX, tile.FlipY);
                     }
                 }
+
+                // render Palettemap on top
+                if (bModePalettemap.Checked)
+                {
+                    var brushes = new SolidBrush[16];
+                    for (int i = 0; i < 16; i++)
+                        brushes[i] = new SolidBrush(palettemapColors[i]);
+                    var font = new Font("Arial", 5f, FontStyle.Regular);
+
+                    for (int y = 0; y < tilemap.Height; y++)
+                    {
+                        for (int x = 0; x < tilemap.Width; x++)
+                        {
+                            g.FillRectangle(brushes[tilemap[x, y].PaletteIndex],
+                                x * Tileset.TileSize, y * Tileset.TileSize,
+                                Tileset.TileSize, Tileset.TileSize);
+
+                            g.DrawString(tilemap[x, y].PaletteIndex.ToString("x"), font,
+                                Brushes.Black, 1 + x * Tileset.TileSize, 1 + y * Tileset.TileSize);
+                        }
+                    }
+
+                    for (int i = 0; i < 16; i++)
+                        brushes[i].Dispose();
+                    font.Dispose();
+                }
             }
-
-            // TODO: render Palettemap fully
-
-            // finished
-            pTilemap.Size = new Size(tilemapImage.Width * zoom, tilemapImage.Height * zoom);
-            pTilemap.Image = tilemapImage;
-            ignore = false;
         }
 
         private void pTileset_Paint(object sender, PaintEventArgs e)
@@ -296,6 +347,28 @@ namespace TMC
         private void bResizeTilemap_Click(object sender, EventArgs e)
         {
             
+        }
+
+        private void bModeTilemap_Click(object sender, EventArgs e)
+        {
+            if (ignore) return;
+
+            ignore = true;
+            bModePalettemap.Checked = !bModeTilemap.Checked;
+            ignore = false;
+
+            UpdateTilemap();
+        }
+
+        private void bModePalettemap_Click(object sender, EventArgs e)
+        {
+            if (ignore) return;
+
+            ignore = true;
+            bModeTilemap.Checked = !bModePalettemap.Checked;
+            ignore = false;
+
+            UpdateTilemap();
         }
     }
 }

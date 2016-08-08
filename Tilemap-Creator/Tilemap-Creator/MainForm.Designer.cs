@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.tilesetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -39,20 +38,28 @@
             this.openToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.toolStripLabel3 = new System.Windows.Forms.ToolStripLabel();
             this.cTilesetWidth = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
             this.tTilesetHeight = new TMC.NumericToolStripTextBox();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
             this.tTilemapWidth = new TMC.NumericToolStripTextBox();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.tTilemapHeight = new TMC.NumericToolStripTextBox();
-            this.bResizeTilemap = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.pTileset = new TMC.InterpolatedPictureBox();
-            this.pTilemap = new TMC.InterpolatedPictureBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.pTileset = new TMC.InterpolatedPictureBox();
+            this.pTilemap = new TMC.InterpolatedPictureBox();
+            this.bFlipX = new System.Windows.Forms.ToolStripButton();
+            this.bFlipY = new System.Windows.Forms.ToolStripButton();
+            this.bResizeTilemap = new System.Windows.Forms.ToolStripButton();
+            this.bModeTilemap = new System.Windows.Forms.ToolStripButton();
+            this.bModePalettemap = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -71,7 +78,7 @@
             this.tilemapToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(676, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(957, 28);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -138,19 +145,33 @@
             this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripLabel3,
             this.cTilesetWidth,
             this.toolStripLabel2,
             this.tTilesetHeight,
+            this.toolStripSeparator3,
+            this.bFlipX,
+            this.bFlipY,
             this.toolStripSeparator2,
+            this.toolStripLabel4,
             this.tTilemapWidth,
             this.toolStripLabel1,
             this.tTilemapHeight,
-            this.bResizeTilemap});
+            this.bResizeTilemap,
+            this.toolStripSeparator4,
+            this.bModeTilemap,
+            this.bModePalettemap});
             this.toolStrip1.Location = new System.Drawing.Point(0, 28);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(676, 28);
+            this.toolStrip1.Size = new System.Drawing.Size(957, 28);
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
+            // 
+            // toolStripLabel3
+            // 
+            this.toolStripLabel3.Name = "toolStripLabel3";
+            this.toolStripLabel3.Size = new System.Drawing.Size(55, 25);
+            this.toolStripLabel3.Text = "Tileset:";
             // 
             // cTilesetWidth
             // 
@@ -172,10 +193,21 @@
             this.tTilesetHeight.Text = "0";
             this.tTilesetHeight.Value = 0;
             // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 28);
+            // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 28);
+            // 
+            // toolStripLabel4
+            // 
+            this.toolStripLabel4.Name = "toolStripLabel4";
+            this.toolStripLabel4.Size = new System.Drawing.Size(66, 25);
+            this.toolStripLabel4.Text = "Tilemap:";
             // 
             // tTilemapWidth
             // 
@@ -197,22 +229,17 @@
             this.tTilemapHeight.Text = "0";
             this.tTilemapHeight.Value = 0;
             // 
-            // bResizeTilemap
+            // toolStripSeparator4
             // 
-            this.bResizeTilemap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.bResizeTilemap.Image = ((System.Drawing.Image)(resources.GetObject("bResizeTilemap.Image")));
-            this.bResizeTilemap.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.bResizeTilemap.Name = "bResizeTilemap";
-            this.bResizeTilemap.Size = new System.Drawing.Size(24, 25);
-            this.bResizeTilemap.Text = "Resize Tilemap";
-            this.bResizeTilemap.Click += new System.EventHandler(this.bResizeTilemap_Click);
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 28);
             // 
             // statusStrip1
             // 
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.statusStrip1.Location = new System.Drawing.Point(0, 578);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(676, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(957, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -232,9 +259,13 @@
             // 
             this.splitContainer1.Panel2.AutoScroll = true;
             this.splitContainer1.Panel2.Controls.Add(this.pTilemap);
-            this.splitContainer1.Size = new System.Drawing.Size(676, 522);
-            this.splitContainer1.SplitterDistance = 326;
+            this.splitContainer1.Size = new System.Drawing.Size(957, 522);
+            this.splitContainer1.SplitterDistance = 461;
             this.splitContainer1.TabIndex = 3;
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
             // 
             // pTileset
             // 
@@ -258,15 +289,65 @@
             this.pTilemap.TabStop = false;
             this.pTilemap.Paint += new System.Windows.Forms.PaintEventHandler(this.pTilemap_Paint);
             // 
-            // openFileDialog1
+            // bFlipX
             // 
-            this.openFileDialog1.FileName = "openFileDialog1";
+            this.bFlipX.CheckOnClick = true;
+            this.bFlipX.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bFlipX.Image = global::TMC.Properties.Resources.arrow_continue;
+            this.bFlipX.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.bFlipX.Name = "bFlipX";
+            this.bFlipX.Size = new System.Drawing.Size(24, 25);
+            this.bFlipX.Text = "Flip X";
+            // 
+            // bFlipY
+            // 
+            this.bFlipY.CheckOnClick = true;
+            this.bFlipY.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bFlipY.Image = global::TMC.Properties.Resources.arrow_continue_090;
+            this.bFlipY.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.bFlipY.Name = "bFlipY";
+            this.bFlipY.Size = new System.Drawing.Size(24, 25);
+            this.bFlipY.Text = "Flip Y";
+            // 
+            // bResizeTilemap
+            // 
+            this.bResizeTilemap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bResizeTilemap.Image = global::TMC.Properties.Resources.map_resize;
+            this.bResizeTilemap.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.bResizeTilemap.Name = "bResizeTilemap";
+            this.bResizeTilemap.Size = new System.Drawing.Size(24, 25);
+            this.bResizeTilemap.Text = "Resize Tilemap";
+            this.bResizeTilemap.Click += new System.EventHandler(this.bResizeTilemap_Click);
+            // 
+            // bModeTilemap
+            // 
+            this.bModeTilemap.Checked = true;
+            this.bModeTilemap.CheckOnClick = true;
+            this.bModeTilemap.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.bModeTilemap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bModeTilemap.Image = global::TMC.Properties.Resources.map;
+            this.bModeTilemap.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.bModeTilemap.Name = "bModeTilemap";
+            this.bModeTilemap.Size = new System.Drawing.Size(24, 25);
+            this.bModeTilemap.Text = "Edit Tilemap";
+            this.bModeTilemap.Click += new System.EventHandler(this.bModeTilemap_Click);
+            // 
+            // bModePalettemap
+            // 
+            this.bModePalettemap.CheckOnClick = true;
+            this.bModePalettemap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.bModePalettemap.Image = global::TMC.Properties.Resources.palette;
+            this.bModePalettemap.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.bModePalettemap.Name = "bModePalettemap";
+            this.bModePalettemap.Size = new System.Drawing.Size(24, 25);
+            this.bModePalettemap.Text = "Edit Palettemap";
+            this.bModePalettemap.Click += new System.EventHandler(this.bModePalettemap_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(676, 600);
+            this.ClientSize = new System.Drawing.Size(957, 600);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.toolStrip1);
@@ -317,6 +398,14 @@
         private System.Windows.Forms.ToolStripComboBox cTilesetWidth;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.ToolStripButton bFlipX;
+        private System.Windows.Forms.ToolStripButton bFlipY;
+        private System.Windows.Forms.ToolStripButton bModeTilemap;
+        private System.Windows.Forms.ToolStripButton bModePalettemap;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel3;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel4;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
     }
 }
 

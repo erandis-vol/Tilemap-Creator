@@ -854,6 +854,7 @@ namespace TMC
     public static class GraphcisExtensions
     {
         // should safely draw an image flipped
+        // https://msdn.microsoft.com/en-us/library/3b575a03(v=vs.110).aspx
         public static void DrawImageFlipped(this Graphics gfx, Image image, int x, int y, bool flipX, bool flipY)
         {
             // TODO: remove if's and put them in this vv
