@@ -19,23 +19,24 @@ namespace TMC
         Bitmap tilemapImage;
         Color[] palettemapColors = new Color[]
         {
-            Color.FromArgb(176, Color.White),
-            Color.FromArgb(176, Color.Yellow),
-            Color.FromArgb(176, Color.Red),
-            Color.FromArgb(176, Color.Gray),
-            Color.FromArgb(176, Color.Cyan),
-            Color.FromArgb(176, Color.Blue),
-            Color.FromArgb(176, Color.Magenta),
-            Color.FromArgb(176, Color.LightYellow),
-            Color.FromArgb(176, Color.Teal),
-            Color.FromArgb(176, Color.LightSteelBlue),
-            Color.FromArgb(176, Color.Violet),
-            Color.FromArgb(176, Color.Orange),
-            Color.FromArgb(176, Color.LightGray),
-            Color.FromArgb(176, Color.SandyBrown),
-            Color.FromArgb(176, Color.Purple),
-            Color.FromArgb(176, Color.LightPink),
+            Color.FromArgb(128, Color.White),
+            Color.FromArgb(128, Color.Yellow),
+            Color.FromArgb(128, Color.Red),
+            Color.FromArgb(128, Color.Gray),
+            Color.FromArgb(128, Color.Cyan),
+            Color.FromArgb(128, Color.Blue),
+            Color.FromArgb(128, Color.Magenta),
+            Color.FromArgb(128, Color.LightYellow),
+            Color.FromArgb(128, Color.Teal),
+            Color.FromArgb(128, Color.LightSteelBlue),
+            Color.FromArgb(128, Color.Violet),
+            Color.FromArgb(128, Color.Orange),
+            Color.FromArgb(128, Color.LightGray),
+            Color.FromArgb(128, Color.SandyBrown),
+            Color.FromArgb(128, Color.Purple),
+            Color.FromArgb(128, Color.LightPink),
         };
+        Bitmap palettesetImage;
 
         int zoom = 3; // default zoom is 200%
         bool ignore = false;
@@ -50,7 +51,7 @@ namespace TMC
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-
+            DrawPalette();
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -59,52 +60,7 @@ namespace TMC
 
             tilesetImage?.Dispose();
             tilemapImage?.Dispose();
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            // test creating a Tilemap/Tileset
-            try
-            {
-                using (var bmp = new Bitmap("heiwa map.png"))
-                using (var spr = new Sprite(bmp))
-                {
-                    // create tileset from image
-                    Tileset.Create(spr, false, out tileset, out tilemap);
-                    Console.WriteLine("tileset size: {0}, original size: {1}", tileset.Size, tilemap.Width * tilemap.Height);
-
-                    // render tileset
-                    tilesetImage = tileset.Smoosh(64);
-
-                    pTileset.Size = new Size(tilesetImage.Width * 2, tilesetImage.Height * 2);
-                    pTileset.Image = tilesetImage;
-
-                    // render tilemap
-                    tilemapImage = new Bitmap(tilemap.Width * Tileset.TileSize, tilemap.Height * Tileset.TileSize);
-                    using (var g = Graphics.FromImage(tilemapImage))
-                    {
-                        for (int y = 0; y < tilemap.Height; y++)
-                        {
-                            for (int x = 0; x < tilemap.Width; x++)
-                            {
-                                g.DrawImage(tileset[tilemap[x, y].TilesetIndex], x * Tileset.TileSize, y * Tileset.TileSize);
-                            }
-                        }
-                    }
-
-                    pTilemap.Size = new Size(tilemapImage.Width * 2, tilemapImage.Height * 2);
-                    pTilemap.Image = tilemapImage;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"{ex.Message}\n{ex.StackTrace}");
-            }
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            tilesetImage?.Save("test.bmp", SpriteFormat.BMP);
+            palettesetImage?.Dispose();
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -202,26 +158,32 @@ namespace TMC
         void UpdateTileset()
         {
             if (tileset == null) return;
+
             ignore = true;
+            if (rModeTilemap.Checked)
+            {
 
-            Console.WriteLine("updating Tileset");
+                // get Tileset size
+                int width = cTilesetWidth.Value;
+                if (width <= 0) width = 1;
 
-            // get Tileset size
-            int width;
-            if (!int.TryParse(cTilesetWidth.Text, out width))
-                width = 1;
+                int height = (tileset.Size / width) + (tileset.Size % width > 0 ? 1 : 0);
 
-            int height = (tileset.Size / width) + (tileset.Size % width > 0 ? 1 : 0);
+                // update height text
+                tTilesetHeight.Value = height;
 
-            // update height text
-            tTilesetHeight.Value = height;
+                // update Tileset image
+                tilesetImage?.Dispose();
+                tilesetImage = tileset.Smoosh(width);
 
-            // update Tileset image
-            tilesetImage?.Dispose();
-            tilesetImage = tileset.Smoosh(width);
-
-            pTileset.Size = new Size(tilesetImage.Width * zoom, tilesetImage.Height * zoom);
-            pTileset.Image = tilesetImage;
+                pTileset.Size = new Size(tilesetImage.Width * zoom, tilesetImage.Height * zoom);
+                pTileset.Image = tilesetImage;
+            }
+            else
+            {
+                pTileset.Size = new Size(palettesetImage.Width * zoom, palettesetImage.Height * zoom);
+                pTileset.Image = palettesetImage;
+            }
             ignore = false;
         }
 
@@ -230,8 +192,6 @@ namespace TMC
         {
             if (tilemap == null || tileset == null) return;
             ignore = true;
-
-            Console.WriteLine("updating Tilemap");
 
             // set size info
             tTilemapWidth.Value = tilemap.Width;
@@ -269,7 +229,7 @@ namespace TMC
                 }
 
                 // render Palettemap on top
-                if (bModePalettemap.Checked)
+                if (rModePalette.Checked)
                 {
                     var brushes = new SolidBrush[16];
                     for (int i = 0; i < 16; i++)
@@ -292,6 +252,27 @@ namespace TMC
                     for (int i = 0; i < 16; i++)
                         brushes[i].Dispose();
                     font.Dispose();
+                }
+            }
+        }
+
+        void DrawPalette()
+        {
+            palettesetImage?.Dispose();
+            palettesetImage = new Bitmap(4 * 8, 4 * 8);
+
+            using (var g = Graphics.FromImage(palettesetImage))
+            using (var font = new Font("Arial", 5.5f, FontStyle.Regular))
+            {
+                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
+
+                for (int i = 0; i < 16; i++)
+                {
+                    using (var b = new SolidBrush(palettemapColors[i]))
+                    {
+                        g.FillRectangle(b, i % 4 * 8, i / 4 * 8, 8, 8);
+                        g.DrawString(i.ToString("X"), font, Brushes.Black, 1 + i % 4 * 8, i / 4 * 8);
+                    }
                 }
             }
         }
@@ -344,30 +325,12 @@ namespace TMC
             }
         }
 
-        private void bResizeTilemap_Click(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void bModeTilemap_Click(object sender, EventArgs e)
+        private void rMode_CheckedChanged(object sender, EventArgs e)
         {
             if (ignore) return;
 
-            ignore = true;
-            bModePalettemap.Checked = !bModeTilemap.Checked;
-            ignore = false;
-
-            UpdateTilemap();
-        }
-
-        private void bModePalettemap_Click(object sender, EventArgs e)
-        {
-            if (ignore) return;
-
-            ignore = true;
-            bModeTilemap.Checked = !bModePalettemap.Checked;
-            ignore = false;
-
+            // TODO: change selection
+            UpdateTileset();
             UpdateTilemap();
         }
     }

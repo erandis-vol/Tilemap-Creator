@@ -56,6 +56,9 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="NumberBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="NumericToolStripTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
