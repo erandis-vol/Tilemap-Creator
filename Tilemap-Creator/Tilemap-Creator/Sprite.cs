@@ -42,55 +42,107 @@ namespace TMC
         //? should there be an option to limit palette size...
         public Sprite(Bitmap source)
         {
-            // create image data
+            // --------------------------------
+            // Create new image
             width = source.Width;
             height = source.Height;
             pixels = new int[width * height];
-
-            // init cache
             image = new Bitmap(width, height, PixelFormat.Format24bppRgb);
 
+            // --------------------------------
+            // Copy source to image
             using (var g = Graphics.FromImage(image))
             {
                 g.DrawImage(source, new Rectangle(0, 0, width, height));
             }
 
-            // TODO: preserve existing palettes for indexed images
-
+            // --------------------------------
+            // Copy image data to buffer
+            // This will allow speedy manipulation
             Lock();
+
             var buffer = new byte[width * height * 3];
             var ptr = imageData.Scan0;
             Marshal.Copy(ptr, buffer, 0, width * height * 3);
 
-            var colors = new List<int>();
-            for (int y = 0; y < height; y++)
+            if ((source.PixelFormat & PixelFormat.Indexed) == PixelFormat.Indexed)
             {
-                for (int x = 0; x < width; x++)
+                // Preserves existing palettes
+
+                // --------------------------------
+                // Copy the palette from the source
+                var colors = new int[source.Palette.Entries.Length];
+                for (int i = 0; i < source.Palette.Entries.Length; i++)
+                    colors[i] = source.Palette.Entries[i].ToArgb() & 0xFFFFFF;
+
+                // --------------------------------
+                // Fill pixel data
+                for (int y = 0; y < height; y++)
                 {
-                    // get pixel data for (x, y)
-                    // and quantize it
-                    var i = (x + y * width) * 3;
-                    var r = buffer[i] / 8 * 8;
-                    var g = buffer[i + 1] / 8 * 8;
-                    var b = buffer[i + 2] / 8 * 8;
-                    var c = (r << 16) | (g << 8) | b;
-
-                    // update palette as needed
-                    var index = colors.IndexOf(c);
-                    if (index < 0)
+                    for (int x = 0; x < width; x++)
                     {
-                        colors.Add(c);
-                        index = colors.Count - 1;
+                        // Get pixel data for (x, y)
+                        var i = (x + y * width) * 3;
+                        var r = buffer[i];
+                        var g = buffer[i + 1];
+                        var b = buffer[i + 2];
+                        var c = (b << 16) | (g << 8) | r;
+
+                        // Search palette for match
+                        var index = 0;
+                        for (int j = 0; j < 16; j++)
+                        {
+                            if (colors[j] == c)
+                            {
+                                index = j;
+                                break;
+                            }
+                        }
+                        pixels[x + y * width] = index;
                     }
-                    pixels[x + y * width] = index;
                 }
+
+                // --------------------------------
+                // Copy palette
+                palette = new Color[source.Palette.Entries.Length];
+                for (int i = 0; i < source.Palette.Entries.Length; i++)
+                    palette[i] = Color.FromArgb((0xFF << 24) | colors[i]);
             }
+            else
+            {
+                // --------------------------------
+                // Create a palette for the Sprite
+                // Fil pixel data with growing palette
+                var colors = new List<int>();
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        // get pixel data for (x, y)
+                        // and quantize it
+                        var i = (x + y * width) * 3;
+                        var r = buffer[i] / 8 * 8;
+                        var g = buffer[i + 1] / 8 * 8;
+                        var b = buffer[i + 2] / 8 * 8;
+                        var c = (b << 16) | (g << 8) | r;
 
-            // create palette now
-            palette = new Color[colors.Count];
-            for (int i = 0; i < colors.Count; i++)
-                palette[i] = Color.FromArgb(colors[i]);
+                        // update palette as needed
+                        var index = colors.IndexOf(c);
+                        if (index < 0)
+                        {
+                            colors.Add(c);
+                            index = colors.Count - 1;
+                        }
+                        pixels[x + y * width] = index;
+                    }
+                }
 
+                // --------------------------------
+                // Copy palette
+                palette = new Color[colors.Count];
+                for (int i = 0; i < colors.Count; i++)
+                    palette[i] = Color.FromArgb((0xFF << 24) | colors[i]);
+            }
             Unlock();
         }
 
@@ -363,16 +415,14 @@ namespace TMC
             {
                 var color = palette[pixels[i]];
 
-                buffer[i * 3] = color.R;
+                buffer[i * 3] = color.B;
                 buffer[i * 3 + 1] = color.G;
-                buffer[i * 3 + 2] = color.B;
+                buffer[i * 3 + 2] = color.R;
             }
 
             Marshal.Copy(buffer, 0, imageData.Scan0, buffer.Length);
             image.UnlockBits(imageData);
         }
-
-        // TODO: we can use Compare to help override Equals
 
         /// <summary>
         /// Returns whether the given <c>Sprite</c> is equivalent to this <c>Sprite</c>.
