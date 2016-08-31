@@ -40,7 +40,7 @@ namespace TMC
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // TODO: ask to save old Tileset/Tilemap
-
+            openFileDialog1.FileName = "";
             openFileDialog1.Title = "Open Tileset";
             openFileDialog1.Filter = "Images|*.bmp;*.png;*.jpg";
 
@@ -94,7 +94,7 @@ namespace TMC
         private void createToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // TODO: ask to save Tilemap/Tileset
-
+            openFileDialog1.FileName = "";
             openFileDialog1.Title = "Create Tileset";
             openFileDialog1.Filter = "Images|*.bmp;*.png;*.jpg";
 
@@ -126,6 +126,14 @@ namespace TMC
             // finish
             UpdateTileset();
             UpdateTilemap();
+        }
+
+        private void editPaletteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var d = new PaletteDialog(tilesetImage.Palette))
+            {
+                d.ShowDialog();
+            }
         }
     }
 }

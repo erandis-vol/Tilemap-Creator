@@ -58,12 +58,20 @@
     </Compile>
     <Compile Include="MainForm.Tilemap.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Tileset.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="NumberBox.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PaletteDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PaletteDialog.Designer.cs">
+      <DependentUpon>PaletteDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -72,6 +80,9 @@
     <Compile Include="Tileset.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PaletteDialog.resx">
+      <DependentUpon>PaletteDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
