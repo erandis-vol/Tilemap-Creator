@@ -41,6 +41,7 @@
             this.paletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editPaletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.lPosition = new System.Windows.Forms.ToolStripStatusLabel();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -65,7 +66,6 @@
             this.tTilemapWidth = new TMC.NumberBox();
             this.rModePalette = new System.Windows.Forms.RadioButton();
             this.rModeTilemap = new System.Windows.Forms.RadioButton();
-            this.lPosition = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -188,6 +188,12 @@
             this.statusStrip1.Size = new System.Drawing.Size(736, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
+            // 
+            // lPosition
+            // 
+            this.lPosition.Name = "lPosition";
+            this.lPosition.Size = new System.Drawing.Size(25, 17);
+            this.lPosition.Text = "0, 0";
             // 
             // openFileDialog1
             // 
@@ -376,6 +382,9 @@
             this.pTilemap.TabIndex = 1;
             this.pTilemap.TabStop = false;
             this.pTilemap.Paint += new System.Windows.Forms.PaintEventHandler(this.pTilemap_Paint);
+            this.pTilemap.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pTilemap_MouseDown);
+            this.pTilemap.MouseLeave += new System.EventHandler(this.pTilemap_MouseLeave);
+            this.pTilemap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pTilemap_MouseMove);
             // 
             // panel3
             // 
@@ -475,12 +484,6 @@
             this.rModeTilemap.Text = "Edit Tiles";
             this.rModeTilemap.UseVisualStyleBackColor = true;
             this.rModeTilemap.CheckedChanged += new System.EventHandler(this.rMode_CheckedChanged);
-            // 
-            // lPosition
-            // 
-            this.lPosition.Name = "lPosition";
-            this.lPosition.Size = new System.Drawing.Size(25, 17);
-            this.lPosition.Text = "0, 0";
             // 
             // MainForm
             // 

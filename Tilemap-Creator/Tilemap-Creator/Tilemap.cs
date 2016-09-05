@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace TMC
 {
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct Tile
+    //[StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public class Tile
     {
         public int TilesetIndex;
         public int PaletteIndex;
@@ -29,6 +29,8 @@ namespace TMC
             this.height = height;
 
             tiles = new Tile[width * height];
+            for (int i = 0; i < width * height; i++)
+                tiles[i] = new Tile();
         }
 
         public Tile this[int index]

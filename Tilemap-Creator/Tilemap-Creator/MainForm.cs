@@ -73,7 +73,7 @@ namespace TMC
             cTilesetWidth.SelectedIndex = cTilesetWidth.Items.Count / 2;
 
             // finish
-            UpdateTileset();
+            UpdateTileset(true);
 
             // create new blank Tilemap
             tilemap = new Tilemap(30, 20);
@@ -126,7 +126,7 @@ namespace TMC
             cTilesetWidth.SelectedIndex = cTilesetWidth.Items.Count / 2;
 
             // finish
-            UpdateTileset();
+            UpdateTileset(true);
             UpdateTilemap();
         }
 
