@@ -18,6 +18,8 @@ namespace TMC
         Color gridColor = Color.FromArgb(128, Color.White);
         Color gridColorS = Color.FromArgb(128, Color.Yellow);
 
+        
+
         public MainForm()
         {
             InitializeComponent();
@@ -135,5 +137,7 @@ namespace TMC
                 d.ShowDialog();
             }
         }
+
+        
     }
 }
