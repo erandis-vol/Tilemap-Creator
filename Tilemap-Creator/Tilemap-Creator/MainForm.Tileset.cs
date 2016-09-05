@@ -67,6 +67,10 @@ namespace TMC
 
                 if (clearSelection)
                     tilesetSelection = new Rectangle(0, 0, 1, 1);
+
+                lTilesetSelection.Text = rModeTilemap.Checked ?
+                    $"({tilesetSelection.X}, {tilesetSelection.Y}) to ({tilesetSelection.X + tilesetSelection.Width - 1}, {tilesetSelection.Y + tilesetSelection.Height - 1})" :
+                    $"{paletteSelection}";
             }
             else
             {
@@ -220,6 +224,10 @@ namespace TMC
                     // create selection rect
                     tilesetSelection = new Rectangle(upperLeft.X, upperLeft.Y,
                         bottomRight.X - upperLeft.X + 1, bottomRight.Y - upperLeft.Y + 1);
+
+                    lTilesetSelection.Text = rModeTilemap.Checked ?
+                        $"({tilesetSelection.X}, {tilesetSelection.Y}) to ({tilesetSelection.X + tilesetSelection.Width - 1}, {tilesetSelection.Y + tilesetSelection.Height - 1})" :
+                        $"{paletteSelection}";
 
                     tilesetMouseDown = false;
                 }

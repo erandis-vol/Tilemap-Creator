@@ -63,7 +63,7 @@ namespace TMC
                     var brushes = new SolidBrush[16];
                     for (int i = 0; i < 16; i++)
                         brushes[i] = new SolidBrush(palettemapColors[i]);
-                    var font = new Font("Arial", 5f, FontStyle.Regular);
+                    var font = new Font("Arial", 5.5f, FontStyle.Regular);
 
                     for (int y = 0; y < tilemap.Height; y++)
                     {
@@ -73,8 +73,8 @@ namespace TMC
                                 x * Tileset.TileSize, y * Tileset.TileSize,
                                 Tileset.TileSize, Tileset.TileSize);
 
-                            g.DrawString(tilemap[x, y].PaletteIndex.ToString("x"), font,
-                                Brushes.Black, 1 + x * Tileset.TileSize, 1 + y * Tileset.TileSize);
+                            g.DrawString(tilemap[x, y].PaletteIndex.ToString("X"), font,
+                                Brushes.Black, 1 + x * Tileset.TileSize, y * Tileset.TileSize);
                         }
                     }
 
@@ -103,6 +103,34 @@ namespace TMC
                             x * Tileset.TileSize, y * Tileset.TileSize,
                             tile.FlipX, tile.FlipY);
                     }
+                }
+
+                if (rModePalette.Checked)
+                {
+                    var brushes = new SolidBrush[16];
+                    for (int i = 0; i < 16; i++)
+                        brushes[i] = new SolidBrush(palettemapColors[i]);
+                    var font = new Font("Arial", 5.5f, FontStyle.Regular);
+
+                    for (int y = boundsY; y < boundsY + boundsHeight; y++)
+                    {
+                        for (int x = boundsX; x < boundsX + boundsWidth; x++)
+                        {
+                            if (x >= tilemap.Width || y >= tilemap.Height)
+                                break;
+
+                            g.FillRectangle(brushes[tilemap[x, y].PaletteIndex],
+                                x * Tileset.TileSize, y * Tileset.TileSize,
+                                Tileset.TileSize, Tileset.TileSize);
+
+                            g.DrawString(tilemap[x, y].PaletteIndex.ToString("X"), font,
+                                Brushes.Black, 1 + x * Tileset.TileSize, y * Tileset.TileSize);
+                        }
+                    }
+
+                    for (int i = 0; i < 16; i++)
+                        brushes[i].Dispose();
+                    font.Dispose();
                 }
             }
 
@@ -199,14 +227,14 @@ namespace TMC
                             if (mapX >= tilemap.Width || mapY >= tilemap.Height)
                                 break;
 
-                            // tileset position
+                            // tileset position -- accounts for X/Y flipping
                             var setX = tilesetSelection.X + (chkTilesetFlipX.Checked ? tilesetSelection.Width - 1 - x : x);
                             var setY = tilesetSelection.Y + (chkTilesetFlipY.Checked ? tilesetSelection.Height - 1 - y : y);
 
-                            // tile selection
-                            // TODO: flipping should draw the entire rectangle mirrored...
+                            // tile at position
                             var t = setX + setY * tilesPerRow;
 
+                            // ilegal tiles default to 0
                             if (t >= tileset.Size)
                                 t = 0;
 
@@ -215,12 +243,17 @@ namespace TMC
                             tilemap[mapX, mapY].FlipX = chkTilesetFlipX.Checked;
                             tilemap[mapX, mapY].FlipY = chkTilesetFlipY.Checked;
                         }
-                    }
-
-                    // TODO: DO NOT redraw the whole darn thing
-                    RedrawTilemap(tilemapMouseCurrent.X, tilemapMouseCurrent.Y,
-                        tilesetSelection.Width, tilesetSelection.Height);
+                    }                  
                 }
+                else
+                {
+                    // set palette selection
+                    tilemap[tilemapMouseCurrent.X, tilemapMouseCurrent.Y].PaletteIndex = paletteSelection;
+                }
+
+                // redraw just the portion of the tilemap that was edited
+                RedrawTilemap(tilemapMouseCurrent.X, tilemapMouseCurrent.Y,
+                        tilesetSelection.Width, tilesetSelection.Height);
             }
             // TODO: get tile at X, Y -- overrides selection
             else if (e.Button == MouseButtons.Right)
@@ -244,6 +277,19 @@ namespace TMC
             // TODO: change selection
             UpdateTileset(false);
             UpdateTilemap();
+        }
+
+        private void bTilemapResize_Click(object sender, EventArgs e)
+        {
+            if (tilemap == null || tileset == null)
+                return;
+
+            if (tilemap.Width != tTilemapWidth.Value || tilemap.Height != tTilemapHeight.Value)
+            {
+                tilemap.Resize(tTilemapWidth.Value, tTilemapHeight.Value);
+
+                UpdateTilemap();
+            }
         }
     }
 }

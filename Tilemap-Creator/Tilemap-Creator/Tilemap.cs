@@ -49,6 +49,8 @@ namespace TMC
         {
             // declare new tile array
             Tile[] newTiles = new Tile[newWidth * newHeight];
+            for (int i = 0; i < newWidth * newHeight; i++)
+                newTiles[i] = new Tile();
 
             // the data needed to be copied
             int copyWidth = Math.Min(width, newWidth);
