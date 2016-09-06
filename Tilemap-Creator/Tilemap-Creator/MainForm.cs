@@ -140,7 +140,35 @@ namespace TMC
 
         private void exportToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (tileset == null)
+                return;
 
+            saveFileDialog1.FileName = "";
+            saveFileDialog1.Filter = "Paintshop Palette|*.pal|Adobe Color Table|*.act|APE Palette|*.gpl";
+            saveFileDialog1.Title = "Export Tileset Palette";
+
+            if (saveFileDialog1.ShowDialog() != DialogResult.OK)
+                return;
+
+            try
+            {
+                switch (saveFileDialog1.FilterIndex)
+                {
+                    case 1:
+                        tilesetImage.Palette.Save(saveFileDialog1.FileName, PaletteFormat.PAL);
+                        break;
+                    case 2:
+                        tilesetImage.Palette.Save(saveFileDialog1.FileName, PaletteFormat.ACT);
+                        break;
+                    case 3:
+                        tilesetImage.Palette.Save(saveFileDialog1.FileName, PaletteFormat.GPL);
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
