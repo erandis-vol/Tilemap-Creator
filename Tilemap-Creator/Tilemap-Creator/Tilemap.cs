@@ -45,6 +45,12 @@ namespace TMC
             set { tiles[x + y * width] = value; }
         }
 
+        public Tile this[System.Drawing.Point p]
+        {
+            get { return this[p.X, p.Y]; }
+            set { this[p.X, p.Y] = value; }
+        }
+
         public void Resize(int newWidth, int newHeight)
         {
             // declare new tile array
