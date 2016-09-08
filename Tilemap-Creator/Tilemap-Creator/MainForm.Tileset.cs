@@ -108,20 +108,23 @@ namespace TMC
             if (rModeTilemap.Checked)
             {
                 // draw grid
-                using (var pen = new Pen(new SolidBrush(gridColor), 1f))
+                if (gridToolStripMenuItem.Checked)
                 {
-                    pen.DashPattern = new[] { 2f, 2f };
-
-                    int f = zoom * Tileset.TileSize;
-
-                    for (int x = 1; x < pTileset.Width / f; x++)
+                    using (var pen = new Pen(new SolidBrush(gridColor), 1f))
                     {
-                        e.Graphics.DrawLine(pen, x * f, 0, x * f, pTileset.Height);
-                    }
+                        pen.DashPattern = new[] { 2f, 2f };
 
-                    for (int y = 1; y < pTileset.Height / f; y++)
-                    {
-                        e.Graphics.DrawLine(pen, 0, y * f, pTileset.Width, y * f);
+                        int f = zoom * Tileset.TileSize;
+
+                        for (int x = 1; x < pTileset.Width / f; x++)
+                        {
+                            e.Graphics.DrawLine(pen, x * f, 0, x * f, pTileset.Height);
+                        }
+
+                        for (int y = 1; y < pTileset.Height / f; y++)
+                        {
+                            e.Graphics.DrawLine(pen, 0, y * f, pTileset.Width, y * f);
+                        }
                     }
                 }
 

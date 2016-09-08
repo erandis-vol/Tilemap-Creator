@@ -143,22 +143,25 @@ namespace TMC
             if (tileset == null || tilemap == null) return;
 
             // draw grid
-            using (var pen = new Pen(new SolidBrush(gridColor), 1f))
-            using (var penS = new Pen(new SolidBrush(gridColorS), 1f))
+            if (gridToolStripMenuItem.Checked)
             {
-                pen.DashPattern = new[] { 2f, 2f };
-                penS.DashPattern = new[] { 2f, 2f };
-
-                int f = zoom * Tileset.TileSize;
-
-                for (int x = 1; x < pTilemap.Width / f; x++)
+                using (var pen = new Pen(new SolidBrush(gridColor), 1f))
+                using (var penS = new Pen(new SolidBrush(gridColorS), 1f))
                 {
-                    e.Graphics.DrawLine(x % 30 == 0 ? penS : pen, x * f, 0, x * f, pTilemap.Height);
-                }
+                    pen.DashPattern = new[] { 2f, 2f };
+                    penS.DashPattern = new[] { 2f, 2f };
 
-                for (int y = 1; y < pTilemap.Height / f; y++)
-                {
-                    e.Graphics.DrawLine(y % 20 == 0 ? penS : pen, 0, y * f, pTilemap.Width, y * f);
+                    int f = zoom * Tileset.TileSize;
+
+                    for (int x = 1; x < pTilemap.Width / f; x++)
+                    {
+                        e.Graphics.DrawLine(x % 30 == 0 ? penS : pen, x * f, 0, x * f, pTilemap.Height);
+                    }
+
+                    for (int y = 1; y < pTilemap.Height / f; y++)
+                    {
+                        e.Graphics.DrawLine(y % 20 == 0 ? penS : pen, 0, y * f, pTilemap.Width, y * f);
+                    }
                 }
             }
 
@@ -240,8 +243,11 @@ namespace TMC
 
                             // set selection
                             tilemap[mapX, mapY].TilesetIndex = t;
-                            tilemap[mapX, mapY].FlipX = chkTilesetFlipX.Checked;
-                            tilemap[mapX, mapY].FlipY = chkTilesetFlipY.Checked;
+                            if (allowTileFlippingToolStripMenuItem.Checked)
+                            {
+                                tilemap[mapX, mapY].FlipX = chkTilesetFlipX.Checked;
+                                tilemap[mapX, mapY].FlipY = chkTilesetFlipY.Checked;
+                            }
                         }
                     }                  
                 }

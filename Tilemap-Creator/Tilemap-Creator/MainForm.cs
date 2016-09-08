@@ -114,7 +114,7 @@ namespace TMC
 
                 // create Tilemap/Tileset
                 tileset?.Dispose();
-                Tileset.Create(sprite, true, out tileset, out tilemap);
+                Tileset.Create(sprite, allowTileFlippingToolStripMenuItem.Checked, out tileset, out tilemap);
             }
 
             // fill sizes for Tileset
@@ -169,6 +169,54 @@ namespace TMC
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void zoomInToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //if (tileset == null)
+            //    return;
+
+            if (++zoom > 8)
+                zoom = 8;
+
+            UpdateTileset(false);
+            UpdateTilemap();
+
+            lZoom.Text = $"{zoom * 100}%";
+        }
+
+        private void zoomOutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //if (tileset == null)
+            //    return;
+
+            if (--zoom <= 0)
+                zoom = 1;
+
+            UpdateTileset(false);
+            UpdateTilemap();
+
+            lZoom.Text = $"{zoom * 100}%";
+        }
+
+        private void gridToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pTilemap.Invalidate();
+            pTileset.Invalidate();
+        }
+
+        private void statusBarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            statusStrip1.Visible = statusBarToolStripMenuItem.Checked;
+        }
+
+        private void allowTileFlippingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            chkTilesetFlipX.Enabled = allowTileFlippingToolStripMenuItem.Checked;
+            chkTilesetFlipY.Enabled = allowTileFlippingToolStripMenuItem.Checked;
+
+            chkTilesetFlipX.Checked = false;
+            chkTilesetFlipY.Checked = false;
         }
     }
 }

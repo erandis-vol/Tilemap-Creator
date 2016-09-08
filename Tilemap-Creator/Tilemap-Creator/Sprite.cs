@@ -629,7 +629,7 @@ namespace TMC
         /// <summary>
         /// APE Palette
         /// </summary>
-        GPL,
+        GPL, // GIMP palette uses the same extension!!!
     }
 
     public static class ColorExtensions
