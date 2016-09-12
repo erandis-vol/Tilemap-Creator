@@ -270,6 +270,12 @@ namespace TMC
                     var w = cTilesetWidth.Value;
 
                     tilesetSelection = new Rectangle(t.TilesetIndex % w, t.TilesetIndex / w, 1, 1);
+
+                    if (allowTileFlippingToolStripMenuItem.Checked)
+                    {
+                        chkTilesetFlipX.Checked = t.FlipX;
+                        chkTilesetFlipY.Checked = t.FlipY;
+                    }
                 }
                 else
                 {

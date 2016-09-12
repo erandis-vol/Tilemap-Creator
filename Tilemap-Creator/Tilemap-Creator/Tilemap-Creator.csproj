@@ -67,6 +67,7 @@
     <Compile Include="NumberBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Palette.cs" />
     <Compile Include="PaletteDialog.cs">
       <SubType>Form</SubType>
     </Compile>

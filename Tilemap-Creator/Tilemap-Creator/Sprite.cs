@@ -220,15 +220,17 @@ namespace TMC
             int pixelSize = rowSize * height;                   // number of pixels in bytes
             int paddingSize = rowSize % 4;                      // number of extra bytes per row
 
+#if DEBUG
             Console.WriteLine("Saving Bitmap:");
             Console.WriteLine("- bitdepth={0}", bitDepth);
             Console.WriteLine("- rowSize={0}", rowSize);
             Console.WriteLine("- pixelSize={0}", pixelSize);
             Console.WriteLine("- paddingSize={0}", paddingSize);
+#endif
 
             using (var bw = new BinaryWriter(File.Create(filename)))
             {
-                // TODO: Indexed images may be compressed using RLE of Huffma
+                // TODO: Indexed images may be compressed using RLE or Huffman
                 if (bitDepth == 4)
                 {
                     // Bitmap file header
@@ -255,9 +257,9 @@ namespace TMC
                     {
                         var color = (i < palette.Length ? palette[i] : Color.Black);
 
-                        bw.Write(color.R);
-                        bw.Write(color.G);
                         bw.Write(color.B);
+                        bw.Write(color.G);
+                        bw.Write(color.R);
                         bw.Write(byte.MaxValue);
                     }
 
@@ -313,9 +315,9 @@ namespace TMC
                     {
                         var color = (i < palette.Length ? palette[i] : Color.Black);
 
-                        bw.Write(color.R);
-                        bw.Write(color.G);
                         bw.Write(color.B);
+                        bw.Write(color.G);
+                        bw.Write(color.R);
                         bw.Write(byte.MaxValue);
                     }
 
@@ -609,129 +611,6 @@ namespace TMC
             }
 
             gfx.DrawImage(image, dest);
-        }
-    }
-
-    public enum PaletteFormat
-    {
-        /// <summary>
-        /// Photoshop Palette
-        /// </summary>
-        PAL,
-        /// <summary>
-        /// Adobe Color Table
-        /// </summary>
-        ACT,
-        /// <summary>
-        /// Nitro Color Table
-        /// </summary>
-        NCLR,
-        /// <summary>
-        /// APE Palette
-        /// </summary>
-        GPL, // GIMP palette uses the same extension!!!
-    }
-
-    public static class ColorExtensions
-    {
-        public static ushort ToColor15(this Color color)
-        {
-            return (ushort)((color.R >> 3) | (color.G >> 3 << 5) | (color.B >> 3 << 10));
-        }
-
-        public static void Save(this Color[] colors, string filename, PaletteFormat format)
-        {
-            switch(format)
-            {
-                case PaletteFormat.PAL:
-                    SavePal(colors, filename);
-                    break;
-                case PaletteFormat.ACT:
-                    SaveAct(colors, filename);
-                    break;
-                case PaletteFormat.GPL:
-                    SaveGpl(colors, filename);
-                    break;
-
-                default:
-                    throw new NotSupportedException();
-            }
-        }
-
-        static void SavePal(Color[] colors, string filename)
-        {
-            // NOTE: convention states JASC-PAL files should only have
-            // 256 or 16 colors, but we'll allow any number
-
-            //if (colors.Length > 256)
-            //    throw new Exception("The given palette has too many colors for a palette file!");
-
-            using (var sw = File.CreateText(filename))
-            {
-                // header
-                sw.WriteLine("JASC-PAL");
-                sw.WriteLine("0100");
-                sw.WriteLine(colors.Length);
-
-                // colors
-                for (int i = 0; i < colors.Length; i++)
-                {
-                    sw.WriteLine("{0} {1} {2}", colors[i].R, colors[i].G, colors[i].B);
-                }
-            }
-        }
-
-        static void SaveAct(Color[] colors, string filename)
-        {
-            // an Adobe Color Table must always be 256 colors
-            // http://www.adobe.com/devnet-apps/photoshop/fileformatashtml/#50577411_pgfId-1070626
-
-            if (colors.Length > 256)
-                throw new Exception("The given palette has too many colors for an Adobe Color Table!");
-
-            using (var bw = new BinaryWriter(File.Create(filename)))
-            {
-                for (int i = 0; i < 256; i++)
-                {
-                    if (i < colors.Length)
-                    {
-                        bw.Write(colors[i].R);
-                        bw.Write(colors[i].G);
-                        bw.Write(colors[i].B);
-                    }
-                    else
-                    {
-                        bw.Write(byte.MinValue);
-                        bw.Write(byte.MinValue);
-                        bw.Write(byte.MinValue);
-                    }
-                }
-            }
-        }
-
-        static void SaveGpl(Color[] colors, string filename)
-        {
-            // this is a truely HORRIBLE format for storing a palette
-            // no clue what HackMew was thinking honestly
-            if (colors.Length > 256)
-                throw new Exception("The given palette has too many colors for an APE palette!");
-
-            using (var sw = File.CreateText(filename))
-            {
-                sw.WriteLine("[APE Palette]");
-
-                for (int i = 0; i < 256; i++)
-                {
-                    // convert color to GBA format
-                    // BUT, we want it signed
-                    short color = 0;
-                    if (i < colors.Length)
-                        color = (short)colors[i].ToColor15();
-
-                    // ugly thing isn't it
-                    sw.WriteLine("{0}{1}", color < 0 ? "" : " ", color);
-                }
-            }
         }
     }
 }

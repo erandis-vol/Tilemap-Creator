@@ -39,6 +39,26 @@ namespace TMC
             palettesetImage?.Dispose();
         }
 
+        private void openToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (tileset == null)
+                return;
+
+            openFileDialog1.FileName = "";
+            openFileDialog1.Title = "Open Tilemap";
+            openFileDialog1.Filter = "";
+        }
+
+        private void saveToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (tileset == null || tilemap == null)
+                return;
+
+            saveFileDialog1.FileName = "";
+            saveFileDialog1.Title = "Save Tilemap";
+            saveFileDialog1.Filter = "";
+        }
+
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // TODO: ask to save old Tileset/Tilemap
@@ -155,13 +175,13 @@ namespace TMC
                 switch (saveFileDialog1.FilterIndex)
                 {
                     case 1:
-                        tilesetImage.Palette.Save(saveFileDialog1.FileName, PaletteFormat.PAL);
+                        Palette.Save(tilesetImage.Palette, saveFileDialog1.FileName, PaletteFormat.PAL);
                         break;
                     case 2:
-                        tilesetImage.Palette.Save(saveFileDialog1.FileName, PaletteFormat.ACT);
+                        Palette.Save(tilesetImage.Palette, saveFileDialog1.FileName, PaletteFormat.ACT);
                         break;
                     case 3:
-                        tilesetImage.Palette.Save(saveFileDialog1.FileName, PaletteFormat.GPL);
+                        Palette.Save(tilesetImage.Palette, saveFileDialog1.FileName, PaletteFormat.GPL);
                         break;
                 }
             }
