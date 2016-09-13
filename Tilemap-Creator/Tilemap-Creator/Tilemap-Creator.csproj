@@ -128,9 +128,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="remilia.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <None Include="Resources\arrow-continue-090.png" />
     <None Include="Resources\arrow-continue.png" />
     <None Include="Resources\palette.png" />

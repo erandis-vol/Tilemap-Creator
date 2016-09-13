@@ -38,8 +38,7 @@ namespace TMC
             image = new Bitmap(width, height, PixelFormat.Format24bppRgb);
         }
 
-        // creates a new sprite for use with the GBA/NDS from a regular image
-        //? should there be an option to limit palette size...
+        // creates a new sprite for use with the GBA from a regular image
         public Sprite(Bitmap source)
         {
             // --------------------------------
@@ -47,14 +46,16 @@ namespace TMC
             width = source.Width;
             height = source.Height;
             pixels = new int[width * height];
-            image = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+            /*image = new Bitmap(width, height, PixelFormat.Format24bppRgb);
 
             // --------------------------------
             // Copy source to image
             using (var g = Graphics.FromImage(image))
             {
                 g.DrawImage(source, new Rectangle(0, 0, width, height));
-            }
+            }*/
+
+            image = source.ChangeFormat(PixelFormat.Format24bppRgb);
 
             // --------------------------------
             // Copy image data to buffer
@@ -68,6 +69,7 @@ namespace TMC
             if ((source.PixelFormat & PixelFormat.Indexed) == PixelFormat.Indexed)
             {
                 // Preserves existing palettes
+                // BUG: doesn't work with 8BPP? why?
 
                 // --------------------------------
                 // Copy the palette from the source
@@ -563,11 +565,18 @@ namespace TMC
         /// <returns>A new Bitmap with the given PixelFormat.</returns>
         public static Bitmap ChangeFormat(this Bitmap bmp, PixelFormat newFormat)
         {
-            // better?
+            /* better?
             using (var temp = new Bitmap(bmp))
             {
                 return temp.Clone(new Rectangle(0, 0, temp.Width, temp.Height), PixelFormat.Format24bppRgb);
-            }
+            }*/
+
+            // seems that Bitmap.Clone() does not work correctly?
+            var clone = new Bitmap(bmp.Width, bmp.Height, newFormat);
+            using (var g = Graphics.FromImage(clone))
+                g.DrawImage(bmp, new Rectangle(0, 0, clone.Width, clone.Height));
+
+            return clone;
         }
 
         /// <summary>

@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TMC
@@ -33,12 +28,18 @@ namespace TMC
             var file = new FileInfo(File);
             var sizes = new List<Size>();
 
-
+            // calculates possible sizes for the given tilemap
             var l = (int)(Format == TilemapFormat.RotationScaling ? file.Length : file.Length / 2);
             for (int i = 1; i <= l; i++)
             {
                 if (l % i == 0)
                     sizes.Add(new Size(i, l / i));
+
+                // this second calculation lets us catch
+                // some tilemaps that may not be perfectly sized
+                // (FRLG town map tilemap needs this)
+                if ((l - 8) % i == 0)
+                    sizes.Add(new Size(i, (l - 8) / i));
             }
 
             cSize.Items.Clear();
