@@ -54,9 +54,25 @@ namespace TMC
             if (tileset == null || tilemap == null)
                 return;
 
+            // --------------------------------
             saveFileDialog1.FileName = "";
             saveFileDialog1.Title = "Save Tilemap";
-            saveFileDialog1.Filter = "";
+            saveFileDialog1.Filter = "GBA Raw Tilemap|*.raw";
+
+            if (saveFileDialog1.ShowDialog() != DialogResult.OK)
+                return;
+
+            // --------------------------------
+            using (var sa = new SaveTilemapDialog(saveFileDialog1.FileName, TilemapFormat.GBA4))
+            {
+                if (sa.ShowDialog() != DialogResult.OK)
+                    return;
+
+                var filename = sa.File;
+                var format = sa.Format;
+
+                Console.WriteLine($"Save: {filename}, {format}");
+            }
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)

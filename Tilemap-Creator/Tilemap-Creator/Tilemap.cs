@@ -17,6 +17,19 @@ namespace TMC
         public bool FlipY;
     }
 
+    // TODO: bitfield
+    public enum TilemapFormat
+    {
+        /// <summary>
+        /// Gameboy Advance 4BPP
+        /// </summary>
+        GBA4,
+        /// <summary>
+        /// Gameboy Advance 8BPP
+        /// </summary>
+        GBA8,
+    }
+
     // a basic resizable Tilemap
     public class Tilemap
     {

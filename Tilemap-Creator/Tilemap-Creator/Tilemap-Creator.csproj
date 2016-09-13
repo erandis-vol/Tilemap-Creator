@@ -77,6 +77,12 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Quantizer.cs" />
+    <Compile Include="SaveTilemapDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SaveTilemapDialog.Designer.cs">
+      <DependentUpon>SaveTilemapDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Sprite.cs" />
     <Compile Include="Tilemap.cs" />
     <Compile Include="Tileset.cs" />
@@ -96,6 +102,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="SaveTilemapDialog.resx">
+      <DependentUpon>SaveTilemapDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
