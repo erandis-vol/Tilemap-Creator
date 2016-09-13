@@ -67,6 +67,12 @@
     <Compile Include="NumberBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="OpenTilemapDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OpenTilemapDialog.Designer.cs">
+      <DependentUpon>OpenTilemapDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Palette.cs" />
     <Compile Include="PaletteDialog.cs">
       <SubType>Form</SubType>
@@ -88,6 +94,9 @@
     <Compile Include="Tileset.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OpenTilemapDialog.resx">
+      <DependentUpon>OpenTilemapDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PaletteDialog.resx">
       <DependentUpon>PaletteDialog.cs</DependentUpon>

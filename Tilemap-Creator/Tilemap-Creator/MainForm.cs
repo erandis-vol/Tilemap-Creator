@@ -46,7 +46,19 @@ namespace TMC
 
             openFileDialog1.FileName = "";
             openFileDialog1.Title = "Open Tilemap";
-            openFileDialog1.Filter = "";
+            openFileDialog1.Filter = "GBA Raw Tilemap|*.raw;*.bin";
+
+            if (openFileDialog1.ShowDialog() != DialogResult.OK)
+                return;
+
+            using (var oa = new OpenTilemapDialog(openFileDialog1.FileName))
+            {
+                if (oa.ShowDialog() != DialogResult.OK)
+                    return;
+
+                tilemap = new Tilemap(oa.File, oa.Format, oa.FriendlySize.Width);
+                UpdateTilemap();
+            }
         }
 
         private void saveToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -57,7 +69,7 @@ namespace TMC
             // --------------------------------
             saveFileDialog1.FileName = "";
             saveFileDialog1.Title = "Save Tilemap";
-            saveFileDialog1.Filter = "GBA Raw Tilemap|*.raw";
+            saveFileDialog1.Filter = "GBA Raw Tilemap|*.raw;*bin";
 
             if (saveFileDialog1.ShowDialog() != DialogResult.OK)
                 return;

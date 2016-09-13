@@ -1,10 +1,6 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TMC
 {
@@ -49,6 +45,57 @@ namespace TMC
                 tiles[i] = new Tile();
         }
 
+        public Tilemap(string filename, TilemapFormat format, int width)
+        {
+            Console.WriteLine("reading");
+
+            using (var fs = File.OpenRead(filename))
+            using (var br = new BinaryReader(fs))
+            {
+                // --------------------------------
+                // number of tiles stored in this file
+                var tileCount = (int)br.BaseStream.Length / (format == TilemapFormat.RotationScaling ? 1 : 2);
+
+                // --------------------------------
+                // size of tilemap
+                // some tiles could be lost
+                this.width = width;
+                this.height = tileCount / width;
+
+                // --------------------------------
+                tiles = new Tile[width * height];
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        // --------------------------------
+                        // Read tile
+                        var t = new Tile();
+
+                        if (format == TilemapFormat.Text4)
+                        {
+                            var u = br.ReadUInt16();
+                            t.TilesetIndex = u & 0x3FF;
+                            t.FlipX = ((u >> 10) & 1) == 1;
+                            t.FlipY = ((u >> 11) & 1) == 1;
+                            t.PaletteIndex = (u >> 12) & 0xF;
+                        }
+                        else if (format == TilemapFormat.Text8)
+                        {
+                            var u = br.ReadUInt16();
+                            t.TilesetIndex = u & 0x3FF;
+                            t.FlipX = ((u >> 10) & 1) == 1;
+                            t.FlipY = ((u >> 11) & 1) == 1;
+                        }
+                        else
+                            t.TilesetIndex = br.ReadByte();
+
+                        tiles[x + y * width] = t;
+                    }
+                }
+            }
+        }
+
         public Tile this[int index]
         {
             get { return tiles[index]; }
@@ -61,7 +108,7 @@ namespace TMC
             set { tiles[x + y * width] = value; }
         }
 
-        public Tile this[System.Drawing.Point p]
+        public Tile this[Point p]
         {
             get { return this[p.X, p.Y]; }
             set { this[p.X, p.Y] = value; }
@@ -106,6 +153,8 @@ namespace TMC
             using (var fs = File.Create(filename))
             using (var bw = new BinaryWriter(fs))
             {
+                // --------------------------------
+                // save tiles
                 for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
@@ -129,6 +178,11 @@ namespace TMC
                             bw.Write((byte)(t.TilesetIndex & 0xFF));
                     }
                 }
+
+                // --------------------------------
+                // save extra bytes
+                for (int i = 0; i < extraBytes; i++)
+                    bw.Write(byte.MinValue);
             }
         }
 
