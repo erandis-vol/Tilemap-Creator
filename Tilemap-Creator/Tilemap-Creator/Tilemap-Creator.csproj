@@ -47,6 +47,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AboutDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutDialog.Designer.cs">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="InterpolatedPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -92,6 +98,9 @@
     <Compile Include="Sprite.cs" />
     <Compile Include="Tilemap.cs" />
     <Compile Include="Tileset.cs" />
+    <EmbeddedResource Include="AboutDialog.resx">
+      <DependentUpon>AboutDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

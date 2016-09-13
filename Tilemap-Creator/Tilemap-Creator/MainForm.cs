@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TMC
@@ -18,11 +13,14 @@ namespace TMC
         Color gridColor = Color.FromArgb(128, Color.White);
         Color gridColorS = Color.FromArgb(128, Color.Yellow);
 
-        
+        // TODO: information about last tileset/tilemap save
 
         public MainForm()
         {
             InitializeComponent();
+
+            openToolStripMenuItem1.Enabled = false;
+            saveToolStripMenuItem1.Enabled = false;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -124,6 +122,9 @@ namespace TMC
             // create new blank Tilemap
             tilemap = new Tilemap(30, 20);
             UpdateTilemap();
+
+            openToolStripMenuItem1.Enabled = true;
+            saveToolStripMenuItem1.Enabled = true;
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -174,10 +175,16 @@ namespace TMC
             // finish
             UpdateTileset(true);
             UpdateTilemap();
+
+            openToolStripMenuItem1.Enabled = true;
+            saveToolStripMenuItem1.Enabled = true;
         }
 
         private void editPaletteToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (tileset == null)
+                return;
+
             using (var d = new PaletteDialog(tilesetImage.Palette))
             {
                 d.ShowDialog();
@@ -263,6 +270,12 @@ namespace TMC
 
             chkTilesetFlipX.Checked = false;
             chkTilesetFlipY.Checked = false;
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var a = new AboutDialog())
+                a.ShowDialog();
         }
     }
 }
