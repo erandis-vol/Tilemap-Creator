@@ -32,7 +32,7 @@ namespace TMC
     {
         public static ushort ToColor15(this Color color)
         {
-            return (ushort)((color.R >> 3) | (color.G >> 3 << 5) | (color.B >> 3 << 10));
+            return (ushort)((color.R >> 3) | ((color.G >> 3) << 5) | ((color.B >> 3) << 10));
         }
     }
 
@@ -185,15 +185,21 @@ namespace TMC
                 for (int i = 0; i < 256; i++)
                 {
                     // convert color to GBA format
-                    // BUT, we want it signed
+                    // BUT, we want it signed AND bytes flipped
                     short color = 0;
                     if (i < colors.Length)
-                        color = (short)colors[i].ToColor15();
+                        color = colors[i].ToApeColor();
 
                     // ugly thing isn't it
                     sw.WriteLine("{0}{1}", color < 0 ? "" : " ", color);
                 }
             }
+        }
+
+        static short ToApeColor(this Color c)
+        {
+            var g = c.ToColor15();
+            return (short)(((g & 0xFF) << 8) | (g >> 8));
         }
     }
 }
