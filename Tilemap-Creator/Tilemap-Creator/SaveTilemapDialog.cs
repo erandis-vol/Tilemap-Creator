@@ -16,14 +16,13 @@ namespace TMC
         {
             InitializeComponent();
 
-            switch (suggestedFormat)
+            switch (suggestedFormat & TilemapFormat.Format)
             {
-                case TilemapFormat.GBA4:
-                case TilemapFormat.GBA8:
+                case TilemapFormat.GBA:
                     cFormat.SelectedIndex = 0;
                     break;
             }
-            cBitDepth.SelectedIndex = 0;
+            cBitDepth.SelectedIndex = ((int)(suggestedFormat & TilemapFormat.BitDepth) & 0xF0 >> 4) / 8;
 
             textBox1.Text = File = filename;
         }
@@ -33,12 +32,8 @@ namespace TMC
         {
             get
             {
-                var bpp = 4 << cBitDepth.SelectedIndex;
-                Console.WriteLine($"Bit Depth {bpp}");
-                //var format = cFormat.SelectedIndex;
-
-                //if (format == 0)
-                return bpp == 4 ? TilemapFormat.GBA4 : TilemapFormat.GBA8;
+                return (TilemapFormat)cFormat.SelectedIndex |
+                    (cBitDepth.SelectedIndex == 0 ? TilemapFormat.BPP4 : TilemapFormat.BPP8); ;
             }
         }
         public int ExtraBytes
