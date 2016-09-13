@@ -34,8 +34,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.cBitDepth = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.txtExtra = new TMC.NumberBox();
             this.SuspendLayout();
@@ -44,7 +42,7 @@
             // 
             this.bSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bSave.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.bSave.Location = new System.Drawing.Point(81, 170);
+            this.bSave.Location = new System.Drawing.Point(81, 130);
             this.bSave.Name = "bSave";
             this.bSave.Size = new System.Drawing.Size(75, 23);
             this.bSave.TabIndex = 0;
@@ -55,7 +53,7 @@
             // 
             this.bCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.bCancel.Location = new System.Drawing.Point(162, 170);
+            this.bCancel.Location = new System.Drawing.Point(162, 130);
             this.bCancel.Name = "bCancel";
             this.bCancel.Size = new System.Drawing.Size(75, 23);
             this.bCancel.TabIndex = 1;
@@ -69,7 +67,9 @@
             this.cFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cFormat.FormattingEnabled = true;
             this.cFormat.Items.AddRange(new object[] {
-            "Gameboy Advance Raw Tilemap"});
+            "Text mode, 4 bits per pixel",
+            "Text mode, 8 bits per pixel",
+            "Rotation/scaling mode"});
             this.cFormat.Location = new System.Drawing.Point(12, 64);
             this.cFormat.Name = "cFormat";
             this.cFormat.Size = new System.Drawing.Size(225, 21);
@@ -103,33 +103,10 @@
             this.textBox1.Size = new System.Drawing.Size(225, 20);
             this.textBox1.TabIndex = 5;
             // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(9, 88);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(54, 13);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "Bit Depth:";
-            // 
-            // cBitDepth
-            // 
-            this.cBitDepth.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cBitDepth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cBitDepth.FormattingEnabled = true;
-            this.cBitDepth.Items.AddRange(new object[] {
-            "4 BPP",
-            "8 BPP"});
-            this.cBitDepth.Location = new System.Drawing.Point(12, 104);
-            this.cBitDepth.Name = "cBitDepth";
-            this.cBitDepth.Size = new System.Drawing.Size(225, 21);
-            this.cBitDepth.TabIndex = 7;
-            // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(9, 128);
+            this.label4.Location = new System.Drawing.Point(9, 88);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(34, 13);
             this.label4.TabIndex = 8;
@@ -139,23 +116,22 @@
             // 
             this.txtExtra.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtExtra.Location = new System.Drawing.Point(12, 144);
+            this.txtExtra.Location = new System.Drawing.Point(12, 104);
             this.txtExtra.MaximumValue = 2147483646;
             this.txtExtra.MinimumValue = 0;
             this.txtExtra.Name = "txtExtra";
             this.txtExtra.Size = new System.Drawing.Size(225, 20);
             this.txtExtra.TabIndex = 9;
+            this.txtExtra.Text = "0";
             this.txtExtra.Value = 0;
             // 
             // SaveTilemapDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(249, 205);
+            this.ClientSize = new System.Drawing.Size(249, 165);
             this.Controls.Add(this.txtExtra);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.cBitDepth);
-            this.Controls.Add(this.label3);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -182,8 +158,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox cBitDepth;
         private System.Windows.Forms.Label label4;
         private NumberBox txtExtra;
     }

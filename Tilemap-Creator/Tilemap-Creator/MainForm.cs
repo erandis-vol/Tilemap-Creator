@@ -63,15 +63,12 @@ namespace TMC
                 return;
 
             // --------------------------------
-            using (var sa = new SaveTilemapDialog(saveFileDialog1.FileName, TilemapFormat.GBA | TilemapFormat.BPP4))
+            using (var sa = new SaveTilemapDialog(saveFileDialog1.FileName))
             {
                 if (sa.ShowDialog() != DialogResult.OK)
                     return;
 
-                var filename = sa.File;
-                var format = sa.Format;
-
-                Console.WriteLine($"Save: {filename}, {(int)format:X2}");
+                Console.WriteLine($"Save: {sa.File}, {sa.Format}");
                 tilemap.Save(sa.File, sa.Format, sa.ExtraBytes);
             }
         }

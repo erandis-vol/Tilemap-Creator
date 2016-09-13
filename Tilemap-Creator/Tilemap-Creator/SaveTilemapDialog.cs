@@ -12,30 +12,35 @@ namespace TMC
 {
     public partial class SaveTilemapDialog : Form
     {
-        public SaveTilemapDialog(string filename, TilemapFormat suggestedFormat)
+        public SaveTilemapDialog(string filename)
         {
             InitializeComponent();
 
-            switch (suggestedFormat & TilemapFormat.Format)
-            {
-                case TilemapFormat.GBA:
-                    cFormat.SelectedIndex = 0;
-                    break;
-            }
-            cBitDepth.SelectedIndex = ((int)(suggestedFormat & TilemapFormat.BitDepth) & 0xF0 >> 4) / 8;
-
+            cFormat.SelectedIndex = 0;
             textBox1.Text = File = filename;
         }
 
         public string File { get; private set; }
+
         public TilemapFormat Format
         {
             get
             {
-                return (TilemapFormat)cFormat.SelectedIndex |
-                    (cBitDepth.SelectedIndex == 0 ? TilemapFormat.BPP4 : TilemapFormat.BPP8); ;
+                switch (cFormat.SelectedIndex)
+                {
+                    case 0:
+                        return TilemapFormat.Text4;
+                    case 1:
+                        return TilemapFormat.Text8;
+                    case 2:
+                        return TilemapFormat.RotationScaling;
+
+                    default:    // should never happen
+                        throw new Exception();
+                }
             }
         }
+
         public int ExtraBytes
         {
             get { return txtExtra.Value; }

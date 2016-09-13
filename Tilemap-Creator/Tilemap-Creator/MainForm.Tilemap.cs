@@ -14,7 +14,6 @@ namespace TMC
         Bitmap tilemapImage;
 
         Point tilemapMouseCurrent = new Point(-1, -1);
-        bool tilemapHasMouse = false;
 
         // updates Tilemap image (forced redraw)
         void UpdateTilemap()
@@ -293,6 +292,8 @@ namespace TMC
             // this uses too much memory imo so rewrite eventually
             else if (me.Button == MouseButtons.Middle)
             {
+                // TODO: cut down on code here
+
                 // fills all tiles going out from X, Y with the first tile selected
                 if (rModeTilemap.Checked)
                 {
@@ -332,6 +333,49 @@ namespace TMC
                             if (e.Y > 0 && tilemap[e.X, e.Y - 1].TilesetIndex == get)
                                 q.Enqueue(new Point(e.X, e.Y - 1));
                             if (e.Y < tilemap.Height - 1 && tilemap[e.X, e.Y + 1].TilesetIndex == get)
+                                q.Enqueue(new Point(e.X, e.Y + 1));
+                            e.X++;
+                        }
+                    }
+                }
+                else
+                {
+                    // get tile to fill with and tile to replace
+                    var set = paletteSelection;
+                    var get = tilemap[tilemapMouseCurrent].PaletteIndex;
+
+                    // quit if already set
+                    if (get == set)
+                        goto end;
+
+                    // create a queue to hold points
+                    var q = new Queue<Point>();
+                    q.Enqueue(tilemapMouseCurrent);
+
+                    // queues all tiles left and right of x,y and such
+                    while (q.Count > 0)
+                    {
+                        var n = q.Dequeue();
+                        if (tilemap[n].PaletteIndex != get)
+                            continue;
+
+                        Point w = n, e = new Point(n.X + 1, n.Y);
+                        while (w.X >= 0 && tilemap[w].PaletteIndex == get)
+                        {
+                            tilemap[w].PaletteIndex = set;
+                            if (w.Y > 0 && tilemap[w.X, w.Y - 1].PaletteIndex == get)
+                                q.Enqueue(new Point(w.X, w.Y - 1));
+                            if (w.Y < tilemap.Height - 1 && tilemap[w.X, w.Y + 1].PaletteIndex == get)
+                                q.Enqueue(new Point(w.X, w.Y + 1));
+                            w.X--;
+                        }
+
+                        while (e.X <= tilemap.Width - 1 && tilemap[e].PaletteIndex == get)
+                        {
+                            tilemap[e].PaletteIndex = set;
+                            if (e.Y > 0 && tilemap[e.X, e.Y - 1].PaletteIndex == get)
+                                q.Enqueue(new Point(e.X, e.Y - 1));
+                            if (e.Y < tilemap.Height - 1 && tilemap[e.X, e.Y + 1].PaletteIndex == get)
                                 q.Enqueue(new Point(e.X, e.Y + 1));
                             e.X++;
                         }

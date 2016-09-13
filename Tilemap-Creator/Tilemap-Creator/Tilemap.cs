@@ -17,29 +17,20 @@ namespace TMC
         public bool FlipY;
     }
 
-    [Flags]
     public enum TilemapFormat
     {
         /// <summary>
-        /// Gameboy Advance Raw Tilemap
+        /// Text mode, 4 bits per pixel
         /// </summary>
-        GBA = 0x00,
+        Text4 = 0x40,
         /// <summary>
-        /// TODO
+        /// Text mode, 8 bits per pixel
         /// </summary>
-        NDS = 0x01,
-
+        Text8 = 0x80,
         /// <summary>
-        /// 4 bits per pixel
+        /// Rotation/scaling mode
         /// </summary>
-        BPP4 = 0x40,
-        /// <summary>
-        /// 8 bits per pixel
-        /// </summary>
-        BPP8 = 0x80,
-        
-        Format = 0x0F,
-        BitDepth = 0xF0,
+        RotationScaling,
     }
 
     // a basic resizable Tilemap
@@ -105,18 +96,7 @@ namespace TMC
 
         public void Save(string filename, TilemapFormat format, int extraBytes = 0)
         {
-            switch (format & TilemapFormat.Format)
-            {
-                case TilemapFormat.GBA:
-                    SaveGBA(filename, format & TilemapFormat.BitDepth, extraBytes);
-                    break;
-            }
-        }
-
-        void SaveGBA(string filename, TilemapFormat mode, int extraBytes)
-        {
             // http://problemkaputt.de/gbatek.htm#lcdvrambgscreendataformatbgmap
-            // TODO: support rotation/scaling mode
 
             // text mode:
             // 0x3FF tiles
@@ -126,21 +106,20 @@ namespace TMC
             using (var fs = File.Create(filename))
             using (var bw = new BinaryWriter(fs))
             {
-                // save text mode tilemap
                 for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
                     {
                         var t = this[x, y];
 
-                        if (mode == TilemapFormat.BPP4)
+                        if (format == TilemapFormat.Text4)
                             bw.Write((ushort)(
                                 (t.TilesetIndex & 0x3FF) |
                                 (t.FlipX ? 1 : 0 << 10) |
                                 (t.FlipY ? 1 : 0 << 11) |
                                 (t.PaletteIndex << 12)
                                 ));
-                        else if (mode == TilemapFormat.BPP8)
+                        else if (format == TilemapFormat.Text8)
                             bw.Write((ushort)(
                                 (t.TilesetIndex & 0x3FF) |
                                 (t.FlipX ? 1 : 0 << 10) |
@@ -184,7 +163,7 @@ namespace TMC
                     {
                         var t = this[x, y];
 
-                        if (bitDepth == TilemapFormat.BPP4)
+                        if (bitDepth == TilemapFormat.Text4)
                             bw.Write((ushort)(
                                 (t.TilesetIndex & 0x3FF) |
                                 (t.FlipX ? 1 : 0 << 10) |
