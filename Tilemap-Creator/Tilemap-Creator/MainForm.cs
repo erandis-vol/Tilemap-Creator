@@ -37,6 +37,15 @@ namespace TMC
             palettesetImage?.Dispose();
         }
 
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (tileset == null)
+                return;
+
+            tilemap = new Tilemap(30, 20);
+            UpdateTilemap();
+        }
+
         private void openToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             if (tileset == null)

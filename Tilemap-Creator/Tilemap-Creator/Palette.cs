@@ -191,7 +191,7 @@ namespace TMC
                         color = colors[i].ToApeColor();
 
                     // ugly thing isn't it
-                    sw.WriteLine("{0}{1}", color < 0 ? "" : " ", color);
+                    sw.WriteLine("{0}{1} ", color < 0 ? "" : " ", color);
                 }
             }
         }

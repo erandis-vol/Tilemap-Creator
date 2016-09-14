@@ -52,8 +52,10 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "PaletteDialog";
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "View Palette";
+            this.TopMost = true;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.PaletteDialog_FormClosed);
             this.ResumeLayout(false);
 
