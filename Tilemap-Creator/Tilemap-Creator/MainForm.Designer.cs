@@ -76,6 +76,11 @@
             this.label1 = new System.Windows.Forms.Label();
             this.rModePalette = new System.Windows.Forms.RadioButton();
             this.rModeTilemap = new System.Windows.Forms.RadioButton();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.bTilemapUp = new System.Windows.Forms.Button();
+            this.bTilemapDown = new System.Windows.Forms.Button();
+            this.bTilemapLeft = new System.Windows.Forms.Button();
+            this.bTilemapRight = new System.Windows.Forms.Button();
             this.pTileset = new TMC.InterpolatedPictureBox();
             this.tTilesetHeight = new TMC.NumberBox();
             this.cTilesetWidth = new TMC.NumberComboBox();
@@ -95,6 +100,7 @@
             this.panel4.SuspendLayout();
             this.panel3.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pTileset)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pTilemap)).BeginInit();
             this.SuspendLayout();
@@ -484,6 +490,7 @@
             // 
             // panel3
             // 
+            this.panel3.Controls.Add(this.groupBox4);
             this.panel3.Controls.Add(this.groupBox3);
             this.panel3.Controls.Add(this.rModePalette);
             this.panel3.Controls.Add(this.rModeTilemap);
@@ -557,6 +564,59 @@
             this.rModeTilemap.Text = "Edit Tiles";
             this.rModeTilemap.UseVisualStyleBackColor = true;
             this.rModeTilemap.CheckedChanged += new System.EventHandler(this.rMode_CheckedChanged);
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.bTilemapRight);
+            this.groupBox4.Controls.Add(this.bTilemapLeft);
+            this.groupBox4.Controls.Add(this.bTilemapDown);
+            this.groupBox4.Controls.Add(this.bTilemapUp);
+            this.groupBox4.Location = new System.Drawing.Point(188, 2);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(168, 77);
+            this.groupBox4.TabIndex = 6;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Shift";
+            // 
+            // bTilemapUp
+            // 
+            this.bTilemapUp.Location = new System.Drawing.Point(60, 19);
+            this.bTilemapUp.Name = "bTilemapUp";
+            this.bTilemapUp.Size = new System.Drawing.Size(48, 23);
+            this.bTilemapUp.TabIndex = 0;
+            this.bTilemapUp.Text = "Up";
+            this.bTilemapUp.UseVisualStyleBackColor = true;
+            this.bTilemapUp.Click += new System.EventHandler(this.bTilemapUp_Click);
+            // 
+            // bTilemapDown
+            // 
+            this.bTilemapDown.Location = new System.Drawing.Point(60, 48);
+            this.bTilemapDown.Name = "bTilemapDown";
+            this.bTilemapDown.Size = new System.Drawing.Size(48, 23);
+            this.bTilemapDown.TabIndex = 1;
+            this.bTilemapDown.Text = "Down";
+            this.bTilemapDown.UseVisualStyleBackColor = true;
+            this.bTilemapDown.Click += new System.EventHandler(this.bTilemapDown_Click);
+            // 
+            // bTilemapLeft
+            // 
+            this.bTilemapLeft.Location = new System.Drawing.Point(6, 34);
+            this.bTilemapLeft.Name = "bTilemapLeft";
+            this.bTilemapLeft.Size = new System.Drawing.Size(48, 23);
+            this.bTilemapLeft.TabIndex = 2;
+            this.bTilemapLeft.Text = "Left";
+            this.bTilemapLeft.UseVisualStyleBackColor = true;
+            this.bTilemapLeft.Click += new System.EventHandler(this.bTilemapLeft_Click);
+            // 
+            // bTilemapRight
+            // 
+            this.bTilemapRight.Location = new System.Drawing.Point(114, 34);
+            this.bTilemapRight.Name = "bTilemapRight";
+            this.bTilemapRight.Size = new System.Drawing.Size(48, 23);
+            this.bTilemapRight.TabIndex = 3;
+            this.bTilemapRight.Text = "Right";
+            this.bTilemapRight.UseVisualStyleBackColor = true;
+            this.bTilemapRight.Click += new System.EventHandler(this.bTilemapRight_Click);
             // 
             // pTileset
             // 
@@ -675,6 +735,7 @@
             this.panel3.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pTileset)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pTilemap)).EndInit();
             this.ResumeLayout(false);
@@ -737,6 +798,11 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Button bTilemapRight;
+        private System.Windows.Forms.Button bTilemapLeft;
+        private System.Windows.Forms.Button bTilemapDown;
+        private System.Windows.Forms.Button bTilemapUp;
     }
 }
 

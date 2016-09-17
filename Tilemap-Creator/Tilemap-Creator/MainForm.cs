@@ -87,7 +87,6 @@ namespace TMC
                 if (sa.ShowDialog() != DialogResult.OK)
                     return;
 
-                Console.WriteLine($"Save: {sa.File}, {sa.Format}");
                 tilemap.Save(sa.File, sa.Format, sa.ExtraBytes);
             }
         }
@@ -286,5 +285,7 @@ namespace TMC
             using (var a = new AboutDialog())
                 a.ShowDialog();
         }
+
+        
     }
 }

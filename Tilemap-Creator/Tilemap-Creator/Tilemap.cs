@@ -7,10 +7,10 @@ namespace TMC
     //[StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class Tile
     {
-        public int TilesetIndex;
-        public int PaletteIndex;
-        public bool FlipX;
-        public bool FlipY;
+        public int TilesetIndex { get; set; } = 0;
+        public int PaletteIndex { get; set; } = 0;
+        public bool FlipX { get; set; } = false;
+        public bool FlipY { get; set; } = false;
     }
 
     public enum TilemapFormat
@@ -47,8 +47,6 @@ namespace TMC
 
         public Tilemap(string filename, TilemapFormat format, int width)
         {
-            Console.WriteLine("reading");
-
             using (var fs = File.OpenRead(filename))
             using (var br = new BinaryReader(fs))
             {
@@ -141,6 +139,12 @@ namespace TMC
             height = newHeight;
         }
 
+        /// <summary>
+        /// Save this <see cref="Tilemap"/> in raw GBA format.
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="format"></param>
+        /// <param name="extraBytes"></param>
         public void Save(string filename, TilemapFormat format, int extraBytes = 0)
         {
             // http://problemkaputt.de/gbatek.htm#lcdvrambgscreendataformatbgmap
@@ -183,6 +187,54 @@ namespace TMC
                 // save extra bytes
                 for (int i = 0; i < extraBytes; i++)
                     bw.Write(byte.MinValue);
+            }
+        }
+
+        /// <summary>
+        /// Save this <see cref="Tilemap"/> as C array.
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="format"></param>
+        /// <param name="extraBytes"></param>
+        public void Save2(string filename, TilemapFormat format, int extraBytes = 0)
+        {
+            var variableName = Path.GetFileNameWithoutExtension(filename).ToLower().Replace(' ', '_');
+
+            using (var sw = File.CreateText(filename))
+            {
+                sw.Write($"unsigned char {variableName}[] = ");
+                sw.Write("{");
+
+                // --------------------------------
+                // save tiles
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        var t = this[x, y];
+
+                        if (format == TilemapFormat.Text4)
+                            sw.Write((ushort)(
+                                (t.TilesetIndex & 0x3FF) |
+                                (t.FlipX ? 1 : 0 << 10) |
+                                (t.FlipY ? 1 : 0 << 11) |
+                                (t.PaletteIndex << 12)
+                                ));
+                        else if (format == TilemapFormat.Text8)
+                            sw.Write((ushort)(
+                                (t.TilesetIndex & 0x3FF) |
+                                (t.FlipX ? 1 : 0 << 10) |
+                                (t.FlipY ? 1 : 0 << 11)
+                                ));
+                        else
+                            sw.Write((byte)(t.TilesetIndex & 0xFF));
+                    }
+                }
+
+                // --------------------------------
+                // save extra bytes
+                for (int i = 0; i < extraBytes; i++)
+                    sw.Write(byte.MinValue);
             }
         }
 
@@ -237,6 +289,46 @@ namespace TMC
                 bw.BaseStream.Position = 8L;
                 bw.Write(bw.BaseStream.Length);
             }
+        }
+
+        public void ShiftUp()
+        {
+            for (int y = 1; y < height; y++)
+                for (int x = 0; x < width; x++)
+                    this[x, y - 1] = this[x, y];
+
+            for (int x = 0; x < width; x++)
+                this[x, height - 1] = new Tile();
+        }
+
+        public void ShiftDown()
+        {
+            for (int y = height - 2; y >= 0; y--)
+                for (int x = 0; x < width; x++)
+                    this[x, y + 1] = this[x, y];
+
+            for (int x = 0; x < width; x++)
+                this[x, 0] = new Tile();
+        }
+
+        public void ShiftLeft()
+        {
+            for (int y = 0; y < height; y++)
+                for (int x = 1; x < width; x++)
+                    this[x - 1, y] = this[x, y];
+
+            for (int y = 0; y < height; y++)
+                this[width - 1, y] = new Tile();
+        }
+
+        public void ShiftRight()
+        {
+            for (int y = 0; y < height; y++)
+                for (int x = width - 2; x >= 0; x--)
+                    this[x + 1, y] = this[x, y];
+
+            for (int y = 0; y < height; y++)
+                this[0, y] = new Tile();
         }
 
         public int Width

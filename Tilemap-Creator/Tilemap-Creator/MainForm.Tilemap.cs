@@ -417,5 +417,41 @@ namespace TMC
                 UpdateTilemap();
             }
         }
+
+        private void bTilemapUp_Click(object sender, EventArgs e)
+        {
+            if (tilemap == null)
+                return;
+
+            tilemap.ShiftUp();
+            UpdateTilemap();
+        }
+
+        private void bTilemapDown_Click(object sender, EventArgs e)
+        {
+            if (tilemap == null)
+                return;
+
+            tilemap.ShiftDown();
+            UpdateTilemap();
+        }
+
+        private void bTilemapLeft_Click(object sender, EventArgs e)
+        {
+            if (tilemap == null)
+                return;
+
+            tilemap.ShiftLeft();
+            UpdateTilemap();
+        }
+
+        private void bTilemapRight_Click(object sender, EventArgs e)
+        {
+            if (tilemap == null)
+                return;
+
+            tilemap.ShiftRight();
+            UpdateTilemap();
+        }
     }
 }
