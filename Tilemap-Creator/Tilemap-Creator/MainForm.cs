@@ -195,7 +195,20 @@ namespace TMC
 
             using (var d = new PaletteDialog(tilesetImage.Palette))
             {
-                d.ShowDialog();
+                if (d.ShowDialog() != DialogResult.OK)
+                    return;
+
+                // update palette for every tile
+                for (int t = 0; t < tileset.Size; t++)
+                {
+                    tileset[t].Lock();
+                    tileset[t].ReplacePalette(d.Palette);
+                    tileset[t].Unlock();
+                }
+
+                // redraw tileset
+                UpdateTileset(false);
+                UpdateTilemap();
             }
         }
 
@@ -213,7 +226,7 @@ namespace TMC
                 for (int t = 0; t < tileset.Size; t++)
                 {
                     tileset[t].Lock();
-                    tileset[t].RearrangeColors(d.Palette);
+                    tileset[t].RearrangePalette(d.Palette);
                     tileset[t].Unlock();
                 }
 

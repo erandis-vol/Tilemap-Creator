@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 using System.Windows.Forms;
 
 namespace TMC
@@ -18,7 +11,9 @@ namespace TMC
         public PaletteDialog(Color[] palette)
         {
             InitializeComponent();
-            this.palette = palette;
+
+            this.palette = new Color[palette.Length];
+            palette.CopyTo(this.palette, 0);
 
             // fill the flow thing with panels
             paletteBoxes = new Panel[palette.Length];
@@ -47,7 +42,14 @@ namespace TMC
             var paletteBox = (Panel)sender;
             var index = (int)paletteBox.Tag;
 
-            Console.WriteLine($"Color: {palette[index]}");
+            colorDialog1.Color = palette[index];
+            if (colorDialog1.ShowDialog() == DialogResult.OK)
+            {
+                palette[index] = colorDialog1.Color;
+                paletteBoxes[index].BackColor = palette[index];
+            }
         }
+
+        public Color[] Palette { get { return palette; } }
     }
 }

@@ -69,7 +69,6 @@ namespace TMC
             if ((source.PixelFormat & PixelFormat.Indexed) == PixelFormat.Indexed)
             {
                 // Preserves existing palettes
-                // BUG: doesn't work with 8BPP? why?
 
                 // --------------------------------
                 // Copy the palette from the source
@@ -522,7 +521,19 @@ namespace TMC
             }
         }*/
 
-        public void RearrangeColors(Color[] newPalette)
+        public void ReplacePalette(Color[] newPalette)
+        {
+            if (!locked)
+                throw new Exception("Sprite not locked!");
+
+            if (newPalette.Length != palette.Length)
+                throw new Exception("Palette lengths do not match!");
+
+            // just change the palette
+            palette = newPalette;
+        }
+
+        public void RearrangePalette(Color[] newPalette)
         {
             if (!locked)
                 throw new Exception("Sprite not locked!");

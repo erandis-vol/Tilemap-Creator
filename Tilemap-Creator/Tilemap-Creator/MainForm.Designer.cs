@@ -43,6 +43,7 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.colorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editPaletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rearrangePaletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -87,7 +88,6 @@
             this.tTilemapWidth = new TMC.NumberBox();
             this.rModePalette = new System.Windows.Forms.RadioButton();
             this.rModeTilemap = new System.Windows.Forms.RadioButton();
-            this.rearrangePaletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -226,8 +226,15 @@
             // 
             this.editPaletteToolStripMenuItem.Name = "editPaletteToolStripMenuItem";
             this.editPaletteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.editPaletteToolStripMenuItem.Text = "View";
+            this.editPaletteToolStripMenuItem.Text = "Edit";
             this.editPaletteToolStripMenuItem.Click += new System.EventHandler(this.editPaletteToolStripMenuItem_Click);
+            // 
+            // rearrangePaletteToolStripMenuItem
+            // 
+            this.rearrangePaletteToolStripMenuItem.Name = "rearrangePaletteToolStripMenuItem";
+            this.rearrangePaletteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.rearrangePaletteToolStripMenuItem.Text = "Rearrange";
+            this.rearrangePaletteToolStripMenuItem.Click += new System.EventHandler(this.rearrangePaletteToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
@@ -327,7 +334,7 @@
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -701,13 +708,6 @@
             this.rModeTilemap.Text = "Edit Tiles";
             this.rModeTilemap.UseVisualStyleBackColor = true;
             this.rModeTilemap.CheckedChanged += new System.EventHandler(this.rMode_CheckedChanged);
-            // 
-            // rearrangePaletteToolStripMenuItem
-            // 
-            this.rearrangePaletteToolStripMenuItem.Name = "rearrangePaletteToolStripMenuItem";
-            this.rearrangePaletteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.rearrangePaletteToolStripMenuItem.Text = "Rearrange";
-            this.rearrangePaletteToolStripMenuItem.Click += new System.EventHandler(this.rearrangePaletteToolStripMenuItem_Click);
             // 
             // MainForm
             // 
