@@ -392,7 +392,6 @@ namespace TMC
             throw new NotImplementedException("Cannot save PNG files yet.");
         }
 
-
         /// <summary>
         /// Locks the Sprite's cache and prepares it for pixel writing.
         /// </summary>
@@ -503,7 +502,7 @@ namespace TMC
             }
         }
 
-        public void SwapColors(int color1, int color2, bool updateImage)
+        /*public void SwapColors(int color1, int color2, bool updateImage)
         {
             if (!locked) throw new Exception("Sprite not locked!");
 
@@ -521,6 +520,37 @@ namespace TMC
                     else if (pixels[i] == color2) pixels[i] = color1;
                 }
             }
+        }*/
+
+        public void RearrangeColors(Color[] newPalette)
+        {
+            if (!locked)
+                throw new Exception("Sprite not locked!");
+
+            // assumes palette and new palette match
+            int[] swaps = new int[palette.Length];
+            for (int i = 0; i < palette.Length; i++)
+            {
+                // find color in newPalette matching palette[i]
+                int j = 0;
+                for (int k = 0; k < palette.Length; k++)
+                {
+                    if (palette[i] == newPalette[k])
+                    {
+                        j = k;
+                        break;
+                    }
+                }
+
+                swaps[i] = j;
+            }
+
+            // replace all colors in the data
+            for (int i = 0; i < pixels.Length; i++)
+                pixels[i] = swaps[pixels[i]];
+
+            // change palette
+            palette = newPalette;
         }
 
         public bool Locked

@@ -62,6 +62,7 @@
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.pTileset = new TMC.InterpolatedPictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.chkTilesetFlipY = new System.Windows.Forms.CheckBox();
@@ -69,24 +70,24 @@
             this.lTilesetSelection = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.bTilemapResize = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.rModePalette = new System.Windows.Forms.RadioButton();
-            this.rModeTilemap = new System.Windows.Forms.RadioButton();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.bTilemapUp = new System.Windows.Forms.Button();
-            this.bTilemapDown = new System.Windows.Forms.Button();
-            this.bTilemapLeft = new System.Windows.Forms.Button();
-            this.bTilemapRight = new System.Windows.Forms.Button();
-            this.pTileset = new TMC.InterpolatedPictureBox();
             this.tTilesetHeight = new TMC.NumberBox();
             this.cTilesetWidth = new TMC.NumberComboBox();
+            this.panel4 = new System.Windows.Forms.Panel();
             this.pTilemap = new TMC.InterpolatedPictureBox();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.bTilemapRight = new System.Windows.Forms.Button();
+            this.bTilemapLeft = new System.Windows.Forms.Button();
+            this.bTilemapDown = new System.Windows.Forms.Button();
+            this.bTilemapUp = new System.Windows.Forms.Button();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.bTilemapResize = new System.Windows.Forms.Button();
             this.tTilemapHeight = new TMC.NumberBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.tTilemapWidth = new TMC.NumberBox();
+            this.rModePalette = new System.Windows.Forms.RadioButton();
+            this.rModeTilemap = new System.Windows.Forms.RadioButton();
+            this.rearrangePaletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -94,15 +95,15 @@
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pTileset)).BeginInit();
             this.panel1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panel4.SuspendLayout();
-            this.panel3.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            this.groupBox4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pTileset)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pTilemap)).BeginInit();
+            this.panel3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -180,20 +181,20 @@
             // 
             this.createToolStripMenuItem.Name = "createToolStripMenuItem";
             this.createToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
-            this.createToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.createToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.createToolStripMenuItem.Text = "Create";
             this.createToolStripMenuItem.Click += new System.EventHandler(this.createToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(143, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
@@ -201,41 +202,42 @@
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(143, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
             // 
             // colorsToolStripMenuItem
             // 
             this.colorsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.editPaletteToolStripMenuItem,
+            this.rearrangePaletteToolStripMenuItem,
             this.toolStripSeparator3,
             this.exportToolStripMenuItem});
             this.colorsToolStripMenuItem.Name = "colorsToolStripMenuItem";
-            this.colorsToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.colorsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.colorsToolStripMenuItem.Text = "Colors";
             // 
             // editPaletteToolStripMenuItem
             // 
             this.editPaletteToolStripMenuItem.Name = "editPaletteToolStripMenuItem";
-            this.editPaletteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.editPaletteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.editPaletteToolStripMenuItem.Text = "View";
             this.editPaletteToolStripMenuItem.Click += new System.EventHandler(this.editPaletteToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(104, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
             // 
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exportToolStripMenuItem.Text = "Export";
             this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
             // 
@@ -325,7 +327,7 @@
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -394,6 +396,21 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(242, 355);
             this.panel2.TabIndex = 2;
+            // 
+            // pTileset
+            // 
+            this.pTileset.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            this.pTileset.Location = new System.Drawing.Point(0, 0);
+            this.pTileset.Margin = new System.Windows.Forms.Padding(2);
+            this.pTileset.Name = "pTileset";
+            this.pTileset.Size = new System.Drawing.Size(12, 13);
+            this.pTileset.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pTileset.TabIndex = 1;
+            this.pTileset.TabStop = false;
+            this.pTileset.Paint += new System.Windows.Forms.PaintEventHandler(this.pTileset_Paint);
+            this.pTileset.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pTileset_MouseDown);
+            this.pTileset.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pTileset_MouseMove);
+            this.pTileset.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pTileset_MouseUp);
             // 
             // panel1
             // 
@@ -476,6 +493,34 @@
             this.label2.TabIndex = 9;
             this.label2.Text = "X";
             // 
+            // tTilesetHeight
+            // 
+            this.tTilesetHeight.Location = new System.Drawing.Point(102, 17);
+            this.tTilesetHeight.Margin = new System.Windows.Forms.Padding(2);
+            this.tTilesetHeight.MaximumValue = 2048;
+            this.tTilesetHeight.MinimumValue = 1;
+            this.tTilesetHeight.Name = "tTilesetHeight";
+            this.tTilesetHeight.ReadOnly = true;
+            this.tTilesetHeight.Size = new System.Drawing.Size(76, 20);
+            this.tTilesetHeight.TabIndex = 8;
+            this.tTilesetHeight.Text = "1";
+            this.tTilesetHeight.Value = 1;
+            // 
+            // cTilesetWidth
+            // 
+            this.cTilesetWidth.FormattingEnabled = true;
+            this.cTilesetWidth.Location = new System.Drawing.Point(4, 17);
+            this.cTilesetWidth.Margin = new System.Windows.Forms.Padding(2);
+            this.cTilesetWidth.MaximumValue = 2147483646;
+            this.cTilesetWidth.MinimumValue = 1;
+            this.cTilesetWidth.Name = "cTilesetWidth";
+            this.cTilesetWidth.Size = new System.Drawing.Size(76, 21);
+            this.cTilesetWidth.TabIndex = 7;
+            this.cTilesetWidth.Text = "1";
+            this.cTilesetWidth.Value = 1;
+            this.cTilesetWidth.SelectedIndexChanged += new System.EventHandler(this.cTilesetWidth_SelectedIndexChanged);
+            this.cTilesetWidth.TextChanged += new System.EventHandler(this.cTilesetWidth_TextChanged);
+            // 
             // panel4
             // 
             this.panel4.AutoScroll = true;
@@ -487,6 +532,21 @@
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(491, 355);
             this.panel4.TabIndex = 2;
+            // 
+            // pTilemap
+            // 
+            this.pTilemap.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            this.pTilemap.Location = new System.Drawing.Point(0, 0);
+            this.pTilemap.Margin = new System.Windows.Forms.Padding(2);
+            this.pTilemap.Name = "pTilemap";
+            this.pTilemap.Size = new System.Drawing.Size(12, 13);
+            this.pTilemap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pTilemap.TabIndex = 1;
+            this.pTilemap.TabStop = false;
+            this.pTilemap.Paint += new System.Windows.Forms.PaintEventHandler(this.pTilemap_Paint);
+            this.pTilemap.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pTilemap_MouseDown);
+            this.pTilemap.MouseLeave += new System.EventHandler(this.pTilemap_MouseLeave);
+            this.pTilemap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pTilemap_MouseMove);
             // 
             // panel3
             // 
@@ -500,6 +560,59 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(491, 109);
             this.panel3.TabIndex = 1;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.bTilemapRight);
+            this.groupBox4.Controls.Add(this.bTilemapLeft);
+            this.groupBox4.Controls.Add(this.bTilemapDown);
+            this.groupBox4.Controls.Add(this.bTilemapUp);
+            this.groupBox4.Location = new System.Drawing.Point(188, 2);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(168, 77);
+            this.groupBox4.TabIndex = 6;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Shift";
+            // 
+            // bTilemapRight
+            // 
+            this.bTilemapRight.Location = new System.Drawing.Point(114, 34);
+            this.bTilemapRight.Name = "bTilemapRight";
+            this.bTilemapRight.Size = new System.Drawing.Size(48, 23);
+            this.bTilemapRight.TabIndex = 3;
+            this.bTilemapRight.Text = "Right";
+            this.bTilemapRight.UseVisualStyleBackColor = true;
+            this.bTilemapRight.Click += new System.EventHandler(this.bTilemapRight_Click);
+            // 
+            // bTilemapLeft
+            // 
+            this.bTilemapLeft.Location = new System.Drawing.Point(6, 34);
+            this.bTilemapLeft.Name = "bTilemapLeft";
+            this.bTilemapLeft.Size = new System.Drawing.Size(48, 23);
+            this.bTilemapLeft.TabIndex = 2;
+            this.bTilemapLeft.Text = "Left";
+            this.bTilemapLeft.UseVisualStyleBackColor = true;
+            this.bTilemapLeft.Click += new System.EventHandler(this.bTilemapLeft_Click);
+            // 
+            // bTilemapDown
+            // 
+            this.bTilemapDown.Location = new System.Drawing.Point(60, 48);
+            this.bTilemapDown.Name = "bTilemapDown";
+            this.bTilemapDown.Size = new System.Drawing.Size(48, 23);
+            this.bTilemapDown.TabIndex = 1;
+            this.bTilemapDown.Text = "Down";
+            this.bTilemapDown.UseVisualStyleBackColor = true;
+            this.bTilemapDown.Click += new System.EventHandler(this.bTilemapDown_Click);
+            // 
+            // bTilemapUp
+            // 
+            this.bTilemapUp.Location = new System.Drawing.Point(60, 19);
+            this.bTilemapUp.Name = "bTilemapUp";
+            this.bTilemapUp.Size = new System.Drawing.Size(48, 23);
+            this.bTilemapUp.TabIndex = 0;
+            this.bTilemapUp.Text = "Up";
+            this.bTilemapUp.UseVisualStyleBackColor = true;
+            this.bTilemapUp.Click += new System.EventHandler(this.bTilemapUp_Click);
             // 
             // groupBox3
             // 
@@ -527,6 +640,18 @@
             this.bTilemapResize.UseVisualStyleBackColor = true;
             this.bTilemapResize.Click += new System.EventHandler(this.bTilemapResize_Click);
             // 
+            // tTilemapHeight
+            // 
+            this.tTilemapHeight.Location = new System.Drawing.Point(101, 17);
+            this.tTilemapHeight.Margin = new System.Windows.Forms.Padding(2);
+            this.tTilemapHeight.MaximumValue = 2147483646;
+            this.tTilemapHeight.MinimumValue = 1;
+            this.tTilemapHeight.Name = "tTilemapHeight";
+            this.tTilemapHeight.Size = new System.Drawing.Size(76, 20);
+            this.tTilemapHeight.TabIndex = 7;
+            this.tTilemapHeight.Text = "1";
+            this.tTilemapHeight.Value = 1;
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -536,6 +661,18 @@
             this.label1.Size = new System.Drawing.Size(14, 13);
             this.label1.TabIndex = 6;
             this.label1.Text = "X";
+            // 
+            // tTilemapWidth
+            // 
+            this.tTilemapWidth.Location = new System.Drawing.Point(4, 17);
+            this.tTilemapWidth.Margin = new System.Windows.Forms.Padding(2);
+            this.tTilemapWidth.MaximumValue = 2147483646;
+            this.tTilemapWidth.MinimumValue = 1;
+            this.tTilemapWidth.Name = "tTilemapWidth";
+            this.tTilemapWidth.Size = new System.Drawing.Size(76, 20);
+            this.tTilemapWidth.TabIndex = 5;
+            this.tTilemapWidth.Text = "1";
+            this.tTilemapWidth.Value = 1;
             // 
             // rModePalette
             // 
@@ -565,140 +702,12 @@
             this.rModeTilemap.UseVisualStyleBackColor = true;
             this.rModeTilemap.CheckedChanged += new System.EventHandler(this.rMode_CheckedChanged);
             // 
-            // groupBox4
+            // rearrangePaletteToolStripMenuItem
             // 
-            this.groupBox4.Controls.Add(this.bTilemapRight);
-            this.groupBox4.Controls.Add(this.bTilemapLeft);
-            this.groupBox4.Controls.Add(this.bTilemapDown);
-            this.groupBox4.Controls.Add(this.bTilemapUp);
-            this.groupBox4.Location = new System.Drawing.Point(188, 2);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(168, 77);
-            this.groupBox4.TabIndex = 6;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Shift";
-            // 
-            // bTilemapUp
-            // 
-            this.bTilemapUp.Location = new System.Drawing.Point(60, 19);
-            this.bTilemapUp.Name = "bTilemapUp";
-            this.bTilemapUp.Size = new System.Drawing.Size(48, 23);
-            this.bTilemapUp.TabIndex = 0;
-            this.bTilemapUp.Text = "Up";
-            this.bTilemapUp.UseVisualStyleBackColor = true;
-            this.bTilemapUp.Click += new System.EventHandler(this.bTilemapUp_Click);
-            // 
-            // bTilemapDown
-            // 
-            this.bTilemapDown.Location = new System.Drawing.Point(60, 48);
-            this.bTilemapDown.Name = "bTilemapDown";
-            this.bTilemapDown.Size = new System.Drawing.Size(48, 23);
-            this.bTilemapDown.TabIndex = 1;
-            this.bTilemapDown.Text = "Down";
-            this.bTilemapDown.UseVisualStyleBackColor = true;
-            this.bTilemapDown.Click += new System.EventHandler(this.bTilemapDown_Click);
-            // 
-            // bTilemapLeft
-            // 
-            this.bTilemapLeft.Location = new System.Drawing.Point(6, 34);
-            this.bTilemapLeft.Name = "bTilemapLeft";
-            this.bTilemapLeft.Size = new System.Drawing.Size(48, 23);
-            this.bTilemapLeft.TabIndex = 2;
-            this.bTilemapLeft.Text = "Left";
-            this.bTilemapLeft.UseVisualStyleBackColor = true;
-            this.bTilemapLeft.Click += new System.EventHandler(this.bTilemapLeft_Click);
-            // 
-            // bTilemapRight
-            // 
-            this.bTilemapRight.Location = new System.Drawing.Point(114, 34);
-            this.bTilemapRight.Name = "bTilemapRight";
-            this.bTilemapRight.Size = new System.Drawing.Size(48, 23);
-            this.bTilemapRight.TabIndex = 3;
-            this.bTilemapRight.Text = "Right";
-            this.bTilemapRight.UseVisualStyleBackColor = true;
-            this.bTilemapRight.Click += new System.EventHandler(this.bTilemapRight_Click);
-            // 
-            // pTileset
-            // 
-            this.pTileset.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-            this.pTileset.Location = new System.Drawing.Point(0, 0);
-            this.pTileset.Margin = new System.Windows.Forms.Padding(2);
-            this.pTileset.Name = "pTileset";
-            this.pTileset.Size = new System.Drawing.Size(12, 13);
-            this.pTileset.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pTileset.TabIndex = 1;
-            this.pTileset.TabStop = false;
-            this.pTileset.Paint += new System.Windows.Forms.PaintEventHandler(this.pTileset_Paint);
-            this.pTileset.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pTileset_MouseDown);
-            this.pTileset.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pTileset_MouseMove);
-            this.pTileset.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pTileset_MouseUp);
-            // 
-            // tTilesetHeight
-            // 
-            this.tTilesetHeight.Location = new System.Drawing.Point(102, 17);
-            this.tTilesetHeight.Margin = new System.Windows.Forms.Padding(2);
-            this.tTilesetHeight.MaximumValue = 2048;
-            this.tTilesetHeight.MinimumValue = 1;
-            this.tTilesetHeight.Name = "tTilesetHeight";
-            this.tTilesetHeight.ReadOnly = true;
-            this.tTilesetHeight.Size = new System.Drawing.Size(76, 20);
-            this.tTilesetHeight.TabIndex = 8;
-            this.tTilesetHeight.Text = "1";
-            this.tTilesetHeight.Value = 1;
-            // 
-            // cTilesetWidth
-            // 
-            this.cTilesetWidth.FormattingEnabled = true;
-            this.cTilesetWidth.Location = new System.Drawing.Point(4, 17);
-            this.cTilesetWidth.Margin = new System.Windows.Forms.Padding(2);
-            this.cTilesetWidth.MaximumValue = 2147483646;
-            this.cTilesetWidth.MinimumValue = 1;
-            this.cTilesetWidth.Name = "cTilesetWidth";
-            this.cTilesetWidth.Size = new System.Drawing.Size(76, 21);
-            this.cTilesetWidth.TabIndex = 7;
-            this.cTilesetWidth.Text = "1";
-            this.cTilesetWidth.Value = 1;
-            this.cTilesetWidth.SelectedIndexChanged += new System.EventHandler(this.cTilesetWidth_SelectedIndexChanged);
-            this.cTilesetWidth.TextChanged += new System.EventHandler(this.cTilesetWidth_TextChanged);
-            // 
-            // pTilemap
-            // 
-            this.pTilemap.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-            this.pTilemap.Location = new System.Drawing.Point(0, 0);
-            this.pTilemap.Margin = new System.Windows.Forms.Padding(2);
-            this.pTilemap.Name = "pTilemap";
-            this.pTilemap.Size = new System.Drawing.Size(12, 13);
-            this.pTilemap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pTilemap.TabIndex = 1;
-            this.pTilemap.TabStop = false;
-            this.pTilemap.Paint += new System.Windows.Forms.PaintEventHandler(this.pTilemap_Paint);
-            this.pTilemap.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pTilemap_MouseDown);
-            this.pTilemap.MouseLeave += new System.EventHandler(this.pTilemap_MouseLeave);
-            this.pTilemap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pTilemap_MouseMove);
-            // 
-            // tTilemapHeight
-            // 
-            this.tTilemapHeight.Location = new System.Drawing.Point(101, 17);
-            this.tTilemapHeight.Margin = new System.Windows.Forms.Padding(2);
-            this.tTilemapHeight.MaximumValue = 2147483646;
-            this.tTilemapHeight.MinimumValue = 1;
-            this.tTilemapHeight.Name = "tTilemapHeight";
-            this.tTilemapHeight.Size = new System.Drawing.Size(76, 20);
-            this.tTilemapHeight.TabIndex = 7;
-            this.tTilemapHeight.Text = "1";
-            this.tTilemapHeight.Value = 1;
-            // 
-            // tTilemapWidth
-            // 
-            this.tTilemapWidth.Location = new System.Drawing.Point(4, 17);
-            this.tTilemapWidth.Margin = new System.Windows.Forms.Padding(2);
-            this.tTilemapWidth.MaximumValue = 2147483646;
-            this.tTilemapWidth.MinimumValue = 1;
-            this.tTilemapWidth.Name = "tTilemapWidth";
-            this.tTilemapWidth.Size = new System.Drawing.Size(76, 20);
-            this.tTilemapWidth.TabIndex = 5;
-            this.tTilemapWidth.Text = "1";
-            this.tTilemapWidth.Value = 1;
+            this.rearrangePaletteToolStripMenuItem.Name = "rearrangePaletteToolStripMenuItem";
+            this.rearrangePaletteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.rearrangePaletteToolStripMenuItem.Text = "Rearrange";
+            this.rearrangePaletteToolStripMenuItem.Click += new System.EventHandler(this.rearrangePaletteToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -725,19 +734,19 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pTileset)).EndInit();
             this.panel1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.panel4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pTilemap)).EndInit();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            this.groupBox4.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pTileset)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pTilemap)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -803,6 +812,7 @@
         private System.Windows.Forms.Button bTilemapLeft;
         private System.Windows.Forms.Button bTilemapDown;
         private System.Windows.Forms.Button bTilemapUp;
+        private System.Windows.Forms.ToolStripMenuItem rearrangePaletteToolStripMenuItem;
     }
 }
 

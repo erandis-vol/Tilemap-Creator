@@ -196,7 +196,7 @@ namespace TMC
         /// <param name="filename"></param>
         /// <param name="format"></param>
         /// <param name="extraBytes"></param>
-        public void Save2(string filename, TilemapFormat format, int extraBytes = 0)
+        void Save2(string filename, TilemapFormat format, int extraBytes = 0)
         {
             var variableName = Path.GetFileNameWithoutExtension(filename).ToLower().Replace(' ', '_');
 

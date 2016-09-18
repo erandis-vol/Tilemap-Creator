@@ -199,6 +199,29 @@ namespace TMC
             }
         }
 
+        private void rearrangePaletteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (tileset == null)
+                return;
+
+            using (var d = new RearrangePaletteDialog(tilesetImage.Palette))
+            {
+                if (d.ShowDialog() != DialogResult.OK)
+                    return;
+
+                // replace palette for every tile
+                for (int t = 0; t < tileset.Size; t++)
+                {
+                    tileset[t].Lock();
+                    tileset[t].RearrangeColors(d.Palette);
+                    tileset[t].Unlock();
+                }
+
+                // redraw tileset
+                UpdateTileset(false);
+            }
+        }
+
         private void exportToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (tileset == null)
@@ -285,7 +308,5 @@ namespace TMC
             using (var a = new AboutDialog())
                 a.ShowDialog();
         }
-
-        
     }
 }
