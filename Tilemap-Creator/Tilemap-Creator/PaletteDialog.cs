@@ -34,6 +34,7 @@ namespace TMC
             }
 
             flowColors.Controls.AddRange(paletteBoxes);
+
         }
 
         private void PaletteDialog_FormClosed(object sender, FormClosedEventArgs e)
@@ -45,6 +46,8 @@ namespace TMC
         {
             var paletteBox = (Panel)sender;
             var index = (int)paletteBox.Tag;
+
+            Console.WriteLine($"Color: {palette[index]}");
         }
     }
 }

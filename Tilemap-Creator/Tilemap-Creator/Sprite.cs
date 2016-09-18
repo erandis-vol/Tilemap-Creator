@@ -92,7 +92,7 @@ namespace TMC
 
                         // Search palette for match
                         var index = 0;
-                        for (int j = 0; j < 16; j++)
+                        for (int j = 0; j < colors.Length; j++)
                         {
                             if (colors[j] == c)
                             {
