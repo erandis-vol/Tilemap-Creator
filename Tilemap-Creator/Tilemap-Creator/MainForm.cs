@@ -140,12 +140,19 @@ namespace TMC
             if (tileset == null || tilesetImage == null) return;
 
             saveFileDialog1.Title = "Save Tileset";
-            saveFileDialog1.Filter = "Bitmaps|*.bmp";
+            saveFileDialog1.Filter = "Bitmaps|*.bmp"; //|Binary|*.bin";
 
             if (saveFileDialog1.ShowDialog() != DialogResult.OK) return;
 
-            // save Tileset as .bmp (forced for now)
-            tilesetImage.Save(saveFileDialog1.FileName, SpriteFormat.BMP);
+            switch (saveFileDialog1.FilterIndex)
+            {
+                case 1:
+                    tilesetImage.Save(saveFileDialog1.FileName, SpriteFormat.BMP);
+                    break;
+                //case 2:
+                //    tilesetImage.Save(saveFileDialog1.FileName, SpriteFormat.GBA);
+                //    break;
+            }
         }
 
         private void createToolStripMenuItem_Click(object sender, EventArgs e)

@@ -12,8 +12,7 @@ namespace TMC
 {
     public enum SpriteFormat
     {
-        BMP = 0x0000,
-        PNG = 0x0001,
+        BMP, PNG, GBA, C,
     }
 
     // basic working Sprite class, but not the best
@@ -144,6 +143,27 @@ namespace TMC
                 for (int i = 0; i < colors.Count; i++)
                     palette[i] = Color.FromArgb((0xFF << 24) | colors[i]);
             }
+
+            // --------------------------------
+            // Make palette have a 2^n length
+            int n = 3;  // at least 16 colors
+            while ((2 << n) < palette.Length)
+                n++;
+
+            if ((2 << n) > palette.Length)
+            {
+                // Resize palette
+                var temp = new Color[2 << n];
+                palette.CopyTo(temp, 0);
+
+                // Add extra colors to temp
+                for (int i = palette.Length; i < temp.Length; i++)
+                    temp[i] = Color.Black;
+
+                // Set new palette
+                palette = temp;
+            }
+
             Unlock();
         }
 
@@ -206,6 +226,9 @@ namespace TMC
                 case SpriteFormat.BMP:
                     SaveBitmap(filename, bitDepth);
                     break;
+                case SpriteFormat.GBA:
+                    SaveGBA(filename, bitDepth);
+                    break;
 
                 default:
                     throw new NotImplementedException();
@@ -220,14 +243,6 @@ namespace TMC
             int rowSize = ((bitDepth * width + 31) / 32) * 4;   // number of bytes per row
             int pixelSize = rowSize * height;                   // number of pixels in bytes
             int paddingSize = rowSize % 4;                      // number of extra bytes per row
-
-#if DEBUG
-            Console.WriteLine("Saving Bitmap:");
-            Console.WriteLine("- bitdepth={0}", bitDepth);
-            Console.WriteLine("- rowSize={0}", rowSize);
-            Console.WriteLine("- pixelSize={0}", pixelSize);
-            Console.WriteLine("- paddingSize={0}", paddingSize);
-#endif
 
             using (var bw = new BinaryWriter(File.Create(filename)))
             {
@@ -389,6 +404,46 @@ namespace TMC
             // https://en.wikipedia.org/wiki/Portable_Network_Graphics
             // woof
             throw new NotImplementedException("Cannot save PNG files yet.");
+        }
+
+        // raw GBA format
+        // for advanced users
+        void SaveGBA(string filename, int bitDepth)
+        {
+            using (var bw = new BinaryWriter(File.Create(filename)))
+            {
+                var tiledWidth = width / 8;
+                var tiledHeight = (height / 8);// + (height % 8 == 0 ? 0 : 1);
+                
+                if (bitDepth == 4)
+                {
+                    for (int tileY = 0; tileY < tiledHeight; tileY++)
+                    {
+                        for (int tileX = 0; tileX < tiledWidth; tileX++)
+                        {
+                            // save a tile
+                            for (int y = 0; y < 8; y++)
+                            {
+                                for (int x = 0; x < 8; x += 2)
+                                {
+                                    var left = GetPixel(x + tileX * 8, y + tileY * 8);
+                                    var right = GetPixel(x + 1 + tileX * 8, y + tileY * 8);
+
+                                    bw.Write((byte)((left & 0xF) | ((right & 0xF) << 4)));
+                                }
+                            }
+                        }
+                    }
+                }
+                //else if (bitDepth == 8)
+                //{
+                    //
+                //}
+                else
+                {
+                    throw new Exception("Sprite has too many colors to save!");
+                }
+            }
         }
 
         /// <summary>
