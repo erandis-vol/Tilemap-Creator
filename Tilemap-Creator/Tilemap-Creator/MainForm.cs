@@ -13,14 +13,16 @@ namespace TMC
         Color gridColor = Color.FromArgb(128, Color.White);
         Color gridColorS = Color.FromArgb(128, Color.Yellow);
 
-        // TODO: information about last tileset/tilemap save
+        // TODO: remember information about last tileset/tilemap
 
         public MainForm()
         {
             InitializeComponent();
 
-            openToolStripMenuItem1.Enabled = false;
-            saveToolStripMenuItem1.Enabled = false;
+            mnuOpenTilemap.Enabled = false;
+            mnuSaveTilemap.Enabled = false;
+            mnuSaveTileset.Enabled = false;
+            mnuPalette.Enabled = false;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -37,7 +39,7 @@ namespace TMC
             palettesetImage?.Dispose();
         }
 
-        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        private void mnuNewTilemap_Click(object sender, EventArgs e)
         {
             if (tileset == null)
                 return;
@@ -46,7 +48,7 @@ namespace TMC
             UpdateTilemap();
         }
 
-        private void openToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void mnuOpenTilemap_Click(object sender, EventArgs e)
         {
             if (tileset == null)
                 return;
@@ -68,7 +70,7 @@ namespace TMC
             }
         }
 
-        private void saveToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void mnuSaveTilemap_Click(object sender, EventArgs e)
         {
             if (tileset == null || tilemap == null)
                 return;
@@ -91,7 +93,7 @@ namespace TMC
             }
         }
 
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        private void mnuOpenTileset_Click(object sender, EventArgs e)
         {
             // TODO: ask to save old Tileset/Tilemap
             openFileDialog1.FileName = "";
@@ -131,11 +133,13 @@ namespace TMC
             tilemap = new Tilemap(30, 20);
             UpdateTilemap();
 
-            openToolStripMenuItem1.Enabled = true;
-            saveToolStripMenuItem1.Enabled = true;
+            mnuOpenTilemap.Enabled = true;
+            mnuSaveTilemap.Enabled = true;
+            mnuSaveTileset.Enabled = true;
+            mnuPalette.Enabled = true;
         }
 
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        private void mnuSaveTileset_Click(object sender, EventArgs e)
         {
             if (tileset == null || tilesetImage == null) return;
 
@@ -155,7 +159,7 @@ namespace TMC
             }
         }
 
-        private void createToolStripMenuItem_Click(object sender, EventArgs e)
+        private void mnuCreateTileset_Click(object sender, EventArgs e)
         {
             // TODO: ask to save Tilemap/Tileset
             openFileDialog1.FileName = "";
@@ -176,7 +180,7 @@ namespace TMC
 
                 // create Tilemap/Tileset
                 tileset?.Dispose();
-                Tileset.Create(sprite, allowTileFlippingToolStripMenuItem.Checked, out tileset, out tilemap);
+                Tileset.Create(sprite, mnuAllowFlipping.Checked, out tileset, out tilemap);
             }
 
             // fill sizes for Tileset
@@ -191,11 +195,13 @@ namespace TMC
             UpdateTileset(true);
             UpdateTilemap();
 
-            openToolStripMenuItem1.Enabled = true;
-            saveToolStripMenuItem1.Enabled = true;
+            mnuOpenTilemap.Enabled = true;
+            mnuSaveTilemap.Enabled = true;
+            mnuSaveTileset.Enabled = true;
+            mnuPalette.Enabled = true;
         }
 
-        private void editPaletteToolStripMenuItem_Click(object sender, EventArgs e)
+        private void mnuEditPalette_Click(object sender, EventArgs e)
         {
             if (tileset == null)
                 return;
@@ -219,7 +225,7 @@ namespace TMC
             }
         }
 
-        private void rearrangePaletteToolStripMenuItem_Click(object sender, EventArgs e)
+        private void mnuRearrangePalette_Click(object sender, EventArgs e)
         {
             if (tileset == null)
                 return;
@@ -242,7 +248,7 @@ namespace TMC
             }
         }
 
-        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+        private void mnuExportPalette_Click(object sender, EventArgs e)
         {
             if (tileset == null)
                 return;
@@ -275,7 +281,7 @@ namespace TMC
             }
         }
 
-        private void zoomInToolStripMenuItem_Click(object sender, EventArgs e)
+        private void mnuZoomIn_Click(object sender, EventArgs e)
         {
             //if (tileset == null)
             //    return;
@@ -286,10 +292,10 @@ namespace TMC
             UpdateTileset(false);
             UpdateTilemap();
 
-            lZoom.Text = $"{zoom * 100}%";
+            lZoom.Text = $"Zoom: {zoom * 100}%";
         }
 
-        private void zoomOutToolStripMenuItem_Click(object sender, EventArgs e)
+        private void mnuZoomOut_Click(object sender, EventArgs e)
         {
             //if (tileset == null)
             //    return;
@@ -300,30 +306,30 @@ namespace TMC
             UpdateTileset(false);
             UpdateTilemap();
 
-            lZoom.Text = $"{zoom * 100}%";
+            lZoom.Text = $"Zoom: {zoom * 100}%";
         }
 
-        private void gridToolStripMenuItem_Click(object sender, EventArgs e)
+        private void mnuGrid_Click(object sender, EventArgs e)
         {
             pTilemap.Invalidate();
             pTileset.Invalidate();
         }
 
-        private void statusBarToolStripMenuItem_Click(object sender, EventArgs e)
+        private void mnuStatusBar_Click(object sender, EventArgs e)
         {
-            statusStrip1.Visible = statusBarToolStripMenuItem.Checked;
+            statusStrip1.Visible = mnuStatusBar.Checked;
         }
 
-        private void allowTileFlippingToolStripMenuItem_Click(object sender, EventArgs e)
+        private void mnuAllowFlip_Click(object sender, EventArgs e)
         {
-            chkTilesetFlipX.Enabled = allowTileFlippingToolStripMenuItem.Checked;
-            chkTilesetFlipY.Enabled = allowTileFlippingToolStripMenuItem.Checked;
+            chkTilesetFlipX.Enabled = mnuAllowFlipping.Checked;
+            chkTilesetFlipY.Enabled = mnuAllowFlipping.Checked;
 
             chkTilesetFlipX.Checked = false;
             chkTilesetFlipY.Checked = false;
         }
 
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        private void mnuAbout_Click(object sender, EventArgs e)
         {
             using (var a = new AboutDialog())
                 a.ShowDialog();

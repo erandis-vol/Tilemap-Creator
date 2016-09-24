@@ -108,7 +108,7 @@ namespace TMC
             if (rModeTilemap.Checked)
             {
                 // draw grid
-                if (gridToolStripMenuItem.Checked)
+                if (mnuGrid.Checked)
                 {
                     using (var pen = new Pen(new SolidBrush(gridColor), 1f))
                     {
@@ -207,6 +207,10 @@ namespace TMC
             lPosition.Text = rModeTilemap.Checked ?
                 $"Tileset: ({tilesetMouseCurrent.X}, {tilesetMouseCurrent.Y})" :
                 $"Palette: ({tilesetMouseCurrent.X}, {tilesetMouseCurrent.Y})";
+
+            lTile.Text = $"Tile: 000";
+            lPalette.Text = $"Palette: 0";
+            lFlip.Text = "Flip: None";
 
             if (tilesetMouseDown)
                 pTileset.Invalidate();

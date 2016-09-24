@@ -142,7 +142,7 @@ namespace TMC
             if (tileset == null || tilemap == null) return;
 
             // draw grid
-            if (gridToolStripMenuItem.Checked)
+            if (mnuGrid.Checked)
             {
                 using (var pen = new Pen(new SolidBrush(gridColor), 1f))
                 using (var penS = new Pen(new SolidBrush(gridColorS), 1f))
@@ -210,6 +210,14 @@ namespace TMC
                 $"Tilemap: ({tilemapMouseCurrent.X}, {tilemapMouseCurrent.Y})" :
                 $"Palettemap: ({tilemapMouseCurrent.X}, {tilemapMouseCurrent.Y})";
 
+            if (tilemap == null)
+                return;
+
+            var mousedTile = tilemap[tilemapMouseCurrent];
+            lTile.Text = $"Tile: {mousedTile.TilesetIndex:X3}";
+            lPalette.Text = $"Palette: {mousedTile.PaletteIndex:X}";
+            lFlip.Text = "Flip: " + (mousedTile.FlipX ? mousedTile.FlipY ? "XY" : "X" : mousedTile.FlipY ? "Y" : "None");
+
             // set new tiles
             if (me.Button == MouseButtons.Left)
             {
@@ -242,7 +250,7 @@ namespace TMC
 
                             // set selection
                             tilemap[mapX, mapY].TilesetIndex = t;
-                            if (allowTileFlippingToolStripMenuItem.Checked)
+                            if (mnuAllowFlipping.Checked)
                             {
                                 tilemap[mapX, mapY].FlipX = chkTilesetFlipX.Checked;
                                 tilemap[mapX, mapY].FlipY = chkTilesetFlipY.Checked;
@@ -270,7 +278,7 @@ namespace TMC
 
                     tilesetSelection = new Rectangle(t.TilesetIndex % w, t.TilesetIndex / w, 1, 1);
 
-                    if (allowTileFlippingToolStripMenuItem.Checked)
+                    if (mnuAllowFlipping.Checked)
                     {
                         chkTilesetFlipX.Checked = t.FlipX;
                         chkTilesetFlipY.Checked = t.FlipY;
