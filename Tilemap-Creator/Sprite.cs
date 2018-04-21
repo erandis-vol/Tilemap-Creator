@@ -246,7 +246,6 @@ namespace TMC
 
             using (var bw = new BinaryWriter(File.Create(filename)))
             {
-                // TODO: Indexed images may be compressed using RLE or Huffman
                 if (bitDepth == 4)
                 {
                     // Bitmap file header
@@ -304,8 +303,7 @@ namespace TMC
                         }
                     }
                 }
-
-                if (bitDepth == 8)
+                else if (bitDepth == 8)
                 {
                     // Bitmap file header
                     bw.Write((ushort)0x4D42);               // 'BM'
@@ -353,8 +351,7 @@ namespace TMC
                         }
                     }
                 }
-
-                if (bitDepth == 24)
+                else if (bitDepth == 24)
                 {
                     // Bitmap file header
                     bw.Write((ushort)0x4D42);   // 'BM'
@@ -382,9 +379,9 @@ namespace TMC
                         for (int x = 0; x < width; x++)
                         {
                             var color = palette[pixels[x + y * width]];
-                            bw.Write(color.R);
-                            bw.Write(color.G);
                             bw.Write(color.B);
+                            bw.Write(color.G);
+                            bw.Write(color.R);
                         }
 
                         // pad end of row with 0's
