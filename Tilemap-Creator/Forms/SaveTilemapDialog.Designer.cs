@@ -1,4 +1,4 @@
-﻿namespace TMC
+﻿namespace TMC.Forms
 {
     partial class SaveTilemapDialog
     {
@@ -35,7 +35,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.txtExtra = new TMC.NumberBox();
+            this.txtExtra = new TMC.Controls.NumberBox();
             this.SuspendLayout();
             // 
             // bSave
@@ -160,6 +160,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label4;
-        private NumberBox txtExtra;
+        private TMC.Controls.NumberBox txtExtra;
     }
 }

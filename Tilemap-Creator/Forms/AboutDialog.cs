@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace TMC
+namespace TMC.Forms
 {
     public partial class AboutDialog : Form
     {

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace TMC
+namespace TMC.Forms
 {
     public partial class RearrangePaletteDialog : Form
     {

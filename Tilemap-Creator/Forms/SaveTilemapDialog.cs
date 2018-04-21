@@ -7,8 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TMC.Core;
 
-namespace TMC
+namespace TMC.Forms
 {
     public partial class SaveTilemapDialog : Form
     {

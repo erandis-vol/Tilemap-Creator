@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using TMC.Core;
 
-namespace TMC
+namespace TMC.Forms
 {
     public partial class OpenTilemapDialog : Form
     {

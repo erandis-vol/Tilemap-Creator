@@ -1,4 +1,4 @@
-﻿namespace TMC
+﻿namespace TMC.Forms
 {
     partial class OpenTilemapDialog
     {

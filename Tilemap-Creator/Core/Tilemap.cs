@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.IO;
 
-namespace TMC
+namespace TMC.Core
 {
     //[StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class Tile

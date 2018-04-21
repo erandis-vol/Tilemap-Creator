@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TMC
+namespace TMC.Core
 {
     public enum SpriteFormat
     {
@@ -390,6 +390,10 @@ namespace TMC
                             bw.Write(byte.MinValue);
                         }
                     }
+                }
+                else
+                {
+                    throw new NotSupportedException($"Cannot save {bitDepth} BPP bitmaps.");
                 }
             }
         }

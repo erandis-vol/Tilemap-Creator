@@ -6,7 +6,7 @@ using System.Windows.Forms;
 // to NearestNeighbor allows a picture box that appears to zoom the
 // image by pixels when resized :D
 
-namespace TMC
+namespace TMC.Controls
 {
     /// <summary>
     /// Represents a Windows picture box control for displaying an image with interpolation.
