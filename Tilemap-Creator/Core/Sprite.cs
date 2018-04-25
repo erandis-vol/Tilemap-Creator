@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 
 namespace TMC.Core
 {
+    #if false
+
     public enum SpriteFormat
     {
         BMP, PNG, GBA, C,
@@ -651,6 +653,8 @@ namespace TMC.Core
             return s.image;
         }
     }
+
+    #endif
 
     public static class BitmapExtensions
     {

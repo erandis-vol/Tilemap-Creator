@@ -12,7 +12,7 @@ namespace TMC
     partial class MainForm
     {
         Tileset tileset;
-        Sprite tilesetImage;
+        FastBitmap tilesetImage;
 
         Rectangle tilesetSelection = new Rectangle(0, 0, 1, 1);
 
@@ -54,14 +54,14 @@ namespace TMC
                 int width = cTilesetWidth.Value;
                 if (width <= 0) width = 1;
 
-                int height = (tileset.Size / width) + (tileset.Size % width > 0 ? 1 : 0);
+                int height = (tileset.Length / width) + (tileset.Length % width > 0 ? 1 : 0);
 
                 // update height text
                 tTilesetHeight.Value = height;
 
                 // update Tileset image
                 tilesetImage?.Dispose();
-                tilesetImage = tileset.Smoosh(width);
+                tilesetImage = tileset.ToImage(width);
 
                 pTileset.Size = new Size(tilesetImage.Width * zoom, tilesetImage.Height * zoom);
                 pTileset.Image = tilesetImage;

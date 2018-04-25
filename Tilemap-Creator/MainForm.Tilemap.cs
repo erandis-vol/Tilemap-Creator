@@ -12,7 +12,7 @@ namespace TMC
     partial class MainForm
     {
         Tilemap tilemap;
-        Bitmap tilemapImage;
+        FastBitmap tilemapImage;
 
         Point tilemapMouseCurrent = new Point(-1, -1);
 
@@ -26,8 +26,19 @@ namespace TMC
             tTilemapWidth.Value = tilemap.Width;
             tTilemapHeight.Value = tilemap.Height;
 
-            // draw tilemap image :D
-            DrawTilemap();
+            // draw tilemap
+            if (tilemapImage == null)
+            {
+                tilemapImage = new FastBitmap(tilemap.Width * 8, tilemap.Height * 8);
+            }
+            if (tilemapImage.Width != tilemap.Width * 8 ||
+                tilemapImage.Height != tilemap.Height * 8)
+            {
+                tilemapImage.Dispose();
+                tilemapImage = new FastBitmap(tilemap.Width * 8, tilemap.Height * 8);
+            }
+
+            tilemap.Draw(tilemapImage, tileset);
 
             // finished
             pTilemap.Size = new Size(tilemapImage.Width * zoom, tilemapImage.Height * zoom);
@@ -35,6 +46,7 @@ namespace TMC
             ignore = false;
         }
 
+        /*
         void DrawTilemap()
         {
             // recreate Tilemap image
@@ -51,9 +63,9 @@ namespace TMC
                     for (int x = 0; x < tilemap.Width; x++)
                     {
                         var tile = tilemap[x, y];
-                        g.DrawImageFlipped(tileset[tile.TilesetIndex],
-                            x * Tileset.TileSize, y * Tileset.TileSize,
-                            tile.FlipX, tile.FlipY);
+                        //g.DrawImageFlipped(tileset[tile.TilesetIndex],
+                        //    x * Tileset.TileSize, y * Tileset.TileSize,
+                        //    tile.FlipX, tile.FlipY);
                     }
                 }
 
@@ -84,7 +96,9 @@ namespace TMC
                 }
             }
         }
+        */
 
+        /*
         void RedrawTilemap(int boundsX, int boundsY, int boundsWidth, int boundsHeight)
         {
             // redraws a portion of the tilemap onto the existing image
@@ -99,9 +113,9 @@ namespace TMC
                             break;
 
                         var tile = tilemap[x, y];
-                        g.DrawImageFlipped(tileset[tile.TilesetIndex],
-                            x * Tileset.TileSize, y * Tileset.TileSize,
-                            tile.FlipX, tile.FlipY);
+                        //g.DrawImageFlipped(tileset[tile.TilesetIndex],
+                        //    x * Tileset.TileSize, y * Tileset.TileSize,
+                        //    tile.FlipX, tile.FlipY);
                     }
                 }
 
@@ -137,6 +151,7 @@ namespace TMC
             // below not needed because image should already be set for pTilemap
             // pTilemap.Image = tilemapImage;
         }
+        */
 
         private void pTilemap_Paint(object sender, PaintEventArgs e)
         {
@@ -215,8 +230,8 @@ namespace TMC
                 return;
 
             var mousedTile = tilemap[tilemapMouseCurrent];
-            lTile.Text = $"Tile: {mousedTile.TilesetIndex:X3}";
-            lPalette.Text = $"Palette: {mousedTile.PaletteIndex:X}";
+            lTile.Text = $"Tile: {mousedTile.Index:X3}";
+            lPalette.Text = $"Palette: {mousedTile.Palette:X}";
             lFlip.Text = "Flip: " + (mousedTile.FlipX ? mousedTile.FlipY ? "XY" : "X" : mousedTile.FlipY ? "Y" : "None");
 
             // set new tiles
@@ -246,11 +261,11 @@ namespace TMC
                             var t = setX + setY * tilesPerRow;
 
                             // ilegal tiles default to 0
-                            if (t >= tileset.Size)
+                            if (t >= tileset.Length)
                                 t = 0;
 
                             // set selection
-                            tilemap[mapX, mapY].TilesetIndex = t;
+                            tilemap[mapX, mapY].Index = (short)t;
                             if (mnuAllowFlipping.Checked)
                             {
                                 tilemap[mapX, mapY].FlipX = chkTilesetFlipX.Checked;
@@ -262,11 +277,11 @@ namespace TMC
                 else
                 {
                     // set palette selection
-                    tilemap[tilemapMouseCurrent.X, tilemapMouseCurrent.Y].PaletteIndex = paletteSelection;
+                    tilemap[tilemapMouseCurrent.X, tilemapMouseCurrent.Y].Palette = (byte)paletteSelection;
                 }
 
                 // redraw just the portion of the tilemap that was edited
-                RedrawTilemap(tilemapMouseCurrent.X, tilemapMouseCurrent.Y,
+                tilemap.Draw(tilemapImage, tileset, tilemapMouseCurrent.X, tilemapMouseCurrent.Y,
                         tilesetSelection.Width, tilesetSelection.Height);
             }
             // get tile at X, Y -- overrides selection
@@ -277,7 +292,7 @@ namespace TMC
                     var t = tilemap[tilemapMouseCurrent];
                     var w = cTilesetWidth.Value;
 
-                    tilesetSelection = new Rectangle(t.TilesetIndex % w, t.TilesetIndex / w, 1, 1);
+                    tilesetSelection = new Rectangle(t.Index % w, t.Index / w, 1, 1);
 
                     if (mnuAllowFlipping.Checked)
                     {
@@ -287,7 +302,7 @@ namespace TMC
                 }
                 else
                 {
-                    paletteSelection = tilemap[tilemapMouseCurrent].PaletteIndex;
+                    paletteSelection = tilemap[tilemapMouseCurrent].Palette;
                 }
 
                 lTilesetSelection.Text = rModeTilemap.Checked ?
@@ -308,7 +323,7 @@ namespace TMC
                 {
                     // get tile to fill with and tile to replace
                     var set = tilesetSelection.X + tilesetSelection.Y * cTilesetWidth.Value;
-                    var get = tilemap[tilemapMouseCurrent].TilesetIndex;
+                    var get = tilemap[tilemapMouseCurrent].Index;
 
                     // quit if already set
                     if (get == set)
@@ -322,26 +337,26 @@ namespace TMC
                     while (q.Count > 0)
                     {
                         var n = q.Dequeue();
-                        if (tilemap[n].TilesetIndex != get)
+                        if (tilemap[n].Index != get)
                             continue;
 
                         Point w = n, e = new Point(n.X + 1, n.Y);
-                        while (w.X >= 0 && tilemap[w].TilesetIndex == get)
+                        while (w.X >= 0 && tilemap[w].Index == get)
                         {
-                            tilemap[w].TilesetIndex = set;
-                            if (w.Y > 0 && tilemap[w.X, w.Y - 1].TilesetIndex == get)
+                            tilemap[w].Index = (short)set;
+                            if (w.Y > 0 && tilemap[w.X, w.Y - 1].Index == get)
                                 q.Enqueue(new Point(w.X, w.Y - 1));
-                            if (w.Y < tilemap.Height - 1 && tilemap[w.X, w.Y + 1].TilesetIndex == get)
+                            if (w.Y < tilemap.Height - 1 && tilemap[w.X, w.Y + 1].Index == get)
                                 q.Enqueue(new Point(w.X, w.Y + 1));
                             w.X--;
                         }
 
-                        while (e.X <= tilemap.Width - 1 && tilemap[e].TilesetIndex == get)
+                        while (e.X <= tilemap.Width - 1 && tilemap[e].Index == get)
                         {
-                            tilemap[e].TilesetIndex = set;
-                            if (e.Y > 0 && tilemap[e.X, e.Y - 1].TilesetIndex == get)
+                            tilemap[e].Index = (short)set;
+                            if (e.Y > 0 && tilemap[e.X, e.Y - 1].Index == get)
                                 q.Enqueue(new Point(e.X, e.Y - 1));
-                            if (e.Y < tilemap.Height - 1 && tilemap[e.X, e.Y + 1].TilesetIndex == get)
+                            if (e.Y < tilemap.Height - 1 && tilemap[e.X, e.Y + 1].Index == get)
                                 q.Enqueue(new Point(e.X, e.Y + 1));
                             e.X++;
                         }
@@ -351,7 +366,7 @@ namespace TMC
                 {
                     // get tile to fill with and tile to replace
                     var set = paletteSelection;
-                    var get = tilemap[tilemapMouseCurrent].PaletteIndex;
+                    var get = tilemap[tilemapMouseCurrent].Palette;
 
                     // quit if already set
                     if (get == set)
@@ -365,26 +380,26 @@ namespace TMC
                     while (q.Count > 0)
                     {
                         var n = q.Dequeue();
-                        if (tilemap[n].PaletteIndex != get)
+                        if (tilemap[n].Palette != get)
                             continue;
 
                         Point w = n, e = new Point(n.X + 1, n.Y);
-                        while (w.X >= 0 && tilemap[w].PaletteIndex == get)
+                        while (w.X >= 0 && tilemap[w].Palette == get)
                         {
-                            tilemap[w].PaletteIndex = set;
-                            if (w.Y > 0 && tilemap[w.X, w.Y - 1].PaletteIndex == get)
+                            tilemap[w].Palette = (byte)set;
+                            if (w.Y > 0 && tilemap[w.X, w.Y - 1].Palette == get)
                                 q.Enqueue(new Point(w.X, w.Y - 1));
-                            if (w.Y < tilemap.Height - 1 && tilemap[w.X, w.Y + 1].PaletteIndex == get)
+                            if (w.Y < tilemap.Height - 1 && tilemap[w.X, w.Y + 1].Palette == get)
                                 q.Enqueue(new Point(w.X, w.Y + 1));
                             w.X--;
                         }
 
-                        while (e.X <= tilemap.Width - 1 && tilemap[e].PaletteIndex == get)
+                        while (e.X <= tilemap.Width - 1 && tilemap[e].Palette == get)
                         {
-                            tilemap[e].PaletteIndex = set;
-                            if (e.Y > 0 && tilemap[e.X, e.Y - 1].PaletteIndex == get)
+                            tilemap[e].Palette = (byte)set;
+                            if (e.Y > 0 && tilemap[e.X, e.Y - 1].Palette == get)
                                 q.Enqueue(new Point(e.X, e.Y - 1));
-                            if (e.Y < tilemap.Height - 1 && tilemap[e.X, e.Y + 1].PaletteIndex == get)
+                            if (e.Y < tilemap.Height - 1 && tilemap[e.X, e.Y + 1].Palette == get)
                                 q.Enqueue(new Point(e.X, e.Y + 1));
                             e.X++;
                         }
@@ -392,7 +407,7 @@ namespace TMC
                 }
 
                 // redraw entire tilemap (unknown amount of tiles changed)
-                RedrawTilemap(0, 0, tilemap.Width, tilemap.Height);
+                tilemap.Draw(tilemapImage, tileset, 0, 0, tilemap.Width, tilemap.Height);
             }
 
             end:

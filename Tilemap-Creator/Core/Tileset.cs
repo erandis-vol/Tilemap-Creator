@@ -193,9 +193,10 @@ namespace TMC.Core
         /// Initialzies a new instance of the <see cref="Tileset"/> with the specified tile array.
         /// </summary>
         /// <param name="tiles">The tiles.</param>
-        public Tileset(Tile[] tiles)
+        protected Tileset(Tile[] tiles, Color[] palette)
         {
             this.tiles = tiles;
+            this.palette = palette;
         }
 
         #region Methods
@@ -294,7 +295,7 @@ namespace TMC.Core
                 tilemap[i] = new Tilemap.Tile((short)index, flipX, flipY);
 
                 // Update the tileset
-                if (index < current)
+                if (index >= current)
                 {
                     tiles.Add(tile);
                     current++;
@@ -302,7 +303,7 @@ namespace TMC.Core
             }
 
             // The process is now finished
-            return (new Tileset(tiles.ToArray()), tilemap);
+            return (new Tileset(tiles.ToArray(), tileset.palette), tilemap);
         }
 
         /// <summary>
@@ -348,7 +349,7 @@ namespace TMC.Core
         {
             var columns = new List<int>();
 
-            for (int i = 0;i <= tiles.Length; i++)
+            for (int i = 1;i <= tiles.Length; i++)
             {
                 if (tiles.Length % i == 0) columns.Add(i);
             }

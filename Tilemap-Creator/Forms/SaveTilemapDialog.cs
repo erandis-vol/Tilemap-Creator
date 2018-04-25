@@ -23,18 +23,18 @@ namespace TMC.Forms
 
         public string File { get; private set; }
 
-        public TilemapFormat Format
+        public Tilemap.Format Format
         {
             get
             {
                 switch (cFormat.SelectedIndex)
                 {
                     case 0:
-                        return TilemapFormat.Text4;
+                        return Tilemap.Format.Text4;
                     case 1:
-                        return TilemapFormat.Text8;
+                        return Tilemap.Format.Text8;
                     case 2:
-                        return TilemapFormat.RotationScaling;
+                        return Tilemap.Format.RotationScaling;
 
                     default:    // should never happen
                         throw new Exception();

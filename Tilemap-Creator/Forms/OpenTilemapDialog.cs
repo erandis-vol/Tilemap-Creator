@@ -30,7 +30,7 @@ namespace TMC.Forms
             var sizes = new List<Size>();
 
             // calculates possible sizes for the given tilemap
-            var l = (int)(Format == TilemapFormat.RotationScaling ? file.Length : file.Length / 2);
+            var l = (int)(Format == Tilemap.Format.RotationScaling ? file.Length : file.Length / 2);
             for (int i = 1; i <= l; i++)
             {
                 if (l % i == 0)
@@ -61,18 +61,18 @@ namespace TMC.Forms
             }
         }
 
-        public TilemapFormat Format
+        public Tilemap.Format Format
         {
             get
             {
                 switch (cFormat.SelectedIndex)
                 {
                     case 0:
-                        return TilemapFormat.Text4;
+                        return Tilemap.Format.Text4;
                     case 1:
-                        return TilemapFormat.Text8;
+                        return Tilemap.Format.Text8;
                     case 2:
-                        return TilemapFormat.RotationScaling;
+                        return Tilemap.Format.RotationScaling;
 
                     default:    // should never happen
                         throw new Exception();

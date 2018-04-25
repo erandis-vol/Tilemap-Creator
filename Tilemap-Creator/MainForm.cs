@@ -34,7 +34,7 @@ namespace TMC
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            tileset?.Dispose();
+            //tileset?.Dispose();
 
             tilesetImage?.Dispose();
             tilemapImage?.Dispose();
@@ -106,24 +106,24 @@ namespace TMC
 
             // create new Tileset
             using (var bmp = new Bitmap(openFileDialog1.FileName))
-            using (var sprite = new Sprite(bmp))
+            //using (var sprite = new Sprite(bmp))
             {
                 // sprite dimensions must be divisible by 8
-                if (sprite.Width % 8 != 0 || sprite.Height % 8 != 0)
+                if (bmp.Width % 8 != 0 || bmp.Height % 8 != 0)
                 {
                     MessageBox.Show("Tileset source Sprite dimensions are not divisible by 8!", "Invalid Sprite", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
                 // Tileset from sprite
-                tileset?.Dispose();
-                tileset = new Tileset(sprite);
+                //tileset?.Dispose();
+                tileset = new Tileset(bmp);
             }
 
             // fill sizes for Tileset
             cTilesetWidth.Items.Clear();
-            foreach (var size in tileset.PerfectSizes)
-                cTilesetWidth.Items.Add(size.Width.ToString());
+            foreach (var size in tileset.GetPerfectColumns())
+                cTilesetWidth.Items.Add(size.ToString());
 
             // pick middle size
             cTilesetWidth.SelectedIndex = cTilesetWidth.Items.Count / 2;
@@ -153,7 +153,7 @@ namespace TMC
             switch (saveFileDialog1.FilterIndex)
             {
                 case 1:
-                    tilesetImage.Save(saveFileDialog1.FileName, SpriteFormat.BMP);
+                    //tilesetImage.Save(saveFileDialog1.FileName, SpriteFormat.BMP);
                     break;
                 //case 2:
                 //    tilesetImage.Save(saveFileDialog1.FileName, SpriteFormat.GBA);
@@ -171,24 +171,24 @@ namespace TMC
             if (openFileDialog1.ShowDialog() != DialogResult.OK) return;
 
             using (var bmp = new Bitmap(openFileDialog1.FileName))
-            using (var sprite = new Sprite(bmp))
+            //using (var sprite = new Sprite(bmp))
             {
                 // Sprite dimensions must be divisible by 8
-                if (sprite.Width % 8 != 0 || sprite.Height % 8 != 0)
+                if (bmp.Width % 8 != 0 || bmp.Height % 8 != 0)
                 {
-                    MessageBox.Show("Tileset source image dimensions are not divisible by 8!", "Invalid Image", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Tileset source image dimensions are not divisible by 8!",
+                        "Invalid Image", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                // create Tilemap/Tileset
-                tileset?.Dispose();
-                Tileset.Create(sprite, mnuAllowFlipping.Checked, out tileset, out tilemap);
+                // Create Tilemap/Tileset
+                (tileset, tilemap) = Tileset.Create(bmp, mnuAllowFlipping.Checked);
             }
 
             // fill sizes for Tileset
             cTilesetWidth.Items.Clear();
-            foreach (var size in tileset.PerfectSizes)
-                cTilesetWidth.Items.Add(size.Width.ToString());
+            foreach (var size in tileset.GetPerfectColumns())
+                cTilesetWidth.Items.Add(size.ToString());
 
             // pick middle size
             cTilesetWidth.SelectedIndex = cTilesetWidth.Items.Count / 2;
@@ -208,18 +208,18 @@ namespace TMC
             if (tileset == null)
                 return;
 
-            using (var d = new PaletteDialog(tilesetImage.Palette))
+            using (var d = new PaletteDialog(tileset.Palette))
             {
                 if (d.ShowDialog() != DialogResult.OK)
                     return;
 
                 // update palette for every tile
-                for (int t = 0; t < tileset.Size; t++)
-                {
-                    tileset[t].Lock();
-                    tileset[t].ReplacePalette(d.Palette);
-                    tileset[t].Unlock();
-                }
+                //for (int t = 0; t < tileset.Length; t++)
+                //{
+                //    tileset[t].Lock();
+                //    tileset[t].ReplacePalette(d.Palette);
+                //    tileset[t].Unlock();
+                //}
 
                 // redraw tileset
                 UpdateTileset(false);
@@ -232,18 +232,18 @@ namespace TMC
             if (tileset == null)
                 return;
 
-            using (var d = new RearrangePaletteDialog(tilesetImage.Palette))
+            using (var d = new RearrangePaletteDialog(tileset.Palette))
             {
                 if (d.ShowDialog() != DialogResult.OK)
                     return;
 
                 // replace palette for every tile
-                for (int t = 0; t < tileset.Size; t++)
-                {
-                    tileset[t].Lock();
-                    tileset[t].RearrangePalette(d.Palette);
-                    tileset[t].Unlock();
-                }
+                //for (int t = 0; t < tileset.Length; t++)
+                //{
+                //    tileset[t].Lock();
+                //    tileset[t].RearrangePalette(d.Palette);
+                //    tileset[t].Unlock();
+                //}
 
                 // redraw tileset
                 UpdateTileset(false);
@@ -267,13 +267,13 @@ namespace TMC
                 switch (saveFileDialog1.FilterIndex)
                 {
                     case 1:
-                        Palette.Save(tilesetImage.Palette, saveFileDialog1.FileName, PaletteFormat.PAL);
+                        Palette.Save(tileset.Palette, saveFileDialog1.FileName, PaletteFormat.PAL);
                         break;
                     case 2:
-                        Palette.Save(tilesetImage.Palette, saveFileDialog1.FileName, PaletteFormat.ACT);
+                        Palette.Save(tileset.Palette, saveFileDialog1.FileName, PaletteFormat.ACT);
                         break;
                     case 3:
-                        Palette.Save(tilesetImage.Palette, saveFileDialog1.FileName, PaletteFormat.GPL);
+                        Palette.Save(tileset.Palette, saveFileDialog1.FileName, PaletteFormat.GPL);
                         break;
                 }
             }
