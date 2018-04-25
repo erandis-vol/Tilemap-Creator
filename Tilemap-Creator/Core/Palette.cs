@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TMC.Core
 {
@@ -25,12 +22,17 @@ namespace TMC.Core
         /// <summary>
         /// APE Palette
         /// </summary>
-        GPL, // GIMP palette uses the same extension!!!
+        GPL, // GIMP palette uses the same extension
     }
 
     public static class ColorExtensions
     {
-        public static ushort ToColor15(this Color color)
+        public static Color Quantize(this Color color)
+        {
+            return Color.FromArgb(color.R >> 3 << 3, color.G >> 3 << 3, color.B >> 3 << 3);
+        }
+
+        public static ushort ToRgb15(this Color color)
         {
             return (ushort)((color.R >> 3) | ((color.G >> 3) << 5) | ((color.B >> 3) << 10));
         }
@@ -38,6 +40,71 @@ namespace TMC.Core
 
     public static class Palette
     {
+        public static int IndexOf(this Color[] colors, Color color)
+        {
+            if (colors == null) return -1;
+
+            for (int i = 0; i < colors.Length; i++)
+            {
+                if (colors[i] == color) return i;
+            }
+
+            return -1;
+        }
+
+        public static int ClosestIndexOf(this Color[] colors, Color color)
+        {
+            if (colors == null)
+                throw new ArgumentNullException(nameof(colors));
+
+            // Calculates the distance between two colors
+            int Distance(Color c1, Color c2)
+            {
+                var dr = c1.R - c2.R;
+                var dg = c1.R - c2.R;
+                var db = c1.R - c2.R;
+                return dr * dr + dg * dg + db * db;
+            }
+
+            // Determines the closest color
+            var best = 0;
+            var bestDist = Distance(colors[0], color);
+
+            for (int i = 1; i < colors.Length; i++)
+            {
+                var dist = Distance(colors[i], color);
+                if (dist < bestDist)
+                {
+                    bestDist = dist;
+                    best = i;
+                }
+            }
+
+            return best;
+        }
+
+        public static Color[] Create(FastBitmap fb)
+        {
+            if (fb == null)
+                throw new ArgumentNullException(nameof(fb));
+
+            var colors = new List<Color>();
+
+            for (int y = 0; y < fb.Height; y++)
+            {
+                for (int x = 0; x < fb.Width; x++)
+                {
+                    var color = fb.GetPixel(x, y);
+                    if (!colors.Contains(color))
+                    {
+                        colors.Add(color);
+                    }
+                }
+            }
+
+            return colors.ToArray();
+        }
+
         public static Color[] Load(string filename, PaletteFormat format)
         {
             switch (format)
@@ -48,11 +115,11 @@ namespace TMC.Core
                     return LoadPal(filename);
 
                 default:
-                    throw new NotImplementedException();
+                    throw new NotSupportedException($"Cannot load palettes in {format} format.");
             }
         }
 
-        static Color[] LoadAct(string filename)
+        private static Color[] LoadAct(string filename)
         {
             var colors = new Color[256];
 
@@ -65,7 +132,7 @@ namespace TMC.Core
                     var b = fs.ReadByte();
 
                     if (r == -1 || g == -1 || b == -1)
-                        break;
+                        throw new InvalidDataException();
 
                     colors[i] = Color.FromArgb(r, g, b);
                 }
@@ -74,14 +141,14 @@ namespace TMC.Core
             return colors;
         }
 
-        static Color[] LoadPal(string filename)
+        private static Color[] LoadPal(string filename)
         {
             using (var sr = File.OpenText(filename))
             {
                 if (sr.ReadLine() != "JASC-PAL")
-                    throw new Exception();
+                    throw new InvalidDataException();
                 if (sr.ReadLine() != "0100")
-                    throw new Exception();
+                    throw new InvalidDataException();
 
                 var size = int.Parse(sr.ReadLine());
                 var colors = new Color[size];
@@ -90,11 +157,18 @@ namespace TMC.Core
                 {
                     var c = sr.ReadLine().Split(' ');
 
-                    // no safe checking, we want an exception on error
-                    var r = int.Parse(c[0]);
-                    var g = int.Parse(c[1]);
-                    var b = int.Parse(c[2]);
-                    colors[i] = Color.FromArgb(r, g, b);
+                    try
+                    {
+                        var r = int.Parse(c[0]);
+                        var g = int.Parse(c[1]);
+                        var b = int.Parse(c[2]);
+
+                        colors[i] = Color.FromArgb(r, g, b);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new InvalidDataException("Invalid color.", ex);
+                    }
                 }
 
                 return colors;
@@ -120,7 +194,7 @@ namespace TMC.Core
             }
         }
 
-        static void SavePal(Color[] colors, string filename)
+        private static void SavePal(Color[] colors, string filename)
         {
             // NOTE: convention states JASC-PAL files should only have
             // 256 or 16 colors, but we'll allow any number
@@ -143,13 +217,16 @@ namespace TMC.Core
             }
         }
 
-        static void SaveAct(Color[] colors, string filename)
+        private static void SaveAct(Color[] colors, string filename)
         {
-            // an Adobe Color Table must always be 256 colors
+            // An Adobe Color Table must always be 256 colors
             // http://www.adobe.com/devnet-apps/photoshop/fileformatashtml/#50577411_pgfId-1070626
 
             if (colors.Length > 256)
-                throw new Exception("The given palette has too many colors for an Adobe Color Table!");
+            {
+                throw new ArgumentOutOfRangeException("The palette has too many colors for an Adobe Color Table.",
+                    nameof(colors));
+            }
 
             using (var bw = new BinaryWriter(File.Create(filename)))
             {
@@ -171,12 +248,11 @@ namespace TMC.Core
             }
         }
 
-        static void SaveGpl(Color[] colors, string filename)
+        private static void SaveGpl(Color[] colors, string filename)
         {
-            // this is a truely HORRIBLE format for storing a palette
-            // no clue what HackMew was thinking honestly
+            // This is a nasty little palette format
             if (colors.Length > 256)
-                throw new Exception("The given palette has too many colors for an APE palette!");
+                throw new Exception("The given palette has too many colors for an APE palette.");
 
             using (var sw = File.CreateText(filename))
             {
@@ -184,13 +260,13 @@ namespace TMC.Core
 
                 for (int i = 0; i < 256; i++)
                 {
-                    // convert color to GBA format
-                    // BUT, we want it signed AND bytes flipped
+                    // 1. Convert color to a GBA color
+                    // 2. Reverse byte order
+                    // 3. Signed
                     short color = 0;
                     if (i < colors.Length)
                         color = colors[i].ToApeColor();
 
-                    // ugly thing isn't it
                     sw.WriteLine("{0}{1} ", color < 0 ? "" : " ", color);
                 }
             }
@@ -198,7 +274,7 @@ namespace TMC.Core
 
         static short ToApeColor(this Color c)
         {
-            var g = c.ToColor15();
+            var g = c.ToRgb15();
             return (short)(((g & 0xFF) << 8) | (g >> 8));
         }
     }
