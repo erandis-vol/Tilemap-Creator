@@ -1,40 +1,78 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 
 namespace TMC.Core
 {
-    //[StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class Tile
-    {
-        public int TilesetIndex { get; set; } = 0;
-        public int PaletteIndex { get; set; } = 0;
-        public bool FlipX { get; set; } = false;
-        public bool FlipY { get; set; } = false;
-    }
-
-    public enum TilemapFormat
-    {
-        /// <summary>
-        /// Text mode, 4 bits per pixel
-        /// </summary>
-        Text4 = 0x40,
-        /// <summary>
-        /// Text mode, 8 bits per pixel
-        /// </summary>
-        Text8 = 0x80,
-        /// <summary>
-        /// Rotation/scaling mode
-        /// </summary>
-        RotationScaling,
-    }
-
-    // a basic resizable Tilemap
     public class Tilemap
     {
+        /// <summary>Represents the format of a <see cref="Tilemap"/>.</summary>
+        public enum Format
+        {
+            /// <summary>Text mode, 4 bits per pixel</summary>
+            Text4 = 0x40,
+            /// <summary>Text mode, 8 bits per pixel</summary>
+            Text8 = 0x80,
+            /// <summary>Rotation/scaling mode</summary>
+            RotationScaling,
+        }
+
+        [DebuggerDisplay("Tileset = {Tileset}, Palette = {Palette}, FlipX = {FlipX}, FlipY = {FlipY}")]
+        public struct Tile
+        {
+            /// <summary>The tile index.</summary>
+            public short Index;
+
+            /// <summary>The palette index.</summary>
+            public byte Palette;
+
+            /// <summary>Determines wether the tile is flipped horizontally.</summary>
+            public bool FlipX;
+
+            /// <summary>Determines whether the tile is flipped vertically.</summary>
+            public bool FlipY;
+
+            /// <summary>
+            /// Initializes a new isntance of the <see cref="Tile"/> struct with the specified index.
+            /// </summary>
+            /// <param name="index">The tile index.</param>
+            public Tile(short index) : this(index, 0, false, false)
+            { }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Tile"/> struct with the specified index and flipping.
+            /// </summary>
+            /// <param name="index">The tile index.</param>
+            /// <param name="flipX">Determines wether the tile is flipped horizontally.</param>
+            /// <param name="flipY">Determines whether the tile is flipped vertically.</param>
+            public Tile(short index, bool flipX, bool flipY) : this(index, 0, flipX, flipY)
+            { }
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Tile"/> struct with the specified index, palette, and flipping.
+            /// </summary>
+            /// <param name="index">The tile index.</param>
+            /// <param name="palette">The palette index.</param>
+            /// <param name="flipX">Determines wether the tile is flipped horizontally.</param>
+            /// <param name="flipY">Determines whether the tile is flipped vertically.</param>
+            public Tile(short index, byte palette, bool flipX, bool flipY)
+            {
+                Index = index;
+                Palette = palette;
+                FlipX = flipX;
+                FlipY = flipY;
+            }
+        }
+
         Tile[] tiles;
         int width, height;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Tilemap"/> class with the specified size.
+        /// </summary>
+        /// <param name="width">The width in tiles.</param>
+        /// <param name="height">The height in tiles.</param>
         public Tilemap(int width, int height)
         {
             this.width = width;
@@ -45,18 +83,26 @@ namespace TMC.Core
                 tiles[i] = new Tile();
         }
 
-        public Tilemap(string filename, TilemapFormat format, int width)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Tilemap"/> class from the specified file.
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="format"></param>
+        /// <param name="width"></param>
+        public Tilemap(string filename, Format format, int width)
         {
+            const int IndexMask = 0x3FF;
+            const int FlipXMask = 0x400;
+            const int FlipYMask = 0x800;
+            const int PaletteMask = 0xF;
+
             using (var fs = File.OpenRead(filename))
             using (var br = new BinaryReader(fs))
             {
                 // --------------------------------
-                // number of tiles stored in this file
-                var tileCount = (int)br.BaseStream.Length / (format == TilemapFormat.RotationScaling ? 1 : 2);
+                var tileCount = (int)br.BaseStream.Length / (format == Format.RotationScaling ? 1 : 2);
 
                 // --------------------------------
-                // size of tilemap
-                // some tiles could be lost
                 this.width = width;
                 this.height = tileCount / width;
 
@@ -66,75 +112,80 @@ namespace TMC.Core
                 {
                     for (int x = 0; x < width; x++)
                     {
-                        // --------------------------------
-                        // Read tile
-                        var t = new Tile();
-
-                        if (format == TilemapFormat.Text4)
+                        if (format == Format.Text4)
                         {
                             var u = br.ReadUInt16();
-                            t.TilesetIndex = u & 0x3FF;
-                            t.FlipX = ((u >> 10) & 1) == 1;
-                            t.FlipY = ((u >> 11) & 1) == 1;
-                            t.PaletteIndex = (u >> 12) & 0xF;
+                            tiles[x + y * width] = new Tile(
+                                (short)(u & IndexMask),
+                                (byte)((u >> 12) & PaletteMask),
+                                (u & FlipXMask) == FlipXMask,
+                                (u & FlipYMask) == FlipYMask
+                            );
                         }
-                        else if (format == TilemapFormat.Text8)
+                        else if (format == Format.Text8)
                         {
                             var u = br.ReadUInt16();
-                            t.TilesetIndex = u & 0x3FF;
-                            t.FlipX = ((u >> 10) & 1) == 1;
-                            t.FlipY = ((u >> 11) & 1) == 1;
+                            tiles[x + y * width] = new Tile(
+                                (short)(u & IndexMask),
+                                (u & FlipXMask) == FlipXMask,
+                                (u & FlipYMask) == FlipYMask
+                            );
                         }
-                        else
-                            t.TilesetIndex = br.ReadByte();
-
-                        tiles[x + y * width] = t;
+                        else // RotationScaling
+                        {
+                            tiles[x + y * width] = new Tile(br.ReadByte());
+                        }
                     }
                 }
             }
         }
 
-        public Tile this[int index]
+        #region Methods
+
+        public ref Tile this[int index] => ref tiles[index];
+
+        public ref Tile this[int x, int y]
         {
-            get { return tiles[index]; }
-            set { tiles[index] = value; }
+            get
+            {
+                if (x < 0 || x >= width)
+                    throw new ArgumentOutOfRangeException(nameof(x));
+
+                if (y < 0 || y >= height)
+                    throw new ArgumentOutOfRangeException(nameof(y));
+
+                return ref tiles[x + y * width];
+            }
         }
 
-        public Tile this[int x, int y]
-        {
-            get { return tiles[x + y * width]; }
-            set { tiles[x + y * width] = value; }
-        }
+        public ref Tile this[Point p] => ref this[p.X, p.Y];
 
-        public Tile this[Point p]
-        {
-            get { return this[p.X, p.Y]; }
-            set { this[p.X, p.Y] = value; }
-        }
-
+        /// <summary>
+        /// Resizes the tilemap.
+        /// </summary>
+        /// <param name="newWidth">The new width in tiles.</param>
+        /// <param name="newHeight">The new height in tiles.</param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="newWidth"/> or <paramref name="newHeight"/> is negative.
+        /// </exception>
         public void Resize(int newWidth, int newHeight)
         {
-            // declare new tile array
-            Tile[] newTiles = new Tile[newWidth * newHeight];
-            for (int i = 0; i < newWidth * newHeight; i++)
-                newTiles[i] = new Tile();
+            if (newWidth < 0 || newHeight < 0)
+                throw new ArgumentOutOfRangeException(newWidth < 0 ? nameof(newWidth) : nameof(newHeight));
 
-            // the data needed to be copied
-            int copyWidth = Math.Min(width, newWidth);
-            int copyHeight = Math.Min(height, newHeight);
-            
-            // copy tiles over
+            var temp = new Tile[newWidth * newHeight];
+            var copyWidth = Math.Min(width, newWidth);
+            var copyHeight = Math.Min(height, newHeight);
+
             for (int y = 0; y < copyHeight; y++)
             {
                 for (int x = 0; x < copyWidth; x++)
                 {
-                    // new (x, y) = old (x, y)
-                    newTiles[x + y * newWidth] = tiles[x + y * width];
+                    temp[x + y * newWidth] = tiles[x + y * width];
                 }
             }
 
-            // all done
-            tiles = newTiles;
+            tiles = temp;
             width = newWidth;
             height = newHeight;
         }
@@ -145,46 +196,39 @@ namespace TMC.Core
         /// <param name="filename"></param>
         /// <param name="format"></param>
         /// <param name="extraBytes"></param>
-        public void Save(string filename, TilemapFormat format, int extraBytes = 0)
+        public void Save(string filename, Format format, int extraBytes = 0)
         {
             // http://problemkaputt.de/gbatek.htm#lcdvrambgscreendataformatbgmap
-
-            // text mode:
-            // 0x3FF tiles
-            // rotation/scaling mode:
-            // 0xFF tiles
 
             using (var fs = File.Create(filename))
             using (var bw = new BinaryWriter(fs))
             {
                 // --------------------------------
-                // save tiles
                 for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
                     {
-                        var t = this[x, y];
+                        var tile = this[x, y];
 
-                        if (format == TilemapFormat.Text4)
+                        if (format == Format.Text4)
                             bw.Write((ushort)(
-                                (t.TilesetIndex & 0x3FF) |
-                                (t.FlipX ? 1 : 0 << 10) |
-                                (t.FlipY ? 1 : 0 << 11) |
-                                (t.PaletteIndex << 12)
-                                ));
-                        else if (format == TilemapFormat.Text8)
+                                (tile.Index & 0x3FF) |
+                                (tile.FlipX ? 0x400 : 0) |
+                                (tile.FlipY ? 0x800 : 0) |
+                                (tile.Palette << 12)
+                            ));
+                        else if (format == Format.Text8)
                             bw.Write((ushort)(
-                                (t.TilesetIndex & 0x3FF) |
-                                (t.FlipX ? 1 : 0 << 10) |
-                                (t.FlipY ? 1 : 0 << 11)
-                                ));
+                                (tile.Index & 0x3FF) |
+                                (tile.FlipX ? 0x400 : 0) |
+                                (tile.FlipY ? 0x800 : 0)
+                            ));
                         else
-                            bw.Write((byte)(t.TilesetIndex & 0xFF));
+                            bw.Write((byte)tile.Index);
                     }
                 }
 
                 // --------------------------------
-                // save extra bytes
                 for (int i = 0; i < extraBytes; i++)
                     bw.Write(byte.MinValue);
             }
@@ -196,7 +240,7 @@ namespace TMC.Core
         /// <param name="filename"></param>
         /// <param name="format"></param>
         /// <param name="extraBytes"></param>
-        void Save2(string filename, TilemapFormat format, int extraBytes = 0)
+        private void SaveC(string filename, Format format, int extraBytes = 0)
         {
             var variableName = Path.GetFileNameWithoutExtension(filename).ToLower().Replace(' ', '_');
 
@@ -206,43 +250,42 @@ namespace TMC.Core
                 sw.Write("{");
 
                 // --------------------------------
-                // save tiles
                 for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
                     {
-                        var t = this[x, y];
-
-                        if (format == TilemapFormat.Text4)
+                        var tile = this[x, y];
+                        if (format == Format.Text4)
                             sw.Write((ushort)(
-                                (t.TilesetIndex & 0x3FF) |
-                                (t.FlipX ? 1 : 0 << 10) |
-                                (t.FlipY ? 1 : 0 << 11) |
-                                (t.PaletteIndex << 12)
-                                ));
-                        else if (format == TilemapFormat.Text8)
+                                (tile.Index & 0x3FF) |
+                                (tile.FlipX ? 0x400 : 0) |
+                                (tile.FlipY ? 0x800 : 0) |
+                                (tile.Palette << 12)
+                            ));
+                        else if (format == Format.Text8)
                             sw.Write((ushort)(
-                                (t.TilesetIndex & 0x3FF) |
-                                (t.FlipX ? 1 : 0 << 10) |
-                                (t.FlipY ? 1 : 0 << 11)
-                                ));
+                                (tile.Index & 0x3FF) |
+                                (tile.FlipX ? 0x400 : 0) |
+                                (tile.FlipY ? 0x800 : 0)
+                            ));
                         else
-                            sw.Write((byte)(t.TilesetIndex & 0xFF));
+                            sw.Write((byte)tile.Index);
                     }
                 }
 
                 // --------------------------------
-                // save extra bytes
                 for (int i = 0; i < extraBytes; i++)
                     sw.Write(byte.MinValue);
             }
         }
 
-        void SaveNSCR(string filename, TilemapFormat bitDepth, int extraBytes)
+        private void SaveNSCR(string filename, Format bitDepth, int extraBytes)
         {
             // http://llref.emutalk.net/docs/?file=xml/nscr.xml#xml-doc
             // there are actually a lot of options for this format
-            // a separate editor may be better, honestly
+
+            if (bitDepth == Format.RotationScaling)
+                throw new NotSupportedException();
 
             using (var fs = File.Create(filename))
             using (var bw = new BinaryWriter(fs))
@@ -267,25 +310,24 @@ namespace TMC.Core
                 {
                     for (int x = 0; x < width; x++)
                     {
-                        var t = this[x, y];
-
-                        if (bitDepth == TilemapFormat.Text4)
+                        var tile = this[x, y];
+                        if (bitDepth == Format.Text4)
                             bw.Write((ushort)(
-                                (t.TilesetIndex & 0x3FF) |
-                                (t.FlipX ? 1 : 0 << 10) |
-                                (t.FlipY ? 1 : 0 << 11) |
-                                (t.PaletteIndex << 12)
-                                ));
-                        else
+                                (tile.Index & 0x3FF) |
+                                (tile.FlipX ? 0x400 : 0) |
+                                (tile.FlipY ? 0x800 : 0) |
+                                (tile.Palette << 12)
+                            ));
+                        else //if (format == TilemapFormat.Text8)
                             bw.Write((ushort)(
-                                (t.TilesetIndex & 0x3FF) |
-                                (t.FlipX ? 1 : 0 << 10) |
-                                (t.FlipY ? 1 : 0 << 11)
-                                ));
+                                (tile.Index & 0x3FF) |
+                                (tile.FlipX ? 0x400 : 0) |
+                                (tile.FlipY ? 0x800 : 0)
+                            ));
                     }
                 }
 
-                // adjust file size in header
+                // Adjust file size in header
                 bw.BaseStream.Position = 8L;
                 bw.Write(bw.BaseStream.Length);
             }
@@ -331,14 +373,57 @@ namespace TMC.Core
                 this[0, y] = new Tile();
         }
 
-        public int Width
+        /// <summary>
+        /// Draws the tilemap on an image.
+        /// </summary>
+        /// <param name="fb">The image to draw the tilemap on.</param>
+        /// <param name="tileset">The tileset.</param>
+        public void Draw(FastBitmap fb, Tileset tileset)
         {
-            get { return width; }
+            Draw(fb, tileset, 0, 0, width, height);
         }
 
-        public int Height
+        /// <summary>
+        /// Draws a specified part of the tilemap on an image.
+        /// </summary>
+        /// <param name="fb">The image to draw the tilemap on.</param>
+        /// <param name="tileset">The tileset.</param>
+        public void Draw(FastBitmap fb, Tileset tileset, int srcX, int srcY, int srcWidth, int srcHeight)
         {
-            get { return height; }
+            if (fb == null || tileset == null)
+                throw new ArgumentNullException(fb == null ? nameof(fb) : nameof(tileset));
+
+            for (int y = srcY; y < srcY + srcHeight; y++)
+            {
+                for (int x = srcX; x < srcX + srcWidth; x++)
+                {
+                    ref var tile = ref tileset[this[x, y].Index];
+
+                    for (int j = 0; j < 8; j++)
+                    {
+                        for (int k = 0; k < 8; k++)
+                        {
+                            fb.SetPixel(x * 8 + k, y * 8 + j, tileset.Palette[tile[k, j]]);
+                        }
+                    }
+                }
+            }
         }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets the width, in tiles, of the <see cref="Tilemap"/>.
+        /// </summary>
+        public int Width => width;
+
+        /// <summary>
+        /// Gets the height, in tiles, of the <see cref="Tilemap"/>.
+        /// </summary>
+        public int Height => height;
+
+        #endregion
     }
 }

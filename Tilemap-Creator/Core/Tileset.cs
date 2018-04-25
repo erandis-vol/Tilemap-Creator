@@ -1,126 +1,286 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace TMC.Core
 {
-    public class Tileset : IDisposable
+    public class Tileset
     {
         public const int TileSize = 8;
 
-        Sprite[] tiles;
-
-        public Tileset(Sprite source)
+        /// <summary>
+        /// Represents raw pixel data.
+        /// </summary>
+        public unsafe struct Tile
         {
-            // convert a single sprite into an array of 8x8 sprites
-            if (source.Width < TileSize || source.Height < TileSize)
-                throw new Exception($"Sprite must be at least {TileSize}x{TileSize} pixels!");
+            /// <summary>
+            /// The size, in pixels, of a single <see cref="Tile"/>.
+            /// </summary>
+            //public const int Size = 8;
 
-            // copy tile Sprites from source Sprite
-            int tiledWidth = source.Width / TileSize;
-            int tiledHeight = source.Height / TileSize;
-            tiles = new Sprite[tiledWidth * tiledHeight];
+            /// <summary>
+            /// The pixel data.
+            /// </summary>
+            public fixed int Pixels[64];
 
-            int i = 0;
-            for (int y = 0; y < tiledHeight; y++)
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Tile"/> struct by copying pixels from the specified array.
+            /// </summary>
+            /// <param name="pixels">The pixels to be copied.</param>
+            public Tile(int[] pixels)
             {
-                for (int x = 0; x < tiledWidth; x++)
+                if (pixels == null)
+                    throw new ArgumentNullException(nameof(pixels));
+
+                if (pixels.Length != 64)
+                    throw new ArgumentException("Expected 64 bits of pixel data.", nameof(pixels));
+
+                fixed (int* ptr = Pixels)
                 {
-                    tiles[i++] = new Sprite(source,
-                        new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize));
+                    Marshal.Copy(pixels, 0, new IntPtr(ptr), 64);
+                }
+            }
+
+            /// <summary>
+            /// Gets or sets the specified pixel value.
+            /// </summary>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <returns></returns>
+            public int this[int x, int y]
+            {
+                get
+                {
+                    if (x < 0 || x >= 8)
+                        throw new ArgumentOutOfRangeException(nameof(x));
+
+                    if (y < 0 || y >= 8)
+                        throw new ArgumentOutOfRangeException(nameof(y));
+
+                    fixed (int* pixels = Pixels)
+                    {
+                        return pixels[x + y * 8];
+                    }
+                }
+                set
+                {
+                    if (x < 0 || x >= 8)
+                        throw new ArgumentOutOfRangeException(nameof(x));
+
+                    if (y < 0 || y >= 8)
+                        throw new ArgumentOutOfRangeException(nameof(y));
+
+                    fixed (int* pixels = Pixels)
+                    {
+                        pixels[x + y * 8] = value;
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Determines whether this tile value is equivalent to the specified tile value with the specified flipping.
+            /// </summary>
+            /// <param name="other">The tile to compare to.</param>
+            /// <param name="flipX">Determines whether <paramref name="other"/> is to be flipped from left to right.</param>
+            /// <param name="flipY">Determines whether <paramref name="other"/> is to be flipped from top to bottom.</param>
+            /// <returns><c>true</c> if the tiles are equivalent; otherwise, <c>false</c>.</returns>
+            public bool CompareTo(ref Tile other, bool flipX = false, bool flipY = false)
+            {
+                fixed (int* src = Pixels)
+                fixed (int* dst = other.Pixels)
+                {
+                    for (int srcY = 0; srcY < 8; srcY++)
+                    {
+                        for (int srcX = 0; srcX < 8; srcX++)
+                        {
+                            var dstX = flipX ? (7 - srcX) : srcX;
+                            var dstY = flipY ? (7 - srcY) : srcY;
+
+                            if (src[srcX + srcY * 8] != dst[dstX + dstY * 8])
+                                return false;
+                        }
+                    }
+                }
+
+                return true;
+            }
+        }
+
+        private Tile[] tiles;
+        private Color[] palette;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Tileset"/> class from the specified source image.
+        /// </summary>
+        /// <param name="source">The source image.</param>
+        public Tileset(Bitmap source)
+        {
+            if (source.Width < 8 || source.Height < 8)
+                throw new ArgumentException("Image must be at least 8x8 pixels.", nameof(source));
+
+            if (source.Width / 8 * source.Height / 8 > 0x400)
+                throw new ArgumentException("Image is too large, ensure it has no more than 0x400 (1024) tiles.", nameof(source));
+
+            using (var fb = FastBitmap.FromImage(source))
+            {
+                // Copies a single tile from the source image
+                void CopyTile(ref Tile tile, int x, int y)
+                {
+                    for (int j = 0; j < 8; j++)
+                    {
+                        for (int i = 0; i < 8; i++)
+                        {
+                            // Find the index of the palette
+                            var pixel = palette.IndexOf(source.GetPixel(x + i, y + j));
+                            if (pixel < 0) // NOTE: a well formed palette will never trigger this
+                                throw new IndexOutOfRangeException();
+
+                            // Copy to the tile
+                            tile[i, j] = pixel;
+                        }
+                    }
+                }
+
+                // Initialize palette
+                if ((source.PixelFormat & PixelFormat.Indexed) == PixelFormat.Indexed)
+                {
+                    // Copy the colors from the existing palette
+                    switch (source.PixelFormat)
+                    {
+                        case PixelFormat.Format1bppIndexed:
+                            palette = new Color[1 << 1];
+                            break;
+
+                        case PixelFormat.Format4bppIndexed:
+                            palette = new Color[1 << 4];
+                            break;
+
+                        case PixelFormat.Format8bppIndexed:
+                            palette = new Color[1 << 8];
+                            source.Palette.Entries.CopyTo(palette, 0);
+                            break;
+
+                        default:
+                            throw new ArgumentException("Unsupported image format.", nameof(source));
+                    }
+
+                    source.Palette.Entries.CopyTo(palette, 0);
+                }
+                else
+                {
+                    // Create a new palette
+                    palette = Core.Palette.Create(fb);
+                }
+
+                // Initialize tiles
+                var width = source.Width / 8;
+                var height = source.Height / 8;
+
+                tiles = new Tile[width * height];
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        CopyTile(ref tiles[x + y * width], x * 8, y * 8);
+                    }
                 }
             }
         }
 
-        public Tileset(Sprite[] tiles)
+        /// <summary>
+        /// Initialzies a new instance of the <see cref="Tileset"/> with the specified tile array.
+        /// </summary>
+        /// <param name="tiles">The tiles.</param>
+        public Tileset(Tile[] tiles)
         {
             this.tiles = tiles;
         }
 
-        public void Dispose()
-        {
-            if (tiles != null)
-            {
-                for (int i = 0; i < tiles.Length; i++) tiles[i]?.Dispose();
-            }
-        }
+        #region Methods
 
-        public Sprite this[int index]
+        /// <summary>
+        /// Gets the specified tile.
+        /// </summary>
+        /// <param name="index">The index of the tile.</param>
+        /// <returns></returns>
+        public ref Tile this[int index] => ref tiles[index];
+
+        /// <summary>
+        /// Creates a new <see cref="Tileset"/> from the specified source image.
+        /// </summary>
+        /// <param name="bmp">The source image.</param>
+        /// <param name="allowFlipping">Determines whether tile flipping is permitted.</param>
+        /// <returns></returns>
+        public static (Tileset Tileset, Tilemap Tilemap) Create(Bitmap bmp, bool allowFlipping)
         {
-            get { return tiles[index]; }
+            using (var fb = FastBitmap.FromImage(bmp))
+            {
+                return Create(fb, allowFlipping);
+            }
         }
 
         /// <summary>
-        /// Creates a Tileset, removing all repeated tiles from the source Sprite.
+        /// Creates a new <see cref="Tileset"/> from the specified source image.
         /// </summary>
-        public static void Create(Sprite source, bool allowFlipping, out Tileset tileset, out Tilemap tilemap)
+        /// <param name="fb">The source image.</param>
+        /// <param name="allowFlipping">Determines whether tile flipping is permitted.</param>
+        public static (Tileset Tileset, Tilemap Tilemap) Create(FastBitmap fb, bool allowFlipping)
         {
-            // copy tile Sprites from source Sprite
-            var tiledWidth = source.Width / TileSize;
-            var tiledHeight = source.Height / TileSize;
-            var tiles = new Sprite[tiledWidth * tiledHeight];
+            var width = fb.Width / 8;
+            var height = fb.Height / 8;
 
-            // create base tileset
-            int t = 0;
-            for (int y = 0; y < tiledHeight; y++)
+            // Create initial tileset (with all tiles)
+            var tileset = new Tileset(fb);
+
+            // Create empty tilemap
+            var tilemap = new Tilemap(width, height);
+
+            // Define the first tile
+            tilemap[0] = new Tilemap.Tile();
+
+            // Scan the tileset for repeated tiles
+            var tiles = new List<Tile> { tileset[0] };
+            var current = 1;
+
+            for (int i = 1; i < tileset.Length; i++)
             {
-                for (int x = 0; x < tiledWidth; x++)
-                {
-                    tiles[t++] = new Sprite(source,
-                        new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize));
-                }
-            }
+                ref var tile = ref tileset[i];
 
-            // init tilemap
-            tilemap = new Tilemap(tiledWidth, tiledHeight);
-            tilemap[0] = new Tile();
-
-            // remove all repeated tiles
-            // the first tile is always preserved
-            var uniqueTiles = new List<Sprite> { tiles[0] };
-            int current = 1;
-
-            for (int i = 1; i < tiles.Length; i++)
-            {
-                var tile = tiles[i];
-
-                // info for flipping
+                // The current tile
                 var index = current;
                 var flipX = false;
                 var flipY = false;
 
-                // compare against all unique tiles to check for repeats
-                // gets slower as the tileset grows ;(
-                for (int j = 0; j < uniqueTiles.Count; j++)
+                // Compare the tile against all unique tiles
+                for (int j = 0; j < tiles.Count; j++)
                 {
-                    var otherTile = uniqueTiles[j];
+                    var other = tiles[j];
 
-                    // compare normally
-                    if (tile.Compare(otherTile))
+                    // Test tile configurations
+                    if (tile.CompareTo(ref other, false, false))
                     {
                         index = j;
                         break;
                     }
-
-                    // compare flipped
-                    if (allowFlipping)
+                    else if (allowFlipping)
                     {
-                        if (tile.Compare(otherTile, true, false))
+                        if (tile.CompareTo(ref other, true, false))
                         {
                             index = j;
                             flipX = true;
                             break;
                         }
-                        if (tile.Compare(otherTile, false, true))
+
+                        if (tile.CompareTo(ref other, false, true))
                         {
                             index = j;
                             flipY = true;
                             break;
                         }
-                        if (tile.Compare(otherTile, true, true))
+
+                        if (tile.CompareTo(ref other, true, true))
                         {
                             index = j;
                             flipX = true;
@@ -130,85 +290,86 @@ namespace TMC.Core
                     }
                 }
 
-                // modify tilemap
-                tilemap[i] = new Tile { TilesetIndex = index, FlipX = flipX, FlipY = flipY };
+                // Update the tilemap
+                tilemap[i] = new Tilemap.Tile((short)index, flipX, flipY);
 
-                // destroy non-unique tiles
+                // Update the tileset
                 if (index < current)
                 {
-                    tiles[i].Dispose();
-                    tiles[i] = null;
-                }
-                // remember unique tiles
-                else
-                {
-                    uniqueTiles.Add(tile);
+                    tiles.Add(tile);
                     current++;
                 }
             }
 
-            tileset = new Tileset(uniqueTiles.ToArray());
+            // The process is now finished
+            return (new Tileset(tiles.ToArray()), tilemap);
         }
 
         /// <summary>
-        /// Creates a Sprite containing the Tileset rendered with the given number of tiles per row.
+        /// Creates a new <see cref="FastBitmap"/> representing all tiles.
         /// </summary>
-        /// <param name="tilesPerRow">The number of tiles to fit in a single row within the Sprite.</param>
+        /// <param name="columns">The number of columns in a single row of tiles.</param>
         /// <returns></returns>
-        public Sprite Smoosh(int tilesPerRow)
+        public FastBitmap ToImage(int columns)
         {
-            var width = tilesPerRow;
-            var height = (tiles.Length / tilesPerRow) + (tiles.Length % tilesPerRow > 0 ? 1 : 0);
-            var tilesToSmoosh = width * height;
+            if (columns <= 0)
+                throw new ArgumentOutOfRangeException(nameof(columns));
 
-            var result = new Sprite(width * TileSize, height * TileSize, tiles[0].Palette);
-            result.Lock();
+            var rows = (tiles.Length / columns) + (tiles.Length % columns > 0 ? 1 : 0);
+            var fb = new FastBitmap(columns * 8, rows * 8);
 
-            for (int t = 0; t < tilesToSmoosh; t++)
+            for (int i = 0; i < tiles.Length; i++)
             {
-                var x = t % tilesPerRow;
-                var y = t / tilesPerRow;
+                // Get the destination
+                var x = i % columns;
+                var y = i / columns;
 
-                // copy tile to result Sprite
-                var tile = tiles[t < tiles.Length ? t : 0];
-                for (int x2 = 0; x2 < TileSize; x2++)
+                // Get the tile to draw
+                ref var tile = ref tiles[i];
+
+                // Draw the tile
+                for (int j = 0; j < 8; j++)
                 {
-                    for (int y2 = 0; y2 < TileSize; y2++)
+                    for (int k = 0; k < 8; k++)
                     {
-                        result.SetPixel(x2 + x * TileSize, y2 + y * TileSize, tile.GetPixel(x2, y2));
+                        fb.SetPixel(x * 8 + k, y * 8 + j, palette[tile[k, j]]);
                     }
                 }
             }
 
-            result.Unlock();
-            return result;
+            return fb;
         }
 
         /// <summary>
-        /// Gets the number of tiles in this <c>Tileset</c>.
+        /// Returns an array of column values that will result in a perfect tileset.
         /// </summary>
-        public int Size
+        /// <returns></returns>
+        public int[] GetPerfectColumns()
         {
-            get { return tiles.Length; }
-        }
+            var columns = new List<int>();
 
-        /// <summary>
-        /// Gets an array of Sizes where the Tileset can be fit into a Sprite perfectly.
-        /// </summary>
-        public Size[] PerfectSizes
-        {
-            get
+            for (int i = 0;i <= tiles.Length; i++)
             {
-                var sizes = new List<Size>();
-                for (int i = 1; i <= tiles.Length; i++)
-                {
-                    if (tiles.Length % i == 0)
-                    {
-                        sizes.Add(new Size(i, tiles.Length / i));
-                    }
-                }
-                return sizes.ToArray();
+                if (tiles.Length % i == 0) columns.Add(i);
             }
+
+            return columns.ToArray();
         }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets the number of tiles.
+        /// </summary>
+        public int Length => tiles.Length;
+
+        /// <summary>
+        /// Gets the palette.
+        /// </summary>
+        public Color[] Palette => palette;
+
+        #endregion
     }
 }
