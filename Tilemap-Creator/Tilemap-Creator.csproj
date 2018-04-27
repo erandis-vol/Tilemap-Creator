@@ -152,14 +152,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\arrow-continue-090.png" />
-    <None Include="Resources\arrow-continue.png" />
-    <None Include="Resources\palette.png" />
-    <None Include="Resources\map.png" />
-    <None Include="Resources\map-resize.png" />
+    <Content Include="tmc.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="tmc.ico" />
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
