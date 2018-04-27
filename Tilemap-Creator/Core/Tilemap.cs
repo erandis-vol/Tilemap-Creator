@@ -397,13 +397,16 @@ namespace TMC.Core
             {
                 for (int x = srcX; x < srcX + srcWidth; x++)
                 {
-                    ref var tile = ref tileset[this[x, y].Index];
+                    ref var tile = ref this[x, y];
+                    ref var sprite = ref tileset[tile.Index];
 
                     for (int j = 0; j < 8; j++)
                     {
                         for (int k = 0; k < 8; k++)
                         {
-                            fb.SetPixel(x * 8 + k, y * 8 + j, tileset.Palette[tile[k, j]]);
+                            var dstX = x * 8 + (tile.FlipX ? 7 - k : k);
+                            var dstY = y * 8 + (tile.FlipY ? 7 - j : j);
+                            fb.SetPixel(dstX, dstY, tileset.Palette[sprite[k, j]]);
                         }
                     }
                 }
