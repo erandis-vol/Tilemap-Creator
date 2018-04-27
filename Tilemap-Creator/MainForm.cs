@@ -203,34 +203,9 @@ namespace TMC
             mnuPalette.Enabled = true;
         }
 
-        private void mnuEditPalette_Click(object sender, EventArgs e)
+        private void mnuSwapColors_Click(object sender, EventArgs e)
         {
-            if (tileset == null)
-                return;
-
-            using (var d = new PaletteDialog(tileset.Palette))
-            {
-                if (d.ShowDialog() != DialogResult.OK)
-                    return;
-
-                // update palette for every tile
-                //for (int t = 0; t < tileset.Length; t++)
-                //{
-                //    tileset[t].Lock();
-                //    tileset[t].ReplacePalette(d.Palette);
-                //    tileset[t].Unlock();
-                //}
-
-                // redraw tileset
-                UpdateTileset(false);
-                UpdateTilemap();
-            }
-        }
-
-        private void mnuRearrangePalette_Click(object sender, EventArgs e)
-        {
-            if (tileset == null)
-                return;
+            if (tileset == null) return;
 
             using (var d = new RearrangePaletteDialog(tileset.Palette))
             {
@@ -247,17 +222,29 @@ namespace TMC
 
                 // redraw tileset
                 UpdateTileset(false);
+                UpdateTilemap();
             }
         }
 
-        private void mnuExportPalette_Click(object sender, EventArgs e)
+        private void mnuReduceColors_Click(object sender, EventArgs e)
         {
-            if (tileset == null)
-                return;
+            if (tileset == null) return;
+
+            // TODO: Allow user to specify
+            tileset.ReduceColors(16);
+
+            // Refresh the tileset
+            UpdateTileset(false);
+            UpdateTilemap();
+        }
+
+        private void mnuExportColors_Click(object sender, EventArgs e)
+        {
+            if (tileset == null) return;
 
             saveFileDialog1.FileName = "";
             saveFileDialog1.Filter = "Paintshop Palette|*.pal|Adobe Color Table|*.act|APE Palette|*.gpl";
-            saveFileDialog1.Title = "Export Tileset Palette";
+            saveFileDialog1.Title = "Export Tileset Colors";
 
             if (saveFileDialog1.ShowDialog() != DialogResult.OK)
                 return;
@@ -283,23 +270,8 @@ namespace TMC
             }
         }
 
-        private void reduceColorsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (tileset == null) return;
-
-            // TODO: Allow user to specify
-            tileset.ReduceColors(16);
-
-            // Refresh the tileset
-            UpdateTileset(false);
-            UpdateTilemap();
-        }
-
         private void mnuZoomIn_Click(object sender, EventArgs e)
         {
-            //if (tileset == null)
-            //    return;
-
             if (++zoom > 8)
                 zoom = 8;
 
