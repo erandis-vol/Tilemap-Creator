@@ -67,7 +67,7 @@ namespace TMC.Core
         }
 
         /// <summary>
-        /// 
+        /// Returns the specified pixel.
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
@@ -84,7 +84,7 @@ namespace TMC.Core
         }
 
         /// <summary>
-        /// 
+        /// Sets the specified pixel.
         /// </summary>
         /// <param name="x"></param>
         /// <param name="y"></param>
@@ -97,6 +97,8 @@ namespace TMC.Core
             if (y < 0 || y >= height)
                 throw new ArgumentOutOfRangeException(nameof(y));
 
+
+            #if FB_ALPHA_BLENDING
             if (color.A == 255)
             {
                 bits[x + y * width] = color.ToArgb();
@@ -112,18 +114,29 @@ namespace TMC.Core
                     (int)((1f - a) * color.B + a * src.B)
                 ).ToArgb();
             }
+            #else
+            bits[x + y * width] = color.ToArgb();
+            #endif
         }
 
         public static implicit operator Bitmap(FastBitmap fb) => fb.bitmap;
 
         public static implicit operator Image(FastBitmap fb) => fb.bitmap;
 
-        #endregion
+#endregion
 
         #region Properties
 
+        public int[] Bits => bits;
+
+        /// <summary>
+        /// Gets the width, in pixels, of this image.
+        /// </summary>
         public int Width => width;
 
+        /// <summary>
+        /// Gets the height, in pixels, of this image.
+        /// </summary>
         public int Height => height;
 
         #endregion

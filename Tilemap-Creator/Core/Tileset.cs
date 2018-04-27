@@ -13,17 +13,12 @@ namespace TMC.Core
         /// <summary>
         /// Represents raw pixel data.
         /// </summary>
-        public unsafe struct Tile
+        public struct Tile
         {
-            /// <summary>
-            /// The size, in pixels, of a single <see cref="Tile"/>.
-            /// </summary>
-            //public const int Size = 8;
-
             /// <summary>
             /// The pixel data.
             /// </summary>
-            public fixed int Pixels[64];
+            private int[] pixels;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="Tile"/> struct by copying pixels from the specified array.
@@ -37,10 +32,7 @@ namespace TMC.Core
                 if (pixels.Length != 64)
                     throw new ArgumentException("Expected 64 bits of pixel data.", nameof(pixels));
 
-                fixed (int* ptr = Pixels)
-                {
-                    Marshal.Copy(pixels, 0, new IntPtr(ptr), 64);
-                }
+                this.pixels = (int[])pixels.Clone();
             }
 
             /// <summary>
@@ -59,10 +51,12 @@ namespace TMC.Core
                     if (y < 0 || y >= 8)
                         throw new ArgumentOutOfRangeException(nameof(y));
 
-                    fixed (int* pixels = Pixels)
+                    if (pixels == null)
                     {
-                        return pixels[x + y * 8];
+                        return 0;
                     }
+
+                    return pixels[x + y * 8];
                 }
                 set
                 {
@@ -72,10 +66,12 @@ namespace TMC.Core
                     if (y < 0 || y >= 8)
                         throw new ArgumentOutOfRangeException(nameof(y));
 
-                    fixed (int* pixels = Pixels)
+                    if (pixels == null)
                     {
-                        pixels[x + y * 8] = value;
+                        pixels = new int[64];
                     }
+
+                    pixels[x + y * 8] = value;
                 }
             }
 
@@ -86,10 +82,10 @@ namespace TMC.Core
             /// <param name="flipX">Determines whether <paramref name="other"/> is to be flipped from left to right.</param>
             /// <param name="flipY">Determines whether <paramref name="other"/> is to be flipped from top to bottom.</param>
             /// <returns><c>true</c> if the tiles are equivalent; otherwise, <c>false</c>.</returns>
-            public bool CompareTo(ref Tile other, bool flipX = false, bool flipY = false)
+            public unsafe bool CompareTo(ref Tile other, bool flipX = false, bool flipY = false)
             {
-                fixed (int* src = Pixels)
-                fixed (int* dst = other.Pixels)
+                fixed (int* src = &pixels[0])
+                fixed (int* dst = &other.pixels[0])
                 {
                     for (int srcY = 0; srcY < 8; srcY++)
                     {
@@ -106,6 +102,11 @@ namespace TMC.Core
 
                 return true;
             }
+
+            /// <summary>
+            /// Gets the pixel data.
+            /// </summary>
+            public int[] Pixels => pixels ?? (pixels = new int[64]);
         }
 
         private Tile[] tiles;
@@ -123,27 +124,14 @@ namespace TMC.Core
             if (source.Width / 8 * source.Height / 8 > 0x400)
                 throw new ArgumentException("Image is too large, ensure it has no more than 0x400 (1024) tiles.", nameof(source));
 
+            // Create the tiles
+            var width = source.Width / 8;
+            var height = source.Height / 8;
+            tiles = new Tile[width * height];
+
+            // Copy image data from source
             using (var fb = FastBitmap.FromImage(source))
             {
-                // Copies a single tile from the source image
-                void CopyTile(ref Tile tile, int x, int y)
-                {
-                    for (int j = 0; j < 8; j++)
-                    {
-                        for (int i = 0; i < 8; i++)
-                        {
-                            // Find the index of the palette
-                            var pixel = palette.IndexOf(source.GetPixel(x + i, y + j));
-                            if (pixel < 0) // NOTE: a well formed palette will never trigger this
-                                throw new IndexOutOfRangeException();
-
-                            // Copy to the tile
-                            tile[i, j] = pixel;
-                        }
-                    }
-                }
-
-                // Initialize palette
                 if ((source.PixelFormat & PixelFormat.Indexed) == PixelFormat.Indexed)
                 {
                     // Copy the colors from the existing palette
@@ -159,7 +147,6 @@ namespace TMC.Core
 
                         case PixelFormat.Format8bppIndexed:
                             palette = new Color[1 << 8];
-                            source.Palette.Entries.CopyTo(palette, 0);
                             break;
 
                         default:
@@ -167,24 +154,62 @@ namespace TMC.Core
                     }
 
                     source.Palette.Entries.CopyTo(palette, 0);
+
+                    // Copy the tiles
+                    for (int y = 0; y < height; y++)
+                    {
+                        for (int x = 0; x < width; x++)
+                        {
+                            ref var tile = ref tiles[x + y * width];
+
+                            for (int j = 0; j < 8; j++)
+                            {
+                                for (int i = 0; i < 8; i++)
+                                {
+                                    // Find the color index
+                                    var index = palette.IndexOf(Color.FromArgb(fb.Bits[(x * 8 + i) + (y * 8 + j) * fb.Width]));
+                                    if (index < 0)
+                                        throw new IndexOutOfRangeException();
+
+                                    // Copy to the tile
+                                    tile[i, j] = index;
+                                }
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    // Create a new palette
-                    palette = Core.Palette.Create(fb);
-                }
+                    // Create a new palette while copying tiles
+                    var colors = new List<Color>();
 
-                // Initialize tiles
-                var width = source.Width / 8;
-                var height = source.Height / 8;
-
-                tiles = new Tile[width * height];
-                for (int y = 0; y < height; y++)
-                {
-                    for (int x = 0; x < width; x++)
+                    for (int y = 0; y < height; y++)
                     {
-                        CopyTile(ref tiles[x + y * width], x * 8, y * 8);
+                        for (int x = 0; x < width; x++)
+                        {
+                            ref var tile = ref tiles[x + y * width];
+
+                            for (int j = 0; j < 8; j++)
+                            {
+                                for (int i = 0; i < 8; i++)
+                                {
+                                    var color = Color.FromArgb(fb.Bits[(x * 8 + i) + (y * 8 + j) * fb.Width]).Quantize();
+
+                                    var index = colors.IndexOf(color);
+                                    if (index < 0)
+                                    {
+                                        colors.Add(color);
+                                        index = colors.Count - 1;
+                                    }
+
+                                    tile[i, j] = index;
+                                }
+                            }
+                        }
                     }
+
+                    // Set the palette
+                    palette = colors.ToArray();
                 }
             }
         }
@@ -213,27 +238,13 @@ namespace TMC.Core
         /// </summary>
         /// <param name="bmp">The source image.</param>
         /// <param name="allowFlipping">Determines whether tile flipping is permitted.</param>
-        /// <returns></returns>
         public static (Tileset Tileset, Tilemap Tilemap) Create(Bitmap bmp, bool allowFlipping)
         {
-            using (var fb = FastBitmap.FromImage(bmp))
-            {
-                return Create(fb, allowFlipping);
-            }
-        }
-
-        /// <summary>
-        /// Creates a new <see cref="Tileset"/> from the specified source image.
-        /// </summary>
-        /// <param name="fb">The source image.</param>
-        /// <param name="allowFlipping">Determines whether tile flipping is permitted.</param>
-        public static (Tileset Tileset, Tilemap Tilemap) Create(FastBitmap fb, bool allowFlipping)
-        {
-            var width = fb.Width / 8;
-            var height = fb.Height / 8;
+            var width = bmp.Width / 8;
+            var height = bmp.Height / 8;
 
             // Create initial tileset (with all tiles)
-            var tileset = new Tileset(fb);
+            var tileset = new Tileset(bmp);
 
             // Create empty tilemap
             var tilemap = new Tilemap(width, height);
