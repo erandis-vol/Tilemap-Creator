@@ -91,6 +91,7 @@
             this.tTilemapWidth = new TMC.Controls.NumberBox();
             this.rModePalette = new System.Windows.Forms.RadioButton();
             this.rModeTilemap = new System.Windows.Forms.RadioButton();
+            this.reduceColorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -175,7 +176,8 @@
             this.mnuOpenTileset,
             this.mnuSaveTileset,
             this.toolStripSeparator2,
-            this.mnuPalette});
+            this.mnuPalette,
+            this.reduceColorsToolStripMenuItem});
             this.mnuTileset.Name = "mnuTileset";
             this.mnuTileset.Size = new System.Drawing.Size(53, 20);
             this.mnuTileset.Text = "Tileset";
@@ -184,20 +186,20 @@
             // 
             this.mnuCreateTileset.Name = "mnuCreateTileset";
             this.mnuCreateTileset.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
-            this.mnuCreateTileset.Size = new System.Drawing.Size(146, 22);
+            this.mnuCreateTileset.Size = new System.Drawing.Size(180, 22);
             this.mnuCreateTileset.Text = "Create";
             this.mnuCreateTileset.Click += new System.EventHandler(this.mnuCreateTileset_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(143, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // mnuOpenTileset
             // 
             this.mnuOpenTileset.Name = "mnuOpenTileset";
             this.mnuOpenTileset.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.mnuOpenTileset.Size = new System.Drawing.Size(146, 22);
+            this.mnuOpenTileset.Size = new System.Drawing.Size(180, 22);
             this.mnuOpenTileset.Text = "Open";
             this.mnuOpenTileset.Click += new System.EventHandler(this.mnuOpenTileset_Click);
             // 
@@ -205,14 +207,14 @@
             // 
             this.mnuSaveTileset.Name = "mnuSaveTileset";
             this.mnuSaveTileset.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.mnuSaveTileset.Size = new System.Drawing.Size(146, 22);
+            this.mnuSaveTileset.Size = new System.Drawing.Size(180, 22);
             this.mnuSaveTileset.Text = "Save";
             this.mnuSaveTileset.Click += new System.EventHandler(this.mnuSaveTileset_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(143, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // mnuPalette
             // 
@@ -222,32 +224,32 @@
             this.toolStripSeparator3,
             this.mnuExportPalette});
             this.mnuPalette.Name = "mnuPalette";
-            this.mnuPalette.Size = new System.Drawing.Size(146, 22);
+            this.mnuPalette.Size = new System.Drawing.Size(180, 22);
             this.mnuPalette.Text = "Palette";
             // 
             // mnuEditPalette
             // 
             this.mnuEditPalette.Name = "mnuEditPalette";
-            this.mnuEditPalette.Size = new System.Drawing.Size(127, 22);
+            this.mnuEditPalette.Size = new System.Drawing.Size(180, 22);
             this.mnuEditPalette.Text = "Edit";
             this.mnuEditPalette.Click += new System.EventHandler(this.mnuEditPalette_Click);
             // 
             // mnuRearrangePalette
             // 
             this.mnuRearrangePalette.Name = "mnuRearrangePalette";
-            this.mnuRearrangePalette.Size = new System.Drawing.Size(127, 22);
+            this.mnuRearrangePalette.Size = new System.Drawing.Size(180, 22);
             this.mnuRearrangePalette.Text = "Rearrange";
             this.mnuRearrangePalette.Click += new System.EventHandler(this.mnuRearrangePalette_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(124, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
             // 
             // mnuExportPalette
             // 
             this.mnuExportPalette.Name = "mnuExportPalette";
-            this.mnuExportPalette.Size = new System.Drawing.Size(127, 22);
+            this.mnuExportPalette.Size = new System.Drawing.Size(180, 22);
             this.mnuExportPalette.Text = "Export";
             this.mnuExportPalette.Click += new System.EventHandler(this.mnuExportPalette_Click);
             // 
@@ -736,6 +738,13 @@
             this.rModeTilemap.UseVisualStyleBackColor = true;
             this.rModeTilemap.CheckedChanged += new System.EventHandler(this.rMode_CheckedChanged);
             // 
+            // reduceColorsToolStripMenuItem
+            // 
+            this.reduceColorsToolStripMenuItem.Name = "reduceColorsToolStripMenuItem";
+            this.reduceColorsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.reduceColorsToolStripMenuItem.Text = "Reduce Colors";
+            this.reduceColorsToolStripMenuItem.Click += new System.EventHandler(this.reduceColorsToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -843,6 +852,7 @@
         private System.Windows.Forms.ToolStripStatusLabel lTile;
         private System.Windows.Forms.ToolStripStatusLabel lPalette;
         private System.Windows.Forms.ToolStripStatusLabel lFlip;
+        private System.Windows.Forms.ToolStripMenuItem reduceColorsToolStripMenuItem;
     }
 }
 

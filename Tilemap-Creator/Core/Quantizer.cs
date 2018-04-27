@@ -5,45 +5,81 @@ using System.Linq;
 
 namespace TMC.Core
 {
-    // originally from:
+    // Written by Smart KB for "A Simple - Yet Quite Powerful - Palette Quantizer in C#"
     // http://www.codeproject.com/Articles/66341/A-Simple-Yet-Quite-Powerful-Palette-Quantizer-in-C
-    class OctreeQuantizer
-    {
-        private OctreeNode root;
-        private int lastColorCount;
-        private List<OctreeNode>[] levels;
 
+    /// <summary>
+    /// Provides a mechanism for quantizing palettes.
+    /// </summary>
+    public interface IQuantizer
+    {
+        void AddColor(Color color);
+        void AddColors(IEnumerable<Color> colors);
+        IList<Color> GetPalette(int colorCount);
+        int GetPaletteIndex(Color color);
+    }
+
+    /// <summary>
+    /// Implements an octree palette quantizer.
+    /// </summary>
+    public class OctreeQuantizer : IQuantizer
+    {
+        private Node root;
+        private int lastColorCount;
+        private List<Node>[] levels;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OctreeQuantizer"/> class.
+        /// </summary>
         public OctreeQuantizer()
         {
-            // initializes the octree level lists
-            levels = new List<OctreeNode>[7];
+            // Initializes the octree level lists
+            levels = new List<Node>[7];
 
-            // creates the octree level lists
+            // Creates the octree level lists
             for (int level = 0; level < 7; level++)
             {
-                levels[level] = new List<OctreeNode>();
+                levels[level] = new List<Node>();
             }
 
-            // creates a root node
-            root = new OctreeNode(0, this);
+            // Creates a root node
+            root = new Node(0, this);
         }
 
-        internal IEnumerable<OctreeNode> Leaves
+        /// <summary>
+        /// Adds a node at the specified level.
+        /// </summary>
+        /// <param name="level">The level to add to.</param>
+        /// <param name="node">The node to be added.</param>
+        private void AddLevelNode(int level, Node node)
         {
-            get { return root.ActiveNodes.Where(node => node.IsLeaf); }
+            levels[level].Add(node);
         }
 
-        internal void AddLevelNode(int level, OctreeNode octreeNode)
-        {
-            levels[level].Add(octreeNode);
-        }
-
+        /// <summary>
+        /// Adds the specified color to the quantizer.
+        /// </summary>
+        /// <param name="color">The color to add.</param>
         public void AddColor(Color color)
         {
             root.AddColor(color, 0, this);
         }
 
-        public List<Color> GetPalette(int colorCount)
+        /// <summary>
+        /// Adds the specified colors to the quantizer.
+        /// </summary>
+        /// <param name="colors">The colors to add.</param>
+        public void AddColors(IEnumerable<Color> colors)
+        {
+            foreach (var color in colors) AddColor(color);
+        }
+
+        /// <summary>
+        /// Returns a palette with the specified color count.
+        /// </summary>
+        /// <param name="colorCount">The maximum number of colors in the new palette.</param>
+        /// <returns></returns>
+        public IList<Color> GetPalette(int colorCount)
         {
             var result = new List<Color>();
             int leafCount = Leaves.Count();
@@ -57,10 +93,10 @@ namespace TMC.Core
                 if (levels[level].Count > 0)
                 {
                     // orders the level node list by pixel presence (those with least pixels are at the top)
-                    IEnumerable<OctreeNode> sortedNodeList = levels[level].OrderBy(node => node.ActiveNodesPixelCount);
+                    IEnumerable<Node> sortedNodeList = levels[level].OrderBy(node => node.ActiveNodesPixelCount);
 
                     // removes the nodes unless the count of the leaves is lower or equal than our requested color count
-                    foreach (OctreeNode node in sortedNodeList)
+                    foreach (Node node in sortedNodeList)
                     {
                         // removes a node
                         leafCount -= node.RemoveLeaves(level, leafCount, colorCount, this);
@@ -78,7 +114,7 @@ namespace TMC.Core
             }
 
             // goes through all the leaves that are left in the tree (there should now be less or equal than requested)
-            foreach (OctreeNode node in Leaves.OrderByDescending(node => node.ActiveNodesPixelCount))
+            foreach (Node node in Leaves.OrderByDescending(node => node.ActiveNodesPixelCount))
             {
                 if (paletteIndex >= colorCount) break;
 
@@ -102,230 +138,216 @@ namespace TMC.Core
             return result;
         }
 
-        public int GetPaletteIndex(Color color)
-        {
-            // retrieves a palette index
-            return root.GetPaletteIndex(color, 0);
-        }
-    }
-
-    class OctreeNode
-    {
-        private static readonly byte[] Mask = new byte[] { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
-
-        private int red;
-        private int green;
-        private int blue;
-
-        private int pixelCount;
-        private int paletteIndex;
-
-        private readonly OctreeNode[] nodes;
         /// <summary>
-        /// Initializes a new instance of the <see cref="OctreeNode"/> class.
+        /// Returns the index of the specified color in the palette.
         /// </summary>
-        public OctreeNode(int level, OctreeQuantizer parent)
-        {
-            nodes = new OctreeNode[8];
+        /// <param name="color"></param>
+        /// <returns></returns>
+        public int GetPaletteIndex(Color color) => root.GetPaletteIndex(color, 0);
 
-            if (level < 7)
+        /// <summary>
+        /// Gets an enumeration of all active leaves.
+        /// </summary>
+        private IEnumerable<Node> Leaves
+        {
+            get { return root.ActiveNodes.Where(node => node.IsLeaf); }
+        }
+
+        private class Node
+        {
+            private static readonly byte[] Mask = new byte[] { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
+
+            private int red;
+            private int green;
+            private int blue;
+
+            private int pixelCount;
+            private int paletteIndex;
+
+            private readonly Node[] nodes;
+
+            public Node(int level, OctreeQuantizer parent)
             {
-                parent.AddLevelNode(level, this);
+                nodes = new Node[8];
+
+                if (level < 7)
+                {
+                    parent.AddLevelNode(level, this);
+                }
             }
-        }
 
-        /// <summary>
-        /// Gets a value indicating whether this node is a leaf.
-        /// </summary>
-        /// <value><c>true</c> if this node is a leaf; otherwise, <c>false</c>.</value>
-        public bool IsLeaf
-        {
-            get { return pixelCount > 0; }
-        }
-
-        /// <summary>
-        /// Gets the averaged leaf color.
-        /// </summary>
-        /// <value>The leaf color.</value>
-        public Color Color
-        {
-            get
+            public bool IsLeaf
             {
-                // determines a color of the leaf
+                get { return pixelCount > 0; }
+            }
+
+            public Color Color
+            {
+                get
+                {
+                    // determines a color of the leaf
+                    if (IsLeaf)
+                    {
+                        return pixelCount == 1 ?
+                            Color.FromArgb(255, red, green, blue) :
+                            Color.FromArgb(255, red / pixelCount, green / pixelCount, blue / pixelCount);
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Cannot retrieve a color for other node than leaf.");
+                    }
+                }
+            }
+
+            public int ActiveNodesPixelCount
+            {
+                get
+                {
+                    int result = pixelCount;
+
+                    // sums up all the pixel presence for all the active nodes
+                    for (int index = 0; index < 8; index++)
+                    {
+                        Node node = nodes[index];
+
+                        if (node != null)
+                        {
+                            result += node.pixelCount;
+                        }
+                    }
+
+                    return result;
+                }
+            }
+
+            public IEnumerable<Node> ActiveNodes
+            {
+                get
+                {
+                    List<Node> result = new List<Node>();
+
+                    // adds all the active sub-nodes to a list
+                    for (int index = 0; index < 8; index++)
+                    {
+                        Node node = nodes[index];
+
+                        if (node != null)
+                        {
+                            if (node.IsLeaf)
+                            {
+                                result.Add(node);
+                            }
+                            else
+                            {
+                                result.AddRange(node.ActiveNodes);
+                            }
+                        }
+                    }
+
+                    return result;
+                }
+            }
+
+            public void AddColor(Color color, int level, OctreeQuantizer parent)
+            {
+                // if this node is a leaf, then increase a color amount, and pixel presence
+                if (level == 8)
+                {
+                    red += color.R;
+                    green += color.G;
+                    blue += color.B;
+                    pixelCount++;
+                }
+                else if (level < 8) // otherwise goes one level deeper
+                {
+                    // calculates an index for the next sub-branch
+                    int index = GetColorIndexAtLevel(color, level);
+
+                    // if that branch doesn't exist, grows it
+                    if (nodes[index] == null)
+                    {
+                        nodes[index] = new Node(level, parent);
+                    }
+
+                    // adds a color to that branch
+                    nodes[index].AddColor(color, level + 1, parent);
+                }
+            }
+
+            /// <summary>
+            /// Gets the index of the palette.
+            /// </summary>
+            /// <param name="color">The color.</param>
+            /// <param name="level">The level.</param>
+            /// <returns></returns>
+            public int GetPaletteIndex(Color color, int level)
+            {
+                // if a node is leaf, then we've found the best match already
                 if (IsLeaf)
                 {
-                    return pixelCount == 1 ?
-                        Color.FromArgb(255, red, green, blue) :
-                        Color.FromArgb(255, red / pixelCount, green / pixelCount, blue / pixelCount);
+                    return paletteIndex;
                 }
-                else
+                else // otherwise continue in to the lower depths
                 {
-                    throw new InvalidOperationException("Cannot retrieve a color for other node than leaf.");
+                    int index = GetColorIndexAtLevel(color, level);
+
+                    return nodes[index] != null ? nodes[index].GetPaletteIndex(color, level + 1) : nodes.
+                        Where(node => node != null).
+                        First().
+                        GetPaletteIndex(color, level + 1);
                 }
             }
-        }
 
-        /// <summary>
-        /// Gets the active nodes pixel count.
-        /// </summary>
-        /// <value>The active nodes pixel count.</value>
-        public int ActiveNodesPixelCount
-        {
-            get
+            /// <summary>
+            /// Removes the leaves by summing all it's color components and pixel presence.
+            /// </summary>
+            /// <returns></returns>
+            public int RemoveLeaves(int level, int activeColorCount, int targetColorCount, OctreeQuantizer parent)
             {
-                int result = pixelCount;
+                int result = 0;
 
-                // sums up all the pixel presence for all the active nodes
+                // scans thru all the active nodes
                 for (int index = 0; index < 8; index++)
                 {
-                    OctreeNode node = nodes[index];
+                    Node node = nodes[index];
 
                     if (node != null)
                     {
-                        result += node.pixelCount;
+                        // sums up their color components
+                        red += node.red;
+                        green += node.green;
+                        blue += node.blue;
+
+                        // and pixel presence
+                        pixelCount += node.pixelCount;
+
+                        // increases the count of reduced nodes
+                        result++;
                     }
                 }
 
-                return result;
+                // returns a number of reduced sub-nodes, minus one because this node becomes a leaf
+                return result - 1;
             }
-        }
 
-        /// <summary>
-        /// Enumerates only the leaf nodes.
-        /// </summary>
-        /// <value>The enumerated leaf nodes.</value>
-        public IEnumerable<OctreeNode> ActiveNodes
-        {
-            get
+            /// <summary>
+            /// Calculates the color component bit (level) index.
+            /// </summary>
+            private static int GetColorIndexAtLevel(Color color, int level)
             {
-                List<OctreeNode> result = new List<OctreeNode>();
-
-                // adds all the active sub-nodes to a list
-                for (int index = 0; index < 8; index++)
-                {
-                    OctreeNode node = nodes[index];
-
-                    if (node != null)
-                    {
-                        if (node.IsLeaf)
-                        {
-                            result.Add(node);
-                        }
-                        else
-                        {
-                            result.AddRange(node.ActiveNodes);
-                        }
-                    }
-                }
-
-                return result;
+                return ((color.R & Mask[level]) == Mask[level] ? 4 : 0) |
+                       ((color.G & Mask[level]) == Mask[level] ? 2 : 0) |
+                       ((color.B & Mask[level]) == Mask[level] ? 1 : 0);
             }
-        }
 
-        /// <summary>
-        /// Adds the color.
-        /// </summary>
-        /// <param name="color">The color.</param>
-        /// <param name="level">The level.</param>
-        /// <param name="parent">The parent.</param>
-        public void AddColor(Color color, int level, OctreeQuantizer parent)
-        {
-            // if this node is a leaf, then increase a color amount, and pixel presence
-            if (level == 8)
+            /// <summary>
+            /// Sets a palette index to this node.
+            /// </summary>
+            internal void SetPaletteIndex(int index)
             {
-                red += color.R;
-                green += color.G;
-                blue += color.B;
-                pixelCount++;
+                paletteIndex = index;
             }
-            else if (level < 8) // otherwise goes one level deeper
-            {
-                // calculates an index for the next sub-branch
-                int index = GetColorIndexAtLevel(color, level);
-
-                // if that branch doesn't exist, grows it
-                if (nodes[index] == null)
-                {
-                    nodes[index] = new OctreeNode(level, parent);
-                }
-
-                // adds a color to that branch
-                nodes[index].AddColor(color, level + 1, parent);
-            }
-        }
-
-        /// <summary>
-        /// Gets the index of the palette.
-        /// </summary>
-        /// <param name="color">The color.</param>
-        /// <param name="level">The level.</param>
-        /// <returns></returns>
-        public int GetPaletteIndex(Color color, int level)
-        {
-            // if a node is leaf, then we've found the best match already
-            if (IsLeaf)
-            {
-                return paletteIndex;
-            }
-            else // otherwise continue in to the lower depths
-            {
-                int index = GetColorIndexAtLevel(color, level);
-
-                return nodes[index] != null ? nodes[index].GetPaletteIndex(color, level + 1) : nodes.
-                    Where(node => node != null).
-                    First().
-                    GetPaletteIndex(color, level + 1);
-            }
-        }
-
-        /// <summary>
-        /// Removes the leaves by summing all it's color components and pixel presence.
-        /// </summary>
-        /// <returns></returns>
-        public int RemoveLeaves(int level, int activeColorCount, int targetColorCount, OctreeQuantizer parent)
-        {
-            int result = 0;
-
-            // scans thru all the active nodes
-            for (int index = 0; index < 8; index++)
-            {
-                OctreeNode node = nodes[index];
-
-                if (node != null)
-                {
-                    // sums up their color components
-                    red += node.red;
-                    green += node.green;
-                    blue += node.blue;
-
-                    // and pixel presence
-                    pixelCount += node.pixelCount;
-
-                    // increases the count of reduced nodes
-                    result++;
-                }
-            }
-
-            // returns a number of reduced sub-nodes, minus one because this node becomes a leaf
-            return result - 1;
-        }
-
-        /// <summary>
-        /// Calculates the color component bit (level) index.
-        /// </summary>
-        private static int GetColorIndexAtLevel(Color color, int level)
-        {
-            return ((color.R & Mask[level]) == Mask[level] ? 4 : 0) |
-                   ((color.G & Mask[level]) == Mask[level] ? 2 : 0) |
-                   ((color.B & Mask[level]) == Mask[level] ? 1 : 0);
-        }
-
-        /// <summary>
-        /// Sets a palette index to this node.
-        /// </summary>
-        internal void SetPaletteIndex(int index)
-        {
-            paletteIndex = index;
         }
     }
+
 }

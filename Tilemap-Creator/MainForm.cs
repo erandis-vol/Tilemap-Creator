@@ -283,6 +283,18 @@ namespace TMC
             }
         }
 
+        private void reduceColorsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (tileset == null) return;
+
+            // TODO: Allow user to specify
+            tileset.ReduceColors(16);
+
+            // Refresh the tileset
+            UpdateTileset(false);
+            UpdateTilemap();
+        }
+
         private void mnuZoomIn_Click(object sender, EventArgs e)
         {
             //if (tileset == null)

@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
+using System.Linq;
 
 namespace TMC.Core
 {
@@ -367,6 +367,48 @@ namespace TMC.Core
 
             return columns.ToArray();
         }
+
+
+        /// <summary>
+        /// Reduces the number of colors to no more than the amount specified.
+        /// </summary>
+        /// <param name="colorCount">The maximum number of colors.</param>
+        public void ReduceColors(int colorCount)
+        {
+            if (palette == null || palette.Length <= colorCount) return;
+
+            // Create the quantizer and add the palette
+            var quantizer = new OctreeQuantizer();
+            quantizer.AddColors(palette);
+
+            // Create the reduced palette
+            var reducedPalette = quantizer.GetPalette(colorCount);
+
+            // Update all tiles to reflect the reduced colors
+            for (int i = 0; i < tiles.Length; i++)
+            {
+                ref var tile = ref tiles[i];
+
+                for (int y = 0; y < 8; y++)
+                {
+                    for (int x = 0; x < 8; x++)
+                    {
+                        // Get the original color
+                        var pixel = palette[tile[x, y]];
+
+                        // Get the closets match from the quantizer
+                        var index = quantizer.GetPaletteIndex(pixel);
+
+                        // Update the pixel
+                        tile[x, y] = index;
+                    }
+                }
+            }
+
+            // Replace the old palette
+            palette = reducedPalette.ToArray();
+        }
+
 
         #endregion
 
