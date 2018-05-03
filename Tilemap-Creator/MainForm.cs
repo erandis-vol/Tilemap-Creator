@@ -146,18 +146,19 @@ namespace TMC
             if (tileset == null || tilesetImage == null) return;
 
             saveFileDialog1.Title = "Save Tileset";
-            saveFileDialog1.Filter = "Bitmaps|*.bmp"; //|Binary|*.bin";
+            saveFileDialog1.Filter = "Bitmaps|*.bmp|Binary|*.bin";
 
             if (saveFileDialog1.ShowDialog() != DialogResult.OK) return;
 
             switch (saveFileDialog1.FilterIndex)
             {
                 case 1:
-                    //tilesetImage.Save(saveFileDialog1.FileName, SpriteFormat.BMP);
+                    tileset.SaveBMP(saveFileDialog1.FileName, cTilesetWidth.Value);
                     break;
-                //case 2:
-                //    tilesetImage.Save(saveFileDialog1.FileName, SpriteFormat.GBA);
-                //    break;
+
+                case 2:
+                    tileset.SaveGBA(saveFileDialog1.FileName);
+                    break;
             }
         }
 
