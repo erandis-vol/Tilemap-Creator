@@ -145,10 +145,12 @@ namespace TMC
         {
             if (tileset == null || tilesetImage == null) return;
 
+            saveFileDialog1.FileName = "";
             saveFileDialog1.Title = "Save Tileset";
             saveFileDialog1.Filter = "Bitmaps|*.bmp|Binary|*.bin";
 
-            if (saveFileDialog1.ShowDialog() != DialogResult.OK) return;
+            if (saveFileDialog1.ShowDialog() != DialogResult.OK)
+                return;
 
             try
             {
