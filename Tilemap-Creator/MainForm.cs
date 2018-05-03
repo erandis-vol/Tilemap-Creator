@@ -150,15 +150,22 @@ namespace TMC
 
             if (saveFileDialog1.ShowDialog() != DialogResult.OK) return;
 
-            switch (saveFileDialog1.FilterIndex)
+            try
             {
-                case 1:
-                    tileset.SaveBMP(saveFileDialog1.FileName, cTilesetWidth.Value);
-                    break;
+                switch (saveFileDialog1.FilterIndex)
+                {
+                    case 1:
+                        tileset.SaveBMP(saveFileDialog1.FileName, cTilesetWidth.Value);
+                        break;
 
-                case 2:
-                    tileset.SaveGBA(saveFileDialog1.FileName);
-                    break;
+                    case 2:
+                        tileset.SaveGBA(saveFileDialog1.FileName);
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
