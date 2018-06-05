@@ -19,7 +19,7 @@ namespace TMC
         Point tilesetMouseStart = new Point(-1, -1), tilesetMouseCurrent = new Point(-1, -1);
         bool tilesetMouseDown = false;
 
-        Color[] palettemapColors = new Color[]
+        private static readonly Color[] palettemapColors = //new Color[]
         {
             Color.FromArgb(128, Color.White),
             Color.FromArgb(128, Color.Yellow),
@@ -38,6 +38,7 @@ namespace TMC
             Color.FromArgb(128, Color.Purple),
             Color.FromArgb(128, Color.LightPink),
         };
+
         Bitmap palettesetImage;
 
         int paletteSelection = 0;

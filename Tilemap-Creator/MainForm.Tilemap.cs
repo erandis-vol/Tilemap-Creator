@@ -16,8 +16,11 @@ namespace TMC
 
         Point tilemapMouseCurrent = new Point(-1, -1);
 
-        // updates Tilemap image (forced redraw)
-        void UpdateTilemap()
+        private static Brush[] palettemapBrushes;
+        private static Font palettemapFont;
+
+        // Updates Tilemap image (forced redraw)
+        private void UpdateTilemap()
         {
             if (tilemap == null || tileset == null) return;
             ignore = true;
@@ -46,118 +49,65 @@ namespace TMC
             ignore = false;
         }
 
-        /*
-        void DrawTilemap()
+        private void DrawPalettemap(Graphics g)
         {
-            // recreate Tilemap image
-            tilemapImage?.Dispose();
-            tilemapImage = new Bitmap(tilemap.Width * Tileset.TileSize, tilemap.Height * Tileset.TileSize);
+            DrawPalettemap(g, 0, 0, tilemap.Width, tilemap.Height);
+        }
 
-            // render Tilemap fully
-            using (var g = Graphics.FromImage(tilemapImage))
+        private void DrawPalettemap(Graphics g, int boundsX, int boundsY, int boundsWidth, int boundsHeight)
+        {
+            if (!rModePalette.Checked) return;
+
+            if (palettemapBrushes == null)
             {
-                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
+                palettemapBrushes = new SolidBrush[palettemapColors.Length];
+                for (int i = 0; i < palettemapColors.Length; i++)
+                    palettemapBrushes[i] = new SolidBrush(palettemapColors[i]);
+            }
 
-                for (int y = 0; y < tilemap.Height; y++)
+            if (palettemapFont == null)
+                palettemapFont = new Font("Arial", 5.5f, FontStyle.Regular);
+
+            for (int y = boundsY; y < boundsY + boundsHeight; y++)
+            {
+                for (int x = boundsX; x < boundsX + boundsWidth; x++)
                 {
-                    for (int x = 0; x < tilemap.Width; x++)
-                    {
-                        var tile = tilemap[x, y];
-                        //g.DrawImageFlipped(tileset[tile.TilesetIndex],
-                        //    x * Tileset.TileSize, y * Tileset.TileSize,
-                        //    tile.FlipX, tile.FlipY);
-                    }
-                }
+                    if (x < 0 || y < 0 || x >= tilemap.Width || y >= tilemap.Height)
+                        continue;
 
-                // render Palettemap on top
-                if (rModePalette.Checked)
-                {
-                    var brushes = new SolidBrush[16];
-                    for (int i = 0; i < 16; i++)
-                        brushes[i] = new SolidBrush(palettemapColors[i]);
-                    var font = new Font("Arial", 5.5f, FontStyle.Regular);
+                    g.FillRectangle(
+                        palettemapBrushes[tilemap[x, y].Palette & 0xF],
+                        x * 8 * zoom,
+                        y * 8 * zoom,
+                        8 * zoom,
+                        8 * zoom
+                    );
 
-                    for (int y = 0; y < tilemap.Height; y++)
-                    {
-                        for (int x = 0; x < tilemap.Width; x++)
-                        {
-                            g.FillRectangle(brushes[tilemap[x, y].PaletteIndex],
-                                x * Tileset.TileSize, y * Tileset.TileSize,
-                                Tileset.TileSize, Tileset.TileSize);
-
-                            g.DrawString(tilemap[x, y].PaletteIndex.ToString("X"), font,
-                                Brushes.Black, 1 + x * Tileset.TileSize, y * Tileset.TileSize);
-                        }
-                    }
-
-                    for (int i = 0; i < 16; i++)
-                        brushes[i].Dispose();
-                    font.Dispose();
+                    g.DrawString(
+                        tilemap[x, y].Palette.ToString("X"),
+                        palettemapFont,
+                        Brushes.Black,
+                        1 + x * 8 * zoom,
+                        y * 8 * zoom
+                    );
                 }
             }
         }
-        */
-
-        /*
-        void RedrawTilemap(int boundsX, int boundsY, int boundsWidth, int boundsHeight)
-        {
-            // redraws a portion of the tilemap onto the existing image
-
-            using (var g = Graphics.FromImage(tilemapImage))
-            {
-                for (int y = boundsY; y < boundsY + boundsHeight; y++)
-                {
-                    for (int x = boundsX; x < boundsX + boundsWidth; x++)
-                    {
-                        if (x >= tilemap.Width || y >= tilemap.Height)
-                            break;
-
-                        var tile = tilemap[x, y];
-                        //g.DrawImageFlipped(tileset[tile.TilesetIndex],
-                        //    x * Tileset.TileSize, y * Tileset.TileSize,
-                        //    tile.FlipX, tile.FlipY);
-                    }
-                }
-
-                if (rModePalette.Checked)
-                {
-                    var brushes = new SolidBrush[16];
-                    for (int i = 0; i < 16; i++)
-                        brushes[i] = new SolidBrush(palettemapColors[i]);
-                    var font = new Font("Arial", 5.5f, FontStyle.Regular);
-
-                    for (int y = boundsY; y < boundsY + boundsHeight; y++)
-                    {
-                        for (int x = boundsX; x < boundsX + boundsWidth; x++)
-                        {
-                            if (x >= tilemap.Width || y >= tilemap.Height)
-                                break;
-
-                            g.FillRectangle(brushes[tilemap[x, y].PaletteIndex],
-                                x * Tileset.TileSize, y * Tileset.TileSize,
-                                Tileset.TileSize, Tileset.TileSize);
-
-                            g.DrawString(tilemap[x, y].PaletteIndex.ToString("X"), font,
-                                Brushes.Black, 1 + x * Tileset.TileSize, y * Tileset.TileSize);
-                        }
-                    }
-
-                    for (int i = 0; i < 16; i++)
-                        brushes[i].Dispose();
-                    font.Dispose();
-                }
-            }
-
-            // below not needed because image should already be set for pTilemap
-            // pTilemap.Image = tilemapImage;
-        }
-        */
 
         private void pTilemap_Paint(object sender, PaintEventArgs e)
         {
             if (tileset == null || tilemap == null) return;
 
-            // draw grid
+            // Draw palettemap
+            DrawPalettemap(
+                e.Graphics,
+                e.ClipRectangle.X / 8,
+                e.ClipRectangle.Y / 8,
+                e.ClipRectangle.Width / 8,
+                e.ClipRectangle.Height / 8
+            );
+
+            // Draw grid
             if (mnuGrid.Checked)
             {
                 using (var pen = new Pen(new SolidBrush(gridColor), 1f))
@@ -180,30 +130,28 @@ namespace TMC
                 }
             }
 
-            // draw cursor based on tileset/palette selection
+            // Draw cursor based on tileset/palette selection
             if (tilemapMouseCurrent.X >= 0 && tilemapMouseCurrent.Y >= 0)
             {
                 if (rModeTilemap.Checked)
                 {
-                    e.Graphics.DrawRectangle
-                        (
+                    e.Graphics.DrawRectangle(
                         Pens.Red,
-                        tilemapMouseCurrent.X * zoom * Tileset.TileSize,
-                        tilemapMouseCurrent.Y * zoom * Tileset.TileSize,
-                        tilesetSelection.Width * zoom * Tileset.TileSize - 1,
-                        tilesetSelection.Height * zoom * Tileset.TileSize - 1
-                        );
+                        tilemapMouseCurrent.X * zoom * 8,
+                        tilemapMouseCurrent.Y * zoom * 8,
+                        tilesetSelection.Width * zoom * 8 - 1,
+                        tilesetSelection.Height * zoom * 8 - 1
+                    );
                 }
                 else
                 {
-                    e.Graphics.DrawRectangle
-                        (
+                    e.Graphics.DrawRectangle(
                         Pens.Red,
-                        tilemapMouseCurrent.X * zoom * Tileset.TileSize,
-                        tilemapMouseCurrent.Y * zoom * Tileset.TileSize,
-                        zoom * Tileset.TileSize - 1,
-                        zoom * Tileset.TileSize - 1
-                        );
+                        tilemapMouseCurrent.X * zoom * 8,
+                        tilemapMouseCurrent.Y * zoom * 8,
+                        zoom * 8 - 1,
+                        zoom * 8 - 1
+                    );
                 }
             }
         }
@@ -234,7 +182,7 @@ namespace TMC
             lPalette.Text = $"Palette: {mousedTile.Palette:X}";
             lFlip.Text = "Flip: " + (mousedTile.FlipX ? mousedTile.FlipY ? "XY" : "X" : mousedTile.FlipY ? "Y" : "None");
 
-            // set new tiles
+            // Set tiles starting from X, Y
             if (me.Button == MouseButtons.Left)
             {
                 if (rModeTilemap.Checked)
@@ -250,22 +198,22 @@ namespace TMC
                             var mapX = tilemapMouseCurrent.X + x;
                             var mapY = tilemapMouseCurrent.Y + y;
 
-                            if (mapX >= tilemap.Width || mapY >= tilemap.Height)
-                                break;
+                            if (mapX < 0 || mapX >= tilemap.Width || mapY < 0 || mapY >= tilemap.Height)
+                                continue;
 
                             // tileset position -- accounts for X/Y flipping
                             var setX = tilesetSelection.X + (chkTilesetFlipX.Checked ? tilesetSelection.Width - 1 - x : x);
                             var setY = tilesetSelection.Y + (chkTilesetFlipY.Checked ? tilesetSelection.Height - 1 - y : y);
 
                             // tile at position
-                            var t = setX + setY * tilesPerRow;
+                            var tile = setX + setY * tilesPerRow;
 
                             // ilegal tiles default to 0
-                            if (t >= tileset.Length)
-                                t = 0;
+                            if (tile >= tileset.Length)
+                                tile = 0;
 
                             // set selection
-                            tilemap[mapX, mapY].Index = (short)t;
+                            tilemap[mapX, mapY].Index = (short)tile;
                             if (mnuAllowFlipping.Checked)
                             {
                                 tilemap[mapX, mapY].FlipX = chkTilesetFlipX.Checked;
@@ -284,7 +232,7 @@ namespace TMC
                 tilemap.Draw(tilemapImage, tileset, tilemapMouseCurrent.X, tilemapMouseCurrent.Y,
                         tilesetSelection.Width, tilesetSelection.Height);
             }
-            // get tile at X, Y -- overrides selection
+            // Get tile at X, Y -- overrides selection
             else if (me.Button == MouseButtons.Right)
             {
                 if (rModeTilemap.Checked)
@@ -311,106 +259,95 @@ namespace TMC
 
                 pTileset.Invalidate();
             }
-            // flood fill
+            // Flood fill
             // https://rosettacode.org/wiki/Bitmap/Flood_fill#C.23
-            // this uses too much memory imo so rewrite eventually
             else if (me.Button == MouseButtons.Middle)
             {
-                // TODO: cut down on code here
+                var dst = rModeTilemap.Checked ?
+                    (tilesetSelection.X + tilesetSelection.Y * cTilesetWidth.Value) : paletteSelection;
+                var src = rModeTilemap.Checked ?
+                    tilemap[tilemapMouseCurrent].Index : tilemap[tilemapMouseCurrent].Palette;
 
-                // fills all tiles going out from X, Y with the first tile selected
-                if (rModeTilemap.Checked)
+                var queue = new Queue<Point>();
+
+                // Fills all tiles going out from X, Y with the first tile selected
+                if (src != dst)
                 {
-                    // get tile to fill with and tile to replace
-                    var set = tilesetSelection.X + tilesetSelection.Y * cTilesetWidth.Value;
-                    var get = tilemap[tilemapMouseCurrent].Index;
-
-                    // quit if already set
-                    if (get == set)
-                        goto end;
-
-                    // create a queue to hold points
-                    var q = new Queue<Point>();
-                    q.Enqueue(tilemapMouseCurrent);
-
-                    // queues all tiles left and right of x,y and such
-                    while (q.Count > 0)
+                    if (rModeTilemap.Checked)
                     {
-                        var n = q.Dequeue();
-                        if (tilemap[n].Index != get)
-                            continue;
+                        // create a queue to hold points
+                        queue.Enqueue(tilemapMouseCurrent);
 
-                        Point w = n, e = new Point(n.X + 1, n.Y);
-                        while (w.X >= 0 && tilemap[w].Index == get)
+                        // queues all tiles left and right of x,y and such
+                        while (queue.Count > 0)
                         {
-                            tilemap[w].Index = (short)set;
-                            if (w.Y > 0 && tilemap[w.X, w.Y - 1].Index == get)
-                                q.Enqueue(new Point(w.X, w.Y - 1));
-                            if (w.Y < tilemap.Height - 1 && tilemap[w.X, w.Y + 1].Index == get)
-                                q.Enqueue(new Point(w.X, w.Y + 1));
-                            w.X--;
-                        }
+                            var n = queue.Dequeue();
+                            if (tilemap[n].Index != src)
+                                continue;
 
-                        while (e.X <= tilemap.Width - 1 && tilemap[e].Index == get)
-                        {
-                            tilemap[e].Index = (short)set;
-                            if (e.Y > 0 && tilemap[e.X, e.Y - 1].Index == get)
-                                q.Enqueue(new Point(e.X, e.Y - 1));
-                            if (e.Y < tilemap.Height - 1 && tilemap[e.X, e.Y + 1].Index == get)
-                                q.Enqueue(new Point(e.X, e.Y + 1));
-                            e.X++;
+                            Point w = n, e = new Point(n.X + 1, n.Y);
+                            while (w.X >= 0 && tilemap[w].Index == src)
+                            {
+                                tilemap[w].Index = (short)dst;
+                                if (w.Y > 0 && tilemap[w.X, w.Y - 1].Index == src)
+                                    queue.Enqueue(new Point(w.X, w.Y - 1));
+                                if (w.Y < tilemap.Height - 1 && tilemap[w.X, w.Y + 1].Index == src)
+                                    queue.Enqueue(new Point(w.X, w.Y + 1));
+                                w.X--;
+                            }
+
+                            while (e.X <= tilemap.Width - 1 && tilemap[e].Index == src)
+                            {
+                                tilemap[e].Index = (short)dst;
+                                if (e.Y > 0 && tilemap[e.X, e.Y - 1].Index == src)
+                                    queue.Enqueue(new Point(e.X, e.Y - 1));
+                                if (e.Y < tilemap.Height - 1 && tilemap[e.X, e.Y + 1].Index == src)
+                                    queue.Enqueue(new Point(e.X, e.Y + 1));
+                                e.X++;
+                            }
                         }
                     }
-                }
-                else
-                {
-                    // get tile to fill with and tile to replace
-                    var set = paletteSelection;
-                    var get = tilemap[tilemapMouseCurrent].Palette;
-
-                    // quit if already set
-                    if (get == set)
-                        goto end;
-
-                    // create a queue to hold points
-                    var q = new Queue<Point>();
-                    q.Enqueue(tilemapMouseCurrent);
-
-                    // queues all tiles left and right of x,y and such
-                    while (q.Count > 0)
+                    else
                     {
-                        var n = q.Dequeue();
-                        if (tilemap[n].Palette != get)
-                            continue;
+                        // create a queue to hold points
+                        queue.Enqueue(tilemapMouseCurrent);
 
-                        Point w = n, e = new Point(n.X + 1, n.Y);
-                        while (w.X >= 0 && tilemap[w].Palette == get)
+                        // queues all tiles left and right of x,y and such
+                        while (queue.Count > 0)
                         {
-                            tilemap[w].Palette = (byte)set;
-                            if (w.Y > 0 && tilemap[w.X, w.Y - 1].Palette == get)
-                                q.Enqueue(new Point(w.X, w.Y - 1));
-                            if (w.Y < tilemap.Height - 1 && tilemap[w.X, w.Y + 1].Palette == get)
-                                q.Enqueue(new Point(w.X, w.Y + 1));
-                            w.X--;
-                        }
+                            var n = queue.Dequeue();
+                            if (tilemap[n].Palette != src)
+                                continue;
 
-                        while (e.X <= tilemap.Width - 1 && tilemap[e].Palette == get)
-                        {
-                            tilemap[e].Palette = (byte)set;
-                            if (e.Y > 0 && tilemap[e.X, e.Y - 1].Palette == get)
-                                q.Enqueue(new Point(e.X, e.Y - 1));
-                            if (e.Y < tilemap.Height - 1 && tilemap[e.X, e.Y + 1].Palette == get)
-                                q.Enqueue(new Point(e.X, e.Y + 1));
-                            e.X++;
+                            Point w = n, e = new Point(n.X + 1, n.Y);
+                            while (w.X >= 0 && tilemap[w].Palette == src)
+                            {
+                                tilemap[w].Palette = (byte)dst;
+                                if (w.Y > 0 && tilemap[w.X, w.Y - 1].Palette == src)
+                                    queue.Enqueue(new Point(w.X, w.Y - 1));
+                                if (w.Y < tilemap.Height - 1 && tilemap[w.X, w.Y + 1].Palette == src)
+                                    queue.Enqueue(new Point(w.X, w.Y + 1));
+                                w.X--;
+                            }
+
+                            while (e.X <= tilemap.Width - 1 && tilemap[e].Palette == src)
+                            {
+                                tilemap[e].Palette = (byte)dst;
+                                if (e.Y > 0 && tilemap[e.X, e.Y - 1].Palette == src)
+                                    queue.Enqueue(new Point(e.X, e.Y - 1));
+                                if (e.Y < tilemap.Height - 1 && tilemap[e.X, e.Y + 1].Palette == src)
+                                    queue.Enqueue(new Point(e.X, e.Y + 1));
+                                e.X++;
+                            }
                         }
                     }
-                }
 
-                // redraw entire tilemap (unknown amount of tiles changed)
-                tilemap.Draw(tilemapImage, tileset, 0, 0, tilemap.Width, tilemap.Height);
+                    // Redraw entire tilemap (unknown amount of tiles changed)
+                    tilemap.Draw(tilemapImage, tileset, 0, 0, tilemap.Width, tilemap.Height);
+                }
             }
 
-            end:
+            //end:
             pTilemap.Invalidate();
         }
 

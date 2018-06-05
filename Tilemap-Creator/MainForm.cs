@@ -240,8 +240,14 @@ namespace TMC
         {
             if (tileset == null) return;
 
-            // TODO: Allow user to specify
-            tileset.ReduceColors(16);
+            // Recude the tileset's colors based on user selection
+            using (var dialog = new ReduceColorsDialog())
+            {
+                if (dialog.ShowDialog() != DialogResult.OK)
+                    return;
+
+                tileset.ReduceColors(dialog.Colors);
+            }
 
             // Refresh the tileset
             UpdateTileset(false);
