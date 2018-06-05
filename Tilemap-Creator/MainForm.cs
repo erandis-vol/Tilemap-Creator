@@ -217,18 +217,13 @@ namespace TMC
         {
             if (tileset == null) return;
 
-            using (var d = new RearrangePaletteDialog(tileset.Palette))
+            using (var d = new SwapColorsDialog(tileset.Palette))
             {
                 if (d.ShowDialog() != DialogResult.OK)
                     return;
 
                 // replace palette for every tile
-                //for (int t = 0; t < tileset.Length; t++)
-                //{
-                //    tileset[t].Lock();
-                //    tileset[t].RearrangePalette(d.Palette);
-                //    tileset[t].Unlock();
-                //}
+                tileset.SwapColors(d.Colors);
 
                 // redraw tileset
                 UpdateTileset(false);
