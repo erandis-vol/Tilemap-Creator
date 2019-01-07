@@ -83,7 +83,7 @@ namespace TMC.Core
             return best;
         }
 
-        public static Color[] Create(FastBitmap fb)
+        public static Color[] Create(DirectBitmap fb)
         {
             if (fb == null)
                 throw new ArgumentNullException(nameof(fb));

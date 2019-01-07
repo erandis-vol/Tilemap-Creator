@@ -319,7 +319,7 @@ namespace TMC.Core
         /// </summary>
         /// <param name="fb">The image to draw the tilemap on.</param>
         /// <param name="tileset">The tileset.</param>
-        public void Draw(FastBitmap fb, Tileset tileset)
+        public void Draw(DirectBitmap fb, Tileset tileset)
         {
             Draw(fb, tileset, 0, 0, width, height);
         }
@@ -329,7 +329,7 @@ namespace TMC.Core
         /// </summary>
         /// <param name="fb">The image to draw the tilemap on.</param>
         /// <param name="tileset">The tileset.</param>
-        public void Draw(FastBitmap fb, Tileset tileset, int srcX, int srcY, int srcWidth, int srcHeight)
+        public void Draw(DirectBitmap fb, Tileset tileset, int srcX, int srcY, int srcWidth, int srcHeight)
         {
             if (fb == null || tileset == null)
                 throw new ArgumentNullException(fb == null ? nameof(fb) : nameof(tileset));

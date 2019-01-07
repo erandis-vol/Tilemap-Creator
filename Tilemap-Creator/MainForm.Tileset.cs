@@ -12,7 +12,7 @@ namespace TMC
     partial class MainForm
     {
         Tileset tileset;
-        FastBitmap tilesetImage;
+        DirectBitmap tilesetImage;
 
         Rectangle tilesetSelection = new Rectangle(0, 0, 1, 1);
 

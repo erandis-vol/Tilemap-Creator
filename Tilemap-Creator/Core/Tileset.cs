@@ -32,7 +32,7 @@ namespace TMC.Core
             tiles = new Tile[width * height];
 
             // Copy image data from source
-            using (var fb = FastBitmap.FromImage(source))
+            using (var fb = DirectBitmap.FromImage(source))
             {
                 if ((source.PixelFormat & PixelFormat.Indexed) == PixelFormat.Indexed)
                 {
@@ -69,7 +69,7 @@ namespace TMC.Core
                                 for (int i = 0; i < 8; i++)
                                 {
                                     // Find the color index
-                                    var index = palette.IndexOf(Color.FromArgb(fb.Bits[(x * 8 + i) + (y * 8 + j) * fb.Width]));
+                                    var index = palette.IndexOf(Color.FromArgb(fb.Pixels[(x * 8 + i) + (y * 8 + j) * fb.Width]));
                                     if (index < 0)
                                         throw new IndexOutOfRangeException();
 
@@ -95,7 +95,7 @@ namespace TMC.Core
                             {
                                 for (int i = 0; i < 8; i++)
                                 {
-                                    var color = Color.FromArgb(fb.Bits[(x * 8 + i) + (y * 8 + j) * fb.Width]).Quantize();
+                                    var color = Color.FromArgb(fb.Pixels[(x * 8 + i) + (y * 8 + j) * fb.Width]).Quantize();
 
                                     var index = colors.IndexOf(color);
                                     if (index < 0)
@@ -220,17 +220,17 @@ namespace TMC.Core
         }
 
         /// <summary>
-        /// Creates a new <see cref="FastBitmap"/> representing all tiles.
+        /// Creates a new <see cref="DirectBitmap"/> representing all tiles.
         /// </summary>
         /// <param name="columns">The number of columns in a single row of tiles.</param>
         /// <returns></returns>
-        public FastBitmap ToImage(int columns)
+        public DirectBitmap ToImage(int columns)
         {
             if (columns <= 0)
                 throw new ArgumentOutOfRangeException(nameof(columns));
 
             var rows = (tiles.Length / columns) + (tiles.Length % columns > 0 ? 1 : 0);
-            var fb = new FastBitmap(columns * 8, rows * 8);
+            var fb = new DirectBitmap(columns * 8, rows * 8);
 
             for (int i = 0; i < tiles.Length; i++)
             {

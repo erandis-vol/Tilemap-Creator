@@ -12,7 +12,7 @@ namespace TMC
     partial class MainForm
     {
         Tilemap tilemap;
-        FastBitmap tilemapImage;
+        DirectBitmap tilemapImage;
 
         Point tilemapMouseCurrent = new Point(-1, -1);
 
@@ -32,13 +32,13 @@ namespace TMC
             // draw tilemap
             if (tilemapImage == null)
             {
-                tilemapImage = new FastBitmap(tilemap.Width * 8, tilemap.Height * 8);
+                tilemapImage = new DirectBitmap(tilemap.Width * 8, tilemap.Height * 8);
             }
             if (tilemapImage.Width != tilemap.Width * 8 ||
                 tilemapImage.Height != tilemap.Height * 8)
             {
                 tilemapImage.Dispose();
-                tilemapImage = new FastBitmap(tilemap.Width * 8, tilemap.Height * 8);
+                tilemapImage = new DirectBitmap(tilemap.Width * 8, tilemap.Height * 8);
             }
 
             tilemap.Draw(tilemapImage, tileset);
