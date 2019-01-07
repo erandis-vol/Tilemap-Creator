@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TMC.Core;
 
@@ -23,18 +16,18 @@ namespace TMC.Forms
 
         public string File { get; private set; }
 
-        public Tilemap.Format Format
+        public TilemapFormat Format
         {
             get
             {
                 switch (cFormat.SelectedIndex)
                 {
                     case 0:
-                        return Tilemap.Format.Text4;
+                        return TilemapFormat.Text4;
                     case 1:
-                        return Tilemap.Format.Text8;
+                        return TilemapFormat.Text8;
                     case 2:
-                        return Tilemap.Format.RotationScaling;
+                        return TilemapFormat.RotationScaling;
 
                     default:    // should never happen
                         throw new Exception();

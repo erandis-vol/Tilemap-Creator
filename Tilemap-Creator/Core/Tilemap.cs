@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 
@@ -7,65 +6,7 @@ namespace TMC.Core
 {
     public class Tilemap
     {
-        /// <summary>Represents the format of a <see cref="Tilemap"/>.</summary>
-        public enum Format
-        {
-            /// <summary>Text mode, 4 bits per pixel</summary>
-            Text4 = 0x40,
-            /// <summary>Text mode, 8 bits per pixel</summary>
-            Text8 = 0x80,
-            /// <summary>Rotation/scaling mode</summary>
-            RotationScaling,
-        }
-
-        [DebuggerDisplay("Tileset = {Tileset}, Palette = {Palette}, FlipX = {FlipX}, FlipY = {FlipY}")]
-        public struct Tile
-        {
-            /// <summary>The tile index.</summary>
-            public short Index;
-
-            /// <summary>The palette index.</summary>
-            public byte Palette;
-
-            /// <summary>Determines wether the tile is flipped horizontally.</summary>
-            public bool FlipX;
-
-            /// <summary>Determines whether the tile is flipped vertically.</summary>
-            public bool FlipY;
-
-            /// <summary>
-            /// Initializes a new isntance of the <see cref="Tile"/> struct with the specified index.
-            /// </summary>
-            /// <param name="index">The tile index.</param>
-            public Tile(short index) : this(index, 0, false, false)
-            { }
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="Tile"/> struct with the specified index and flipping.
-            /// </summary>
-            /// <param name="index">The tile index.</param>
-            /// <param name="flipX">Determines wether the tile is flipped horizontally.</param>
-            /// <param name="flipY">Determines whether the tile is flipped vertically.</param>
-            public Tile(short index, bool flipX, bool flipY) : this(index, 0, flipX, flipY)
-            { }
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="Tile"/> struct with the specified index, palette, and flipping.
-            /// </summary>
-            /// <param name="index">The tile index.</param>
-            /// <param name="palette">The palette index.</param>
-            /// <param name="flipX">Determines wether the tile is flipped horizontally.</param>
-            /// <param name="flipY">Determines whether the tile is flipped vertically.</param>
-            public Tile(short index, byte palette, bool flipX, bool flipY)
-            {
-                Index = index;
-                Palette = palette;
-                FlipX = flipX;
-                FlipY = flipY;
-            }
-        }
-
-        Tile[] tiles;
+        TilemapEntry[] tiles;
         int width, height;
 
         /// <summary>
@@ -78,9 +19,9 @@ namespace TMC.Core
             this.width = width;
             this.height = height;
 
-            tiles = new Tile[width * height];
+            tiles = new TilemapEntry[width * height];
             for (int i = 0; i < width * height; i++)
-                tiles[i] = new Tile();
+                tiles[i] = new TilemapEntry();
         }
 
         /// <summary>
@@ -89,7 +30,7 @@ namespace TMC.Core
         /// <param name="filename"></param>
         /// <param name="format"></param>
         /// <param name="width"></param>
-        public Tilemap(string filename, Format format, int width)
+        public Tilemap(string filename, TilemapFormat format, int width)
         {
             const int IndexMask = 0x3FF;
             const int FlipXMask = 0x400;
@@ -100,32 +41,32 @@ namespace TMC.Core
             using (var br = new BinaryReader(fs))
             {
                 // --------------------------------
-                var tileCount = (int)br.BaseStream.Length / (format == Format.RotationScaling ? 1 : 2);
+                var tileCount = (int)br.BaseStream.Length / (format == TilemapFormat.RotationScaling ? 1 : 2);
 
                 // --------------------------------
                 this.width = width;
                 this.height = tileCount / width;
 
                 // --------------------------------
-                tiles = new Tile[width * height];
+                tiles = new TilemapEntry[width * height];
                 for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
                     {
-                        if (format == Format.Text4)
+                        if (format == TilemapFormat.Text4)
                         {
                             var u = br.ReadUInt16();
-                            tiles[x + y * width] = new Tile(
+                            tiles[x + y * width] = new TilemapEntry(
                                 (short)(u & IndexMask),
                                 (byte)((u >> 12) & PaletteMask),
                                 (u & FlipXMask) == FlipXMask,
                                 (u & FlipYMask) == FlipYMask
                             );
                         }
-                        else if (format == Format.Text8)
+                        else if (format == TilemapFormat.Text8)
                         {
                             var u = br.ReadUInt16();
-                            tiles[x + y * width] = new Tile(
+                            tiles[x + y * width] = new TilemapEntry(
                                 (short)(u & IndexMask),
                                 (u & FlipXMask) == FlipXMask,
                                 (u & FlipYMask) == FlipYMask
@@ -133,7 +74,7 @@ namespace TMC.Core
                         }
                         else // RotationScaling
                         {
-                            tiles[x + y * width] = new Tile(br.ReadByte());
+                            tiles[x + y * width] = new TilemapEntry(br.ReadByte());
                         }
                     }
                 }
@@ -142,9 +83,9 @@ namespace TMC.Core
 
         #region Methods
 
-        public ref Tile this[int index] => ref tiles[index];
+        public ref TilemapEntry this[int index] => ref tiles[index];
 
-        public ref Tile this[int x, int y]
+        public ref TilemapEntry this[int x, int y]
         {
             get
             {
@@ -158,7 +99,7 @@ namespace TMC.Core
             }
         }
 
-        public ref Tile this[Point p] => ref this[p.X, p.Y];
+        public ref TilemapEntry this[Point p] => ref this[p.X, p.Y];
 
         /// <summary>
         /// Resizes the tilemap.
@@ -173,7 +114,7 @@ namespace TMC.Core
             if (newWidth < 0 || newHeight < 0)
                 throw new ArgumentOutOfRangeException(newWidth < 0 ? nameof(newWidth) : nameof(newHeight));
 
-            var temp = new Tile[newWidth * newHeight];
+            var temp = new TilemapEntry[newWidth * newHeight];
             var copyWidth = Math.Min(width, newWidth);
             var copyHeight = Math.Min(height, newHeight);
 
@@ -196,7 +137,7 @@ namespace TMC.Core
         /// <param name="filename"></param>
         /// <param name="format"></param>
         /// <param name="extraBytes"></param>
-        public void Save(string filename, Format format, int extraBytes = 0)
+        public void Save(string filename, TilemapFormat format, int extraBytes = 0)
         {
             // http://problemkaputt.de/gbatek.htm#lcdvrambgscreendataformatbgmap
 
@@ -210,14 +151,14 @@ namespace TMC.Core
                     {
                         var tile = this[x, y];
 
-                        if (format == Format.Text4)
+                        if (format == TilemapFormat.Text4)
                             bw.Write((ushort)(
                                 (tile.Index & 0x3FF) |
                                 (tile.FlipX ? 0x400 : 0) |
                                 (tile.FlipY ? 0x800 : 0) |
                                 (tile.Palette << 12)
                             ));
-                        else if (format == Format.Text8)
+                        else if (format == TilemapFormat.Text8)
                             bw.Write((ushort)(
                                 (tile.Index & 0x3FF) |
                                 (tile.FlipX ? 0x400 : 0) |
@@ -240,7 +181,7 @@ namespace TMC.Core
         /// <param name="filename"></param>
         /// <param name="format"></param>
         /// <param name="extraBytes"></param>
-        private void SaveC(string filename, Format format, int extraBytes = 0)
+        private void SaveC(string filename, TilemapFormat format, int extraBytes = 0)
         {
             var variableName = Path.GetFileNameWithoutExtension(filename).ToLower().Replace(' ', '_');
 
@@ -255,14 +196,14 @@ namespace TMC.Core
                     for (int x = 0; x < width; x++)
                     {
                         var tile = this[x, y];
-                        if (format == Format.Text4)
+                        if (format == TilemapFormat.Text4)
                             sw.Write((ushort)(
                                 (tile.Index & 0x3FF) |
                                 (tile.FlipX ? 0x400 : 0) |
                                 (tile.FlipY ? 0x800 : 0) |
                                 (tile.Palette << 12)
                             ));
-                        else if (format == Format.Text8)
+                        else if (format == TilemapFormat.Text8)
                             sw.Write((ushort)(
                                 (tile.Index & 0x3FF) |
                                 (tile.FlipX ? 0x400 : 0) |
@@ -279,12 +220,12 @@ namespace TMC.Core
             }
         }
 
-        private void SaveNSCR(string filename, Format bitDepth, int extraBytes)
+        private void SaveNSCR(string filename, TilemapFormat bitDepth, int extraBytes)
         {
             // http://llref.emutalk.net/docs/?file=xml/nscr.xml#xml-doc
             // there are actually a lot of options for this format
 
-            if (bitDepth == Format.RotationScaling)
+            if (bitDepth == TilemapFormat.RotationScaling)
                 throw new NotSupportedException();
 
             using (var fs = File.Create(filename))
@@ -311,7 +252,7 @@ namespace TMC.Core
                     for (int x = 0; x < width; x++)
                     {
                         var tile = this[x, y];
-                        if (bitDepth == Format.Text4)
+                        if (bitDepth == TilemapFormat.Text4)
                             bw.Write((ushort)(
                                 (tile.Index & 0x3FF) |
                                 (tile.FlipX ? 0x400 : 0) |
@@ -340,7 +281,7 @@ namespace TMC.Core
                     this[x, y - 1] = this[x, y];
 
             for (int x = 0; x < width; x++)
-                this[x, height - 1] = new Tile();
+                this[x, height - 1] = new TilemapEntry();
         }
 
         public void ShiftDown()
@@ -350,7 +291,7 @@ namespace TMC.Core
                     this[x, y + 1] = this[x, y];
 
             for (int x = 0; x < width; x++)
-                this[x, 0] = new Tile();
+                this[x, 0] = new TilemapEntry();
         }
 
         public void ShiftLeft()
@@ -360,7 +301,7 @@ namespace TMC.Core
                     this[x - 1, y] = this[x, y];
 
             for (int y = 0; y < height; y++)
-                this[width - 1, y] = new Tile();
+                this[width - 1, y] = new TilemapEntry();
         }
 
         public void ShiftRight()
@@ -370,7 +311,7 @@ namespace TMC.Core
                     this[x + 1, y] = this[x, y];
 
             for (int y = 0; y < height; y++)
-                this[0, y] = new Tile();
+                this[0, y] = new TilemapEntry();
         }
 
         /// <summary>

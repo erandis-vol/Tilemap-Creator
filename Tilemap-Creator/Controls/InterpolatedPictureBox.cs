@@ -2,10 +2,6 @@
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-// This PictureBox is useful because setting the interpolation mode
-// to NearestNeighbor allows a picture box that appears to zoom the
-// image by pixels when resized :D
-
 namespace TMC.Controls
 {
     /// <summary>
@@ -14,7 +10,7 @@ namespace TMC.Controls
     public class InterpolatedPictureBox : PictureBox
     {
         /// <summary>
-        /// Gets or sets the interpolation mode associated with this <c>PictureBox</c>.
+        /// Gets or sets the interpolation mode associated with this <see cref="PictureBox"/>.
         /// </summary>
         [Category("Behavior"), DefaultValue(InterpolationMode.Default)]
         public InterpolationMode InterpolationMode { get; set; }

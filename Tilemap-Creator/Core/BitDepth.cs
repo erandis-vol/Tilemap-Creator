@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TMC.Core
+﻿namespace TMC.Core
 {
     /// <summary>
     /// Provides method for encoding and decoding bit depth.
@@ -9,23 +7,7 @@ namespace TMC.Core
     {
         #region Encode
 
-        public static byte[] Encode(Tileset.Tile[] tiles, int bitDepth)
-        {
-            if (bitDepth == 4)
-            {
-                return Encode4(tiles);
-            }
-            else if (bitDepth == 8)
-            {
-                return Encode8(tiles);
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
-        }
-
-        private static void EncodeTile4(ref Tileset.Tile tile, ref byte[] bytes, int index)
+        private static void EncodeTile4(ref Tile tile, ref byte[] bytes, int index)
         {
             for (int y = 0; y < 8; y++)
             {
@@ -36,7 +18,7 @@ namespace TMC.Core
             }
         }
 
-        public static byte[] Encode4(Tileset.Tile[] tiles)
+        public static byte[] Encode4(Tile[] tiles)
         {
             var bytes = new byte[tiles.Length << 5]; // * 32
 
@@ -48,7 +30,7 @@ namespace TMC.Core
             return bytes;
         }
 
-        private static void EncodeTile8(ref Tileset.Tile tile, ref byte[] bytes, int index)
+        private static void EncodeTile8(ref Tile tile, ref byte[] bytes, int index)
         {
             for (int y = 0; y < 8; y++)
             {
@@ -59,7 +41,7 @@ namespace TMC.Core
             }
         }
 
-        public static byte[] Encode8(Tileset.Tile[] tiles)
+        public static byte[] Encode8(Tile[] tiles)
         {
             var bytes = new byte[tiles.Length << 6]; // * 64
 
@@ -75,37 +57,9 @@ namespace TMC.Core
 
         #region Decode
 
-        public static Tileset.Tile[] DecodeTiles(byte[] bytes, int bitDepth)
+        public static Tile[] DecodeTiles4(byte[] bytes)
         {
-            if (bitDepth == 4)
-            {
-                return DecodeTiles4(bytes);
-            }
-            else if (bitDepth == 8)
-            {
-                return DecodeTiles8(bytes);
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
-        }
-
-        private static void DecodeTile4(ref byte[] bytes, int index, ref Tileset.Tile tile)
-        {
-            for (int y = 0; y < 8; y++)
-            {
-                for (int x = 0; x < 4; x++)
-                {
-                    tile[x * 2, y] = (bytes[index + x + y * 4] & 0xF);
-                    tile[x * 2 + 1, y] = (bytes[index + x + y * 4] >> 4 & 0xF);
-                }
-            }
-        }
-
-        public static Tileset.Tile[] DecodeTiles4(byte[] bytes)
-        {
-            var tiles = new Tileset.Tile[bytes.Length >> 5]; // / (8 * 8 / 2)
+            var tiles = new Tile[bytes.Length >> 5]; // / (8 * 8 / 2)
 
             for (int i = 0; i < tiles.Length; i++)
             {
@@ -115,7 +69,31 @@ namespace TMC.Core
             return tiles;
         }
 
-        private static void DecodeTile8(ref byte[] bytes, int index, ref Tileset.Tile tile)
+        public static Tile[] Decode8(byte[] bytes)
+        {
+            var tiles = new Tile[bytes.Length >> 6]; // / (8 * 8)
+
+            for (int i = 0; i < tiles.Length; i++)
+            {
+                DecodeTile8(ref bytes, i << 6, ref tiles[i]); // * (8 * 8)
+            }
+
+            return tiles;
+        }
+
+        private static void DecodeTile4(ref byte[] bytes, int index, ref Tile tile)
+        {
+            for (int y = 0; y < 8; y++)
+            {
+                for (int x = 0; x < 4; x++)
+                {
+                    tile[x * 2, y]     = (bytes[index + x + y * 4] & 0xF);
+                    tile[x * 2 + 1, y] = (bytes[index + x + y * 4] >> 4 & 0xF);
+                }
+            }
+        }
+
+        private static void DecodeTile8(ref byte[] bytes, int index, ref Tile tile)
         {
             for (int y = 0; y < 8; y++)
             {
@@ -124,18 +102,6 @@ namespace TMC.Core
                     tile[x, y] = bytes[index + x + y * 8];
                 }
             }
-        }
-
-        public static Tileset.Tile[] DecodeTiles8(byte[] bytes)
-        {
-            var tiles = new Tileset.Tile[bytes.Length >> 6]; // / (8 * 8)
-
-            for (int i = 0; i < tiles.Length; i++)
-            {
-                DecodeTile8(ref bytes, i << 6, ref tiles[i]); // * (8 * 8)
-            }
-
-            return tiles;
         }
 
         #endregion

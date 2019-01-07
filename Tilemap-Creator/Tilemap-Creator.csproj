@@ -53,6 +53,9 @@
   <ItemGroup>
     <Compile Include="Core\BitDepth.cs" />
     <Compile Include="Core\FastBitmap.cs" />
+    <Compile Include="Core\Tile.cs" />
+    <Compile Include="Core\TilemapEntry.cs" />
+    <Compile Include="Core\TilemapFormat.cs" />
     <Compile Include="Forms\AboutDialog.cs">
       <SubType>Form</SubType>
     </Compile>
