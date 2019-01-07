@@ -1,5 +1,4 @@
-Tilemap Creator (TMC)
---------------------------
-Copyright (c) 2013-2018
+Tilemap Creator
+===============
 
-A tool that allows for the creation of 8x8 tilesets and tilemaps for use in GBA ROMs. Incomplete but much faster than before.
+Tilemap Creator is a tool that allows for the creation of tilesets and tilemaps for use in Game Boy Advance (GBA) development.
