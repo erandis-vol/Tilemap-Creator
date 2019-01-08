@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using TMC.Core;
 using TMC.Forms;
@@ -9,11 +10,14 @@ namespace TMC
 {
     public partial class MainForm : Form
     {
-        int zoom = 2; // default zoom is 200%
-        bool ignore = false;
+        private readonly static Color GridColor = Color.FromArgb(128, Color.White);
+        private readonly static Color GridSelectionColor = Color.FromArgb(128, Color.Yellow);
 
-        Color gridColor = Color.FromArgb(128, Color.White);
-        Color gridColorS = Color.FromArgb(128, Color.Yellow);
+        private bool ignore = false;
+        private int zoom = 2; // default zoom is 200%
+
+        private TilesetFileOptions tilesetFileOptions = null;
+        private TilemapFileOptions tilemapFileOptions = null;
 
         // TODO: remember information about last tileset/tilemap
 
@@ -21,10 +25,13 @@ namespace TMC
         {
             InitializeComponent();
 
+            mnuSaveTileset.Enabled = false;
+            mnuSaveTilesetAs.Enabled = false;
+            mnuPalette.Enabled = false;
+
             mnuOpenTilemap.Enabled = false;
             mnuSaveTilemap.Enabled = false;
-            mnuSaveTileset.Enabled = false;
-            mnuPalette.Enabled = false;
+            mnuSaveTilemapAs.Enabled = false;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -34,8 +41,6 @@ namespace TMC
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            //tileset?.Dispose();
-
             tilesetImage?.Dispose();
             tilemapImage?.Dispose();
             palettesetImage?.Dispose();
@@ -47,6 +52,8 @@ namespace TMC
                 return;
 
             tilemap = new Tilemap(30, 20);
+            tilemapFileOptions = null;
+
             UpdateTilemap();
         }
 
@@ -57,7 +64,7 @@ namespace TMC
 
             openFileDialog1.FileName = "";
             openFileDialog1.Title = "Open Tilemap";
-            openFileDialog1.Filter = "GBA Raw Tilemap|*.raw;*.bin";
+            openFileDialog1.Filter = "Tilemap Files|*.raw;*.bin";
 
             if (openFileDialog1.ShowDialog() != DialogResult.OK)
                 return;
@@ -68,106 +75,49 @@ namespace TMC
                     return;
 
                 tilemap = new Tilemap(oa.File, oa.Format, oa.FriendlySize.Width);
+                tilemapFileOptions = new TilemapFileOptions {
+                    FileName = oa.File,
+                    Format = oa.Format,
+                    Padding = 0 // TODO: We should detect this 
+                };
+
                 UpdateTilemap();
             }
         }
 
         private void mnuSaveTilemap_Click(object sender, EventArgs e)
         {
-            if (tileset == null || tilemap == null)
-                return;
+            if (tilemapFileOptions == null)
+            {
+                mnuSaveTilemapAs.PerformClick();
+            }
+            else
+            {
+                tilemap.Save(tilemapFileOptions);
+            }
+        }
 
-            // --------------------------------
+        private void mnuSaveTilemapAs_Click(object sender, EventArgs e)
+        {
             saveFileDialog1.FileName = "";
             saveFileDialog1.Title = "Save Tilemap";
-            saveFileDialog1.Filter = "GBA Raw Tilemap|*.raw;*bin";
+            saveFileDialog1.Filter = "Tilemap Files|*.raw;*bin";
 
-            if (saveFileDialog1.ShowDialog() != DialogResult.OK)
-                return;
-
-            // --------------------------------
-            using (var sa = new SaveTilemapDialog(saveFileDialog1.FileName))
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                if (sa.ShowDialog() != DialogResult.OK)
-                    return;
-
-                tilemap.Save(sa.File, sa.Format, sa.ExtraBytes);
-            }
-        }
-
-        private void mnuOpenTileset_Click(object sender, EventArgs e)
-        {
-            // TODO: ask to save old Tileset/Tilemap
-            openFileDialog1.FileName = "";
-            openFileDialog1.Title = "Open Tileset";
-            openFileDialog1.Filter = "Images|*.bmp;*.png;*.jpg";
-
-            if (openFileDialog1.ShowDialog() != DialogResult.OK) return;
-
-            // create new Tileset
-            using (var bmp = new Bitmap(openFileDialog1.FileName))
-            //using (var sprite = new Sprite(bmp))
-            {
-                // sprite dimensions must be divisible by 8
-                if (bmp.Width % 8 != 0 || bmp.Height % 8 != 0)
+                using (var dialog = new SaveTilemapDialog(saveFileDialog1.FileName))
                 {
-                    MessageBox.Show("Tileset source Sprite dimensions are not divisible by 8!", "Invalid Sprite", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
+                    if (dialog.ShowDialog() != DialogResult.OK)
+                        return;
+
+                    tilemapFileOptions = new TilemapFileOptions {
+                        FileName = dialog.File,
+                        Format = dialog.Format,
+                        Padding = dialog.ExtraBytes
+                    };
                 }
 
-                // Tileset from sprite
-                //tileset?.Dispose();
-                tileset = new Tileset(bmp);
-            }
-
-            // fill sizes for Tileset
-            cTilesetWidth.Items.Clear();
-            foreach (var size in tileset.GetPerfectColumns())
-                cTilesetWidth.Items.Add(size.ToString());
-
-            // pick middle size
-            cTilesetWidth.SelectedIndex = cTilesetWidth.Items.Count / 2;
-
-            // finish
-            UpdateTileset(true);
-
-            // create new blank Tilemap
-            tilemap = new Tilemap(30, 20);
-            UpdateTilemap();
-
-            mnuOpenTilemap.Enabled = true;
-            mnuSaveTilemap.Enabled = true;
-            mnuSaveTileset.Enabled = true;
-            mnuPalette.Enabled = true;
-        }
-
-        private void mnuSaveTileset_Click(object sender, EventArgs e)
-        {
-            if (tileset == null || tilesetImage == null) return;
-
-            saveFileDialog1.FileName = "";
-            saveFileDialog1.Title = "Save Tileset";
-            saveFileDialog1.Filter = "Bitmaps|*.bmp|Binary|*.bin";
-
-            if (saveFileDialog1.ShowDialog() != DialogResult.OK)
-                return;
-
-            try
-            {
-                switch (saveFileDialog1.FilterIndex)
-                {
-                    case 1:
-                        tileset.SaveBMP(saveFileDialog1.FileName, cTilesetWidth.Value);
-                        break;
-
-                    case 2:
-                        tileset.SaveGBA(saveFileDialog1.FileName);
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                tilemap.Save(tilemapFileOptions);
             }
         }
 
@@ -176,12 +126,11 @@ namespace TMC
             // TODO: ask to save Tilemap/Tileset
             openFileDialog1.FileName = "";
             openFileDialog1.Title = "Create Tileset";
-            openFileDialog1.Filter = "Images|*.bmp;*.png;*.jpg";
+            openFileDialog1.Filter = "Image Files|*.bmp;*.png;*.jpg";
 
             if (openFileDialog1.ShowDialog() != DialogResult.OK) return;
 
             using (var bmp = new Bitmap(openFileDialog1.FileName))
-            //using (var sprite = new Sprite(bmp))
             {
                 // Sprite dimensions must be divisible by 8
                 if (bmp.Width % 8 != 0 || bmp.Height % 8 != 0)
@@ -204,13 +153,144 @@ namespace TMC
             cTilesetWidth.SelectedIndex = cTilesetWidth.Items.Count / 2;
 
             // finish
+            tilesetFileOptions = null;
+            tilemapFileOptions = null;
             UpdateTileset(true);
             UpdateTilemap();
 
             mnuOpenTilemap.Enabled = true;
             mnuSaveTilemap.Enabled = true;
+            mnuSaveTilemapAs.Enabled = true;
             mnuSaveTileset.Enabled = true;
+            mnuSaveTilesetAs.Enabled = true;
             mnuPalette.Enabled = true;
+        }
+
+        private void mnuOpenTileset_Click(object sender, EventArgs e)
+        {
+            // TODO: ask to save old Tileset/Tilemap
+            openFileDialog1.FileName = "";
+            openFileDialog1.Title = "Open Tileset";
+            openFileDialog1.Filter = "Image Files|*.bmp;*.png;*.jpg";
+
+            if (openFileDialog1.ShowDialog() != DialogResult.OK)
+                return;
+
+            // create new Tileset
+            using (var bmp = new Bitmap(openFileDialog1.FileName))
+            {
+                // sprite dimensions must be divisible by 8
+                if (bmp.Width % 8 != 0 || bmp.Height % 8 != 0)
+                {
+                    MessageBox.Show(
+                        "Tileset dimensions are not divisible by 8!",
+                        "Invalid Sprite",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                    return;
+                }
+
+                // Tileset from sprite
+                tileset = new Tileset(bmp);
+            }
+
+            // fill sizes for Tileset
+            cTilesetWidth.Items.Clear();
+            foreach (var size in tileset.GetPerfectColumns())
+                cTilesetWidth.Items.Add(size.ToString());
+
+            // pick middle size
+            cTilesetWidth.SelectedIndex = cTilesetWidth.Items.Count / 2;
+
+            // finish
+            tilesetFileOptions = new TilesetFileOptions {
+                FileName = openFileDialog1.FileName,
+                Format = TilesetFormat.BMP,
+                Columns = cTilesetWidth.Value
+            };
+            UpdateTileset(true);
+
+            // create new blank Tilemap
+            tilemap = new Tilemap(30, 20);
+            tilemapFileOptions = null;
+            UpdateTilemap();
+
+            mnuOpenTilemap.Enabled = true;
+            mnuSaveTilemap.Enabled = true;
+            mnuSaveTilemapAs.Enabled = true;
+            mnuSaveTileset.Enabled = true;
+            mnuSaveTilesetAs.Enabled = true;
+            mnuPalette.Enabled = true;
+        }
+
+        private void mnuSaveTileset_Click(object sender, EventArgs e)
+        {
+            if (tilesetFileOptions == null)
+            {
+                mnuSaveTilesetAs.PerformClick();
+            }
+            else
+            {
+                tilesetFileOptions.Columns = cTilesetWidth.Value;
+
+                try
+                {
+                    tileset.Save(tilesetFileOptions);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        "Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                }
+            }
+        }
+
+        private void mnuSaveTilesetAs_Click(object sender, EventArgs e)
+        {
+            saveFileDialog1.FileName = "";
+            saveFileDialog1.Title = "Save Tileset";
+            saveFileDialog1.Filter = "Bitmap Files|*.bmp|Binary Files|*.bin";
+
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                switch (saveFileDialog1.FilterIndex)
+                {
+                    case 1:
+                        tilesetFileOptions = new TilesetFileOptions {
+                            FileName = saveFileDialog1.FileName,
+                            Format = TilesetFormat.BMP,
+                            Columns = cTilesetWidth.Value
+                        };
+                        break;
+
+                    case 2:
+                        tilesetFileOptions = new TilesetFileOptions {
+                            FileName = saveFileDialog1.FileName,
+                            Format = TilesetFormat.BMP,
+                            Columns = 1
+                        };
+                        break;
+                }
+
+                try
+                {
+                    tileset.Save(tilesetFileOptions);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        ex.Message,
+                        "Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+                }
+            }
         }
 
         private void mnuSwapColors_Click(object sender, EventArgs e)
@@ -284,7 +364,9 @@ namespace TMC
         private void mnuZoomIn_Click(object sender, EventArgs e)
         {
             if (++zoom > 8)
+            {
                 zoom = 8;
+            }
 
             UpdateTileset(false);
             UpdateTilemap();
@@ -294,11 +376,10 @@ namespace TMC
 
         private void mnuZoomOut_Click(object sender, EventArgs e)
         {
-            //if (tileset == null)
-            //    return;
-
             if (--zoom <= 0)
+            {
                 zoom = 1;
+            }
 
             UpdateTileset(false);
             UpdateTilemap();
@@ -328,8 +409,10 @@ namespace TMC
 
         private void mnuAbout_Click(object sender, EventArgs e)
         {
-            using (var a = new AboutDialog())
-                a.ShowDialog();
+            using (var dialog = new AboutDialog())
+            {
+                dialog.ShowDialog();
+            }
         }
     }
 }

@@ -137,9 +137,12 @@ namespace TMC.Core
         /// <param name="filename"></param>
         /// <param name="format"></param>
         /// <param name="extraBytes"></param>
-        public void Save(string filename, TilemapFormat format, int extraBytes = 0)
+        public void Save(TilemapFileOptions tilemapFileOptions)
         {
             // http://problemkaputt.de/gbatek.htm#lcdvrambgscreendataformatbgmap
+            var filename = tilemapFileOptions.FileName;
+            var format   = tilemapFileOptions.Format;
+            var padding  = tilemapFileOptions.Padding;
 
             using (var fs = File.Create(filename))
             using (var bw = new BinaryWriter(fs))
@@ -170,8 +173,10 @@ namespace TMC.Core
                 }
 
                 // --------------------------------
-                for (int i = 0; i < extraBytes; i++)
+                for (int i = 0; i < padding; i++)
+                {
                     bw.Write(byte.MinValue);
+                }
             }
         }
 

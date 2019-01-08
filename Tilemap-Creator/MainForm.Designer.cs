@@ -35,6 +35,7 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuOpenTileset = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSaveTileset = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuSaveTilesetAs = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuPalette = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuReduceColors = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,6 +47,7 @@
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuOpenTilemap = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSaveTilemap = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuSaveTilemapAs = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuView = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuZoomIn = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuZoomOut = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,6 +57,7 @@
             this.mnuSettings = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAllowFlipping = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuHelp = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lPosition = new System.Windows.Forms.ToolStripStatusLabel();
             this.lTile = new System.Windows.Forms.ToolStripStatusLabel();
@@ -65,6 +68,7 @@
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.pTileset = new TMC.Controls.InterpolatedPictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.chkTilesetFlipY = new System.Windows.Forms.CheckBox();
@@ -75,6 +79,7 @@
             this.tTilesetHeight = new TMC.Controls.NumberBox();
             this.cTilesetWidth = new TMC.Controls.NumberComboBox();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.pTilemap = new TMC.Controls.InterpolatedPictureBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.bTilemapRight = new System.Windows.Forms.Button();
@@ -88,9 +93,6 @@
             this.tTilemapWidth = new TMC.Controls.NumberBox();
             this.rModePalette = new System.Windows.Forms.RadioButton();
             this.rModeTilemap = new System.Windows.Forms.RadioButton();
-            this.pTileset = new TMC.Controls.InterpolatedPictureBox();
-            this.pTilemap = new TMC.Controls.InterpolatedPictureBox();
-            this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -98,15 +100,15 @@
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pTileset)).BeginInit();
             this.panel1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pTilemap)).BeginInit();
             this.panel3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pTileset)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pTilemap)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -132,6 +134,7 @@
             this.toolStripSeparator1,
             this.mnuOpenTileset,
             this.mnuSaveTileset,
+            this.mnuSaveTilesetAs,
             this.toolStripSeparator2,
             this.mnuPalette});
             this.mnuTileset.Name = "mnuTileset";
@@ -142,20 +145,20 @@
             // 
             this.mnuCreateTileset.Name = "mnuCreateTileset";
             this.mnuCreateTileset.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
-            this.mnuCreateTileset.Size = new System.Drawing.Size(146, 22);
+            this.mnuCreateTileset.Size = new System.Drawing.Size(180, 22);
             this.mnuCreateTileset.Text = "Create";
             this.mnuCreateTileset.Click += new System.EventHandler(this.mnuCreateTileset_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(143, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // mnuOpenTileset
             // 
             this.mnuOpenTileset.Name = "mnuOpenTileset";
             this.mnuOpenTileset.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.mnuOpenTileset.Size = new System.Drawing.Size(146, 22);
+            this.mnuOpenTileset.Size = new System.Drawing.Size(180, 22);
             this.mnuOpenTileset.Text = "Open";
             this.mnuOpenTileset.Click += new System.EventHandler(this.mnuOpenTileset_Click);
             // 
@@ -163,14 +166,21 @@
             // 
             this.mnuSaveTileset.Name = "mnuSaveTileset";
             this.mnuSaveTileset.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.mnuSaveTileset.Size = new System.Drawing.Size(146, 22);
+            this.mnuSaveTileset.Size = new System.Drawing.Size(180, 22);
             this.mnuSaveTileset.Text = "Save";
             this.mnuSaveTileset.Click += new System.EventHandler(this.mnuSaveTileset_Click);
+            // 
+            // mnuSaveTilesetAs
+            // 
+            this.mnuSaveTilesetAs.Name = "mnuSaveTilesetAs";
+            this.mnuSaveTilesetAs.Size = new System.Drawing.Size(180, 22);
+            this.mnuSaveTilesetAs.Text = "Save As...";
+            this.mnuSaveTilesetAs.Click += new System.EventHandler(this.mnuSaveTilesetAs_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(143, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // mnuPalette
             // 
@@ -180,7 +190,7 @@
             this.toolStripSeparator3,
             this.mnuExportColors});
             this.mnuPalette.Name = "mnuPalette";
-            this.mnuPalette.Size = new System.Drawing.Size(146, 22);
+            this.mnuPalette.Size = new System.Drawing.Size(180, 22);
             this.mnuPalette.Text = "Colors";
             // 
             // mnuReduceColors
@@ -215,7 +225,8 @@
             this.mnuNewTilemap,
             this.toolStripSeparator5,
             this.mnuOpenTilemap,
-            this.mnuSaveTilemap});
+            this.mnuSaveTilemap,
+            this.mnuSaveTilemapAs});
             this.mnuTilemap.Name = "mnuTilemap";
             this.mnuTilemap.Size = new System.Drawing.Size(62, 20);
             this.mnuTilemap.Text = "Tilemap";
@@ -224,21 +235,21 @@
             // 
             this.mnuNewTilemap.Name = "mnuNewTilemap";
             this.mnuNewTilemap.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.mnuNewTilemap.Size = new System.Drawing.Size(178, 22);
+            this.mnuNewTilemap.Size = new System.Drawing.Size(180, 22);
             this.mnuNewTilemap.Text = "New";
             this.mnuNewTilemap.Click += new System.EventHandler(this.mnuNewTilemap_Click);
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(175, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(177, 6);
             // 
             // mnuOpenTilemap
             // 
             this.mnuOpenTilemap.Name = "mnuOpenTilemap";
             this.mnuOpenTilemap.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.O)));
-            this.mnuOpenTilemap.Size = new System.Drawing.Size(178, 22);
+            this.mnuOpenTilemap.Size = new System.Drawing.Size(180, 22);
             this.mnuOpenTilemap.Text = "Open";
             this.mnuOpenTilemap.Click += new System.EventHandler(this.mnuOpenTilemap_Click);
             // 
@@ -247,9 +258,16 @@
             this.mnuSaveTilemap.Name = "mnuSaveTilemap";
             this.mnuSaveTilemap.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
-            this.mnuSaveTilemap.Size = new System.Drawing.Size(178, 22);
+            this.mnuSaveTilemap.Size = new System.Drawing.Size(180, 22);
             this.mnuSaveTilemap.Text = "Save";
             this.mnuSaveTilemap.Click += new System.EventHandler(this.mnuSaveTilemap_Click);
+            // 
+            // mnuSaveTilemapAs
+            // 
+            this.mnuSaveTilemapAs.Name = "mnuSaveTilemapAs";
+            this.mnuSaveTilemapAs.Size = new System.Drawing.Size(180, 22);
+            this.mnuSaveTilemapAs.Text = "Save As...";
+            this.mnuSaveTilemapAs.Click += new System.EventHandler(this.mnuSaveTilemapAs_Click);
             // 
             // mnuView
             // 
@@ -332,6 +350,14 @@
             this.mnuHelp.Name = "mnuHelp";
             this.mnuHelp.Size = new System.Drawing.Size(44, 20);
             this.mnuHelp.Text = "Help";
+            // 
+            // mnuAbout
+            // 
+            this.mnuAbout.Name = "mnuAbout";
+            this.mnuAbout.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+            this.mnuAbout.Size = new System.Drawing.Size(149, 22);
+            this.mnuAbout.Text = "About";
+            this.mnuAbout.Click += new System.EventHandler(this.mnuAbout_Click);
             // 
             // statusStrip1
             // 
@@ -422,6 +448,21 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(242, 355);
             this.panel2.TabIndex = 2;
+            // 
+            // pTileset
+            // 
+            this.pTileset.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            this.pTileset.Location = new System.Drawing.Point(0, 0);
+            this.pTileset.Margin = new System.Windows.Forms.Padding(2);
+            this.pTileset.Name = "pTileset";
+            this.pTileset.Size = new System.Drawing.Size(12, 13);
+            this.pTileset.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pTileset.TabIndex = 1;
+            this.pTileset.TabStop = false;
+            this.pTileset.Paint += new System.Windows.Forms.PaintEventHandler(this.pTileset_Paint);
+            this.pTileset.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pTileset_MouseDown);
+            this.pTileset.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pTileset_MouseMove);
+            this.pTileset.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pTileset_MouseUp);
             // 
             // panel1
             // 
@@ -543,6 +584,21 @@
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(491, 355);
             this.panel4.TabIndex = 2;
+            // 
+            // pTilemap
+            // 
+            this.pTilemap.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            this.pTilemap.Location = new System.Drawing.Point(0, 0);
+            this.pTilemap.Margin = new System.Windows.Forms.Padding(2);
+            this.pTilemap.Name = "pTilemap";
+            this.pTilemap.Size = new System.Drawing.Size(12, 13);
+            this.pTilemap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pTilemap.TabIndex = 1;
+            this.pTilemap.TabStop = false;
+            this.pTilemap.Paint += new System.Windows.Forms.PaintEventHandler(this.pTilemap_Paint);
+            this.pTilemap.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pTilemap_MouseDown);
+            this.pTilemap.MouseLeave += new System.EventHandler(this.pTilemap_MouseLeave);
+            this.pTilemap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pTilemap_MouseMove);
             // 
             // panel3
             // 
@@ -698,44 +754,6 @@
             this.rModeTilemap.UseVisualStyleBackColor = true;
             this.rModeTilemap.CheckedChanged += new System.EventHandler(this.rMode_CheckedChanged);
             // 
-            // pTileset
-            // 
-            this.pTileset.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-            this.pTileset.Location = new System.Drawing.Point(0, 0);
-            this.pTileset.Margin = new System.Windows.Forms.Padding(2);
-            this.pTileset.Name = "pTileset";
-            this.pTileset.Size = new System.Drawing.Size(12, 13);
-            this.pTileset.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pTileset.TabIndex = 1;
-            this.pTileset.TabStop = false;
-            this.pTileset.Paint += new System.Windows.Forms.PaintEventHandler(this.pTileset_Paint);
-            this.pTileset.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pTileset_MouseDown);
-            this.pTileset.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pTileset_MouseMove);
-            this.pTileset.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pTileset_MouseUp);
-            // 
-            // pTilemap
-            // 
-            this.pTilemap.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-            this.pTilemap.Location = new System.Drawing.Point(0, 0);
-            this.pTilemap.Margin = new System.Windows.Forms.Padding(2);
-            this.pTilemap.Name = "pTilemap";
-            this.pTilemap.Size = new System.Drawing.Size(12, 13);
-            this.pTilemap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pTilemap.TabIndex = 1;
-            this.pTilemap.TabStop = false;
-            this.pTilemap.Paint += new System.Windows.Forms.PaintEventHandler(this.pTilemap_Paint);
-            this.pTilemap.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pTilemap_MouseDown);
-            this.pTilemap.MouseLeave += new System.EventHandler(this.pTilemap_MouseLeave);
-            this.pTilemap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pTilemap_MouseMove);
-            // 
-            // mnuAbout
-            // 
-            this.mnuAbout.Name = "mnuAbout";
-            this.mnuAbout.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.mnuAbout.Size = new System.Drawing.Size(180, 22);
-            this.mnuAbout.Text = "About";
-            this.mnuAbout.Click += new System.EventHandler(this.mnuAbout_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -761,19 +779,19 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pTileset)).EndInit();
             this.panel1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.panel4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pTilemap)).EndInit();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pTileset)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pTilemap)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -843,6 +861,8 @@
         private System.Windows.Forms.ToolStripStatusLabel lPalette;
         private System.Windows.Forms.ToolStripStatusLabel lFlip;
         private System.Windows.Forms.ToolStripMenuItem mnuReduceColors;
+        private System.Windows.Forms.ToolStripMenuItem mnuSaveTilesetAs;
+        private System.Windows.Forms.ToolStripMenuItem mnuSaveTilemapAs;
     }
 }
 

@@ -112,7 +112,7 @@ namespace TMC
                 // draw grid
                 if (mnuGrid.Checked)
                 {
-                    using (var pen = new Pen(new SolidBrush(gridColor), 1f))
+                    using (var pen = new Pen(new SolidBrush(GridColor), 1f))
                     {
                         pen.DashPattern = new[] { 2f, 2f };
 

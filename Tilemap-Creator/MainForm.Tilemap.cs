@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TMC.Core;
 
@@ -110,8 +107,8 @@ namespace TMC
             // Draw grid
             if (mnuGrid.Checked)
             {
-                using (var pen = new Pen(new SolidBrush(gridColor), 1f))
-                using (var penS = new Pen(new SolidBrush(gridColorS), 1f))
+                using (var pen = new Pen(new SolidBrush(GridColor), 1f))
+                using (var penS = new Pen(new SolidBrush(GridSelectionColor), 1f))
                 {
                     pen.DashPattern = new[] { 2f, 2f };
                     penS.DashPattern = new[] { 2f, 2f };

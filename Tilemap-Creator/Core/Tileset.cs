@@ -254,7 +254,28 @@ namespace TMC.Core
             return fb;
         }
 
-        public void SaveBMP(string filename, int columns)
+        public void Save(TilesetFileOptions tilesetFileOptions)
+        {
+            var filename = tilesetFileOptions.FileName;
+            var format   = tilesetFileOptions.Format;
+            var columns  = tilesetFileOptions.Columns;
+
+            switch (tilesetFileOptions.Format)
+            {
+                case TilesetFormat.BMP:
+                    SaveBMP(tilesetFileOptions.FileName, tilesetFileOptions.Columns);
+                    break;
+
+                case TilesetFormat.BIN:
+                    SaveBIN(tilesetFileOptions.FileName);
+                    break;
+
+                default:
+                    throw new NotSupportedException($"Tileset format {format} is not supported for saving.");
+            }
+        }
+
+        private void SaveBMP(string filename, int columns)
         {
             var width = columns * 8;
             var height = (tiles.Length / columns + (tiles.Length % columns > 0 ? 1 : 0)) * 8;
@@ -434,7 +455,7 @@ namespace TMC.Core
             }
         }
 
-        public void SaveGBA(string filename)
+        private void SaveBIN(string filename)
         {
             if (palette.Length <= 16)
             {
