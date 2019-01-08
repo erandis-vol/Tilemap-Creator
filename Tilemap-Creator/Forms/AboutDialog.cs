@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace TMC.Forms
 {
@@ -7,10 +8,11 @@ namespace TMC.Forms
         public AboutDialog()
         {
             InitializeComponent();
+        }
 
-            label1.Left = (ClientSize.Width - label1.Width) / 2;
-            label2.Left = (ClientSize.Width - label2.Width) / 2;
-            label3.Left = (ClientSize.Width - label3.Width) / 2;
+        private void button2_Click(object sender, System.EventArgs e)
+        {
+            Process.Start("https://github.com/erandis-vol/Tilemap-Creator");
         }
     }
 }

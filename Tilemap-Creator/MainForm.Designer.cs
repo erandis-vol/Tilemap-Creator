@@ -145,20 +145,20 @@
             // 
             this.mnuCreateTileset.Name = "mnuCreateTileset";
             this.mnuCreateTileset.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
-            this.mnuCreateTileset.Size = new System.Drawing.Size(180, 22);
+            this.mnuCreateTileset.Size = new System.Drawing.Size(146, 22);
             this.mnuCreateTileset.Text = "Create";
             this.mnuCreateTileset.Click += new System.EventHandler(this.mnuCreateTileset_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(143, 6);
             // 
             // mnuOpenTileset
             // 
             this.mnuOpenTileset.Name = "mnuOpenTileset";
             this.mnuOpenTileset.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.mnuOpenTileset.Size = new System.Drawing.Size(180, 22);
+            this.mnuOpenTileset.Size = new System.Drawing.Size(146, 22);
             this.mnuOpenTileset.Text = "Open";
             this.mnuOpenTileset.Click += new System.EventHandler(this.mnuOpenTileset_Click);
             // 
@@ -166,21 +166,21 @@
             // 
             this.mnuSaveTileset.Name = "mnuSaveTileset";
             this.mnuSaveTileset.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.mnuSaveTileset.Size = new System.Drawing.Size(180, 22);
+            this.mnuSaveTileset.Size = new System.Drawing.Size(146, 22);
             this.mnuSaveTileset.Text = "Save";
             this.mnuSaveTileset.Click += new System.EventHandler(this.mnuSaveTileset_Click);
             // 
             // mnuSaveTilesetAs
             // 
             this.mnuSaveTilesetAs.Name = "mnuSaveTilesetAs";
-            this.mnuSaveTilesetAs.Size = new System.Drawing.Size(180, 22);
+            this.mnuSaveTilesetAs.Size = new System.Drawing.Size(146, 22);
             this.mnuSaveTilesetAs.Text = "Save As...";
             this.mnuSaveTilesetAs.Click += new System.EventHandler(this.mnuSaveTilesetAs_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(143, 6);
             // 
             // mnuPalette
             // 
@@ -190,7 +190,7 @@
             this.toolStripSeparator3,
             this.mnuExportColors});
             this.mnuPalette.Name = "mnuPalette";
-            this.mnuPalette.Size = new System.Drawing.Size(180, 22);
+            this.mnuPalette.Size = new System.Drawing.Size(146, 22);
             this.mnuPalette.Text = "Colors";
             // 
             // mnuReduceColors
@@ -286,7 +286,7 @@
             this.mnuZoomIn.Name = "mnuZoomIn";
             this.mnuZoomIn.ShortcutKeyDisplayString = "Ctrl++";
             this.mnuZoomIn.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Oemplus)));
-            this.mnuZoomIn.Size = new System.Drawing.Size(168, 22);
+            this.mnuZoomIn.Size = new System.Drawing.Size(180, 22);
             this.mnuZoomIn.Text = "Zoom In";
             this.mnuZoomIn.Click += new System.EventHandler(this.mnuZoomIn_Click);
             // 
@@ -295,14 +295,14 @@
             this.mnuZoomOut.Name = "mnuZoomOut";
             this.mnuZoomOut.ShortcutKeyDisplayString = "Ctrl+-";
             this.mnuZoomOut.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.OemMinus)));
-            this.mnuZoomOut.Size = new System.Drawing.Size(168, 22);
+            this.mnuZoomOut.Size = new System.Drawing.Size(180, 22);
             this.mnuZoomOut.Text = "Zoom Out";
             this.mnuZoomOut.Click += new System.EventHandler(this.mnuZoomOut_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(165, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
             // 
             // mnuGrid
             // 
@@ -311,7 +311,7 @@
             this.mnuGrid.CheckState = System.Windows.Forms.CheckState.Checked;
             this.mnuGrid.Name = "mnuGrid";
             this.mnuGrid.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
-            this.mnuGrid.Size = new System.Drawing.Size(168, 22);
+            this.mnuGrid.Size = new System.Drawing.Size(180, 22);
             this.mnuGrid.Text = "Grid";
             this.mnuGrid.Click += new System.EventHandler(this.mnuGrid_Click);
             // 
@@ -321,7 +321,7 @@
             this.mnuStatusBar.CheckOnClick = true;
             this.mnuStatusBar.CheckState = System.Windows.Forms.CheckState.Checked;
             this.mnuStatusBar.Name = "mnuStatusBar";
-            this.mnuStatusBar.Size = new System.Drawing.Size(168, 22);
+            this.mnuStatusBar.Size = new System.Drawing.Size(180, 22);
             this.mnuStatusBar.Text = "Status bar";
             this.mnuStatusBar.Click += new System.EventHandler(this.mnuStatusBar_Click);
             // 
@@ -339,7 +339,7 @@
             this.mnuAllowFlipping.CheckOnClick = true;
             this.mnuAllowFlipping.CheckState = System.Windows.Forms.CheckState.Checked;
             this.mnuAllowFlipping.Name = "mnuAllowFlipping";
-            this.mnuAllowFlipping.Size = new System.Drawing.Size(172, 22);
+            this.mnuAllowFlipping.Size = new System.Drawing.Size(180, 22);
             this.mnuAllowFlipping.Text = "Allow Tile Flipping";
             this.mnuAllowFlipping.Click += new System.EventHandler(this.mnuAllowFlip_Click);
             // 
@@ -355,8 +355,8 @@
             // 
             this.mnuAbout.Name = "mnuAbout";
             this.mnuAbout.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.mnuAbout.Size = new System.Drawing.Size(149, 22);
-            this.mnuAbout.Text = "About";
+            this.mnuAbout.Size = new System.Drawing.Size(237, 22);
+            this.mnuAbout.Text = "About Tilemap Creator";
             this.mnuAbout.Click += new System.EventHandler(this.mnuAbout_Click);
             // 
             // statusStrip1
