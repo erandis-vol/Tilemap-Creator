@@ -173,28 +173,28 @@ namespace TMC.Core
                     var other = tiles[j];
 
                     // Test tile configurations
-                    if (tile.CompareTo(ref other, false, false))
+                    if (tile.Equals(ref other, false, false))
                     {
                         index = j;
                         break;
                     }
                     else if (allowFlipping)
                     {
-                        if (tile.CompareTo(ref other, true, false))
+                        if (tile.Equals(ref other, true, false))
                         {
                             index = j;
                             flipX = true;
                             break;
                         }
 
-                        if (tile.CompareTo(ref other, false, true))
+                        if (tile.Equals(ref other, false, true))
                         {
                             index = j;
                             flipY = true;
                             break;
                         }
 
-                        if (tile.CompareTo(ref other, true, true))
+                        if (tile.Equals(ref other, true, true))
                         {
                             index = j;
                             flipX = true;
