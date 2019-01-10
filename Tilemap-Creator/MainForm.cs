@@ -105,15 +105,15 @@ namespace TMC
 
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                using (var dialog = new SaveTilemapDialog(saveFileDialog1.FileName))
+                using (var dialog = new SaveTilemapDialog() { SelectedFile = saveFileDialog1.FileName })
                 {
                     if (dialog.ShowDialog() != DialogResult.OK)
                         return;
 
                     tilemapFileOptions = new TilemapFileOptions {
-                        FileName = dialog.File,
-                        Format = dialog.Format,
-                        Padding = dialog.ExtraBytes
+                        FileName = dialog.SelectedFile,
+                        Format = dialog.SelectedFormat,
+                        Padding = dialog.SelectedPadding
                     };
                 }
 

@@ -121,7 +121,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(736, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(800, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -337,7 +337,7 @@
             this.mnuAllowFlipping.CheckOnClick = true;
             this.mnuAllowFlipping.CheckState = System.Windows.Forms.CheckState.Checked;
             this.mnuAllowFlipping.Name = "mnuAllowFlipping";
-            this.mnuAllowFlipping.Size = new System.Drawing.Size(172, 22);
+            this.mnuAllowFlipping.Size = new System.Drawing.Size(180, 22);
             this.mnuAllowFlipping.Text = "Allow Tile Flipping";
             this.mnuAllowFlipping.Click += new System.EventHandler(this.mnuAllowFlip_Click);
             // 
@@ -366,10 +366,10 @@
             this.lPalette,
             this.lFlip,
             this.lZoom});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 488);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 573);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 10, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(736, 24);
+            this.statusStrip1.Size = new System.Drawing.Size(800, 24);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -432,8 +432,8 @@
             this.splitContainer1.Panel2.Controls.Add(this.panel3);
             this.splitContainer1.Panel2.Controls.Add(this.toolStrip1);
             this.splitContainer1.Panel2MinSize = 256;
-            this.splitContainer1.Size = new System.Drawing.Size(736, 464);
-            this.splitContainer1.SplitterDistance = 242;
+            this.splitContainer1.Size = new System.Drawing.Size(800, 549);
+            this.splitContainer1.SplitterDistance = 247;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 3;
             // 
@@ -446,7 +446,7 @@
             this.panel2.Location = new System.Drawing.Point(0, 52);
             this.panel2.Margin = new System.Windows.Forms.Padding(2);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(242, 412);
+            this.panel2.Size = new System.Drawing.Size(247, 497);
             this.panel2.TabIndex = 2;
             // 
             // panel1
@@ -456,7 +456,7 @@
             this.panel1.Location = new System.Drawing.Point(0, 25);
             this.panel1.Margin = new System.Windows.Forms.Padding(2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(242, 27);
+            this.panel1.Size = new System.Drawing.Size(247, 27);
             this.panel1.TabIndex = 1;
             // 
             // lTilesetSelection
@@ -480,7 +480,7 @@
             this.btnTilesetFlipY});
             this.toolStrip2.Location = new System.Drawing.Point(0, 0);
             this.toolStrip2.Name = "toolStrip2";
-            this.toolStrip2.Size = new System.Drawing.Size(242, 25);
+            this.toolStrip2.Size = new System.Drawing.Size(247, 25);
             this.toolStrip2.TabIndex = 3;
             this.toolStrip2.Text = "toolStrip2";
             // 
@@ -543,7 +543,7 @@
             this.panel4.Location = new System.Drawing.Point(0, 52);
             this.panel4.Margin = new System.Windows.Forms.Padding(2);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(491, 412);
+            this.panel4.Size = new System.Drawing.Size(550, 497);
             this.panel4.TabIndex = 2;
             // 
             // panel3
@@ -554,7 +554,7 @@
             this.panel3.Location = new System.Drawing.Point(0, 25);
             this.panel3.Margin = new System.Windows.Forms.Padding(2);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(491, 27);
+            this.panel3.Size = new System.Drawing.Size(550, 27);
             this.panel3.TabIndex = 1;
             // 
             // rModePalette
@@ -599,7 +599,7 @@
             this.btnTilemapShiftRight});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(491, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(550, 25);
             this.toolStrip1.TabIndex = 3;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -714,7 +714,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(736, 512);
+            this.ClientSize = new System.Drawing.Size(800, 597);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);

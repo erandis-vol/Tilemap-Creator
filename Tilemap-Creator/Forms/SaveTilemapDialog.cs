@@ -6,38 +6,74 @@ namespace TMC.Forms
 {
     public partial class SaveTilemapDialog : Form
     {
-        public SaveTilemapDialog(string filename)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SaveTilemapDialog"/> class.
+        /// </summary>
+        public SaveTilemapDialog()
         {
             InitializeComponent();
-
-            cFormat.SelectedIndex = 0;
-            textBox1.Text = File = filename;
+            cmbFormat.SelectedIndex = 0;
         }
 
-        public string File { get; private set; }
+        /// <summary>
+        /// Gets or sets the selected file.
+        /// </summary>
+        public string SelectedFile
+        {
+            get => txtFile.Text;
+            set => txtFile.Text = value;
+        }
 
-        public TilemapFormat Format
+        /// <summary>
+        /// Gets or sets the selected format.
+        /// </summary>
+        public TilemapFormat SelectedFormat
         {
             get
             {
-                switch (cFormat.SelectedIndex)
+                if (cmbFormat.SelectedIndex == 0)
                 {
-                    case 0:
-                        return TilemapFormat.Text4;
-                    case 1:
-                        return TilemapFormat.Text8;
-                    case 2:
-                        return TilemapFormat.RotationScaling;
-
-                    default:    // should never happen
-                        throw new Exception();
+                    return TilemapFormat.Text4;
                 }
+                else if (cmbFormat.SelectedIndex == 1)
+                {
+                    return TilemapFormat.Text8;
+                }
+                else if (cmbFormat.SelectedIndex == 2)
+                {
+                    return TilemapFormat.RotationScaling;
+                }
+
+                // Unreachbale:
+                throw new NotImplementedException();
+            }
+            set
+            {
+                if (value == TilemapFormat.Text4)
+                {
+                    cmbFormat.SelectedIndex = 0;
+                }
+                else if (value == TilemapFormat.Text8)
+                {
+                    cmbFormat.SelectedIndex = 1;
+                }
+                else if (value == TilemapFormat.RotationScaling)
+                {
+                    cmbFormat.SelectedIndex = 2;
+                }
+
+                // Unreachbale:
+                throw new NotImplementedException();
             }
         }
 
-        public int ExtraBytes
+        /// <summary>
+        /// Gets or sets the selected padding.
+        /// </summary>
+        public int SelectedPadding
         {
-            get { return txtExtra.Value; }
+            get => txtPadding.Value;
+            set => txtPadding.Value = value;
         }
     }
 }
