@@ -145,12 +145,12 @@ namespace TMC
             }
 
             // fill sizes for Tileset
-            cTilesetWidth.Items.Clear();
+            cmbTilesetWidth.Items.Clear();
             foreach (var size in tileset.GetPerfectColumns())
-                cTilesetWidth.Items.Add(size.ToString());
+                cmbTilesetWidth.Items.Add(size.ToString());
 
             // pick middle size
-            cTilesetWidth.SelectedIndex = cTilesetWidth.Items.Count / 2;
+            cmbTilesetWidth.SelectedIndex = cmbTilesetWidth.Items.Count / 2;
 
             // finish
             tilesetFileOptions = null;
@@ -196,18 +196,18 @@ namespace TMC
             }
 
             // fill sizes for Tileset
-            cTilesetWidth.Items.Clear();
+            cmbTilesetWidth.Items.Clear();
             foreach (var size in tileset.GetPerfectColumns())
-                cTilesetWidth.Items.Add(size.ToString());
+                cmbTilesetWidth.Items.Add(size.ToString());
 
             // pick middle size
-            cTilesetWidth.SelectedIndex = cTilesetWidth.Items.Count / 2;
+            cmbTilesetWidth.SelectedIndex = cmbTilesetWidth.Items.Count / 2;
 
             // finish
             tilesetFileOptions = new TilesetFileOptions {
                 FileName = openFileDialog1.FileName,
                 Format = TilesetFormat.BMP,
-                Columns = cTilesetWidth.Value
+                Columns = 1 // this will be update later anyway
             };
             UpdateTileset(true);
 
@@ -232,7 +232,11 @@ namespace TMC
             }
             else
             {
-                tilesetFileOptions.Columns = cTilesetWidth.Value;
+                short tilesetWidth;
+                if (!short.TryParse(cmbTilesetWidth.Text, out tilesetWidth) || tilesetWidth <= 0)
+                    tilesetWidth = 1;
+
+                tilesetFileOptions.Columns = tilesetWidth;
 
                 try
                 {
@@ -256,6 +260,10 @@ namespace TMC
             saveFileDialog1.Title = "Save Tileset";
             saveFileDialog1.Filter = "Bitmap Files|*.bmp|Binary Files|*.bin";
 
+            short tilesetWidth;
+            if (!short.TryParse(cmbTilesetWidth.Text, out tilesetWidth) || tilesetWidth <= 0)
+                tilesetWidth = 1;
+
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 switch (saveFileDialog1.FilterIndex)
@@ -264,7 +272,7 @@ namespace TMC
                         tilesetFileOptions = new TilesetFileOptions {
                             FileName = saveFileDialog1.FileName,
                             Format = TilesetFormat.BMP,
-                            Columns = cTilesetWidth.Value
+                            Columns = tilesetWidth
                         };
                         break;
 
@@ -272,7 +280,7 @@ namespace TMC
                         tilesetFileOptions = new TilesetFileOptions {
                             FileName = saveFileDialog1.FileName,
                             Format = TilesetFormat.BMP,
-                            Columns = 1
+                            Columns = tilesetWidth
                         };
                         break;
                 }
@@ -400,11 +408,11 @@ namespace TMC
 
         private void mnuAllowFlip_Click(object sender, EventArgs e)
         {
-            chkTilesetFlipX.Enabled = mnuAllowFlipping.Checked;
-            chkTilesetFlipY.Enabled = mnuAllowFlipping.Checked;
+            btnTilesetFlipX.Enabled = mnuAllowFlipping.Checked;
+            btnTilesetFlipY.Enabled = mnuAllowFlipping.Checked;
 
-            chkTilesetFlipX.Checked = false;
-            chkTilesetFlipY.Checked = false;
+            btnTilesetFlipX.Checked = false;
+            btnTilesetFlipY.Checked = false;
         }
 
         private void mnuAbout_Click(object sender, EventArgs e)

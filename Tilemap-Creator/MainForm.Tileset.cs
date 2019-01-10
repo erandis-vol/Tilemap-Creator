@@ -43,7 +43,7 @@ namespace TMC
 
         int paletteSelection = 0;
 
-        // updates Tileset size and image
+        // Updates Tileset size and image
         void UpdateTileset(bool clearSelection)
         {
             if (tileset == null) return;
@@ -51,16 +51,17 @@ namespace TMC
             ignore = true;
             if (rModeTilemap.Checked)
             {
-                // get Tileset size
-                int width = cTilesetWidth.Value;
-                if (width <= 0) width = 1;
+                // Get Tileset size
+                short width;
+                if (!short.TryParse(cmbTilesetWidth.Text, out width) || width <= 0)
+                    width = 1;
 
                 int height = (tileset.Length / width) + (tileset.Length % width > 0 ? 1 : 0);
 
-                // update height text
-                tTilesetHeight.Value = height;
+                // Update height text
+                txtTilesetHeight.Text = height.ToString();
 
-                // update Tileset image
+                // Update Tileset image
                 tilesetImage?.Dispose();
                 tilesetImage = tileset.ToImage(width);
 
@@ -250,18 +251,20 @@ namespace TMC
             }
         }
 
-        private void cTilesetWidth_SelectedIndexChanged(object sender, EventArgs e)
+        private void cmbTilesetWidth_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ignore) return;
-
-            UpdateTileset(true);
+            if (!ignore)
+            {
+                UpdateTileset(true);
+            }
         }
 
-        private void cTilesetWidth_TextChanged(object sender, EventArgs e)
+        private void cmbTilesetWidth_TextChanged(object sender, EventArgs e)
         {
-            if (ignore) return;
-
-            UpdateTileset(true);
+            if (!ignore)
+            {
+                UpdateTileset(true);
+            }
         }
     }
 }

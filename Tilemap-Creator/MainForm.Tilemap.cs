@@ -23,8 +23,8 @@ namespace TMC
             ignore = true;
 
             // set size info
-            tTilemapWidth.Value = tilemap.Width;
-            tTilemapHeight.Value = tilemap.Height;
+            textTilemapWidth.Text = tilemap.Width.ToString();
+            textTilemapHeight.Text = tilemap.Height.ToString();
 
             // draw tilemap
             if (tilemapImage == null)
@@ -174,17 +174,23 @@ namespace TMC
             if (tilemap == null)
                 return;
 
+            // Update status bar
             var mousedTile = tilemap[tilemapMouseCurrent];
             lTile.Text = $"Tile: {mousedTile.Index:X3}";
             lPalette.Text = $"Palette: {mousedTile.Palette:X}";
             lFlip.Text = "Flip: " + (mousedTile.FlipX ? mousedTile.FlipY ? "XY" : "X" : mousedTile.FlipY ? "Y" : "None");
+
+            // Get tileset width
+            short tilesetWidth;
+            if (!short.TryParse(cmbTilesetWidth.Text, out tilesetWidth) || tilesetWidth <= 0)
+                tilesetWidth = 1;
 
             // Set tiles starting from X, Y
             if (me.Button == MouseButtons.Left)
             {
                 if (rModeTilemap.Checked)
                 {
-                    var tilesPerRow = cTilesetWidth.Value;
+                    var tilesPerRow = tilesetWidth;
 
                     // set selection rectangle
                     for (int x = 0; x < tilesetSelection.Width; x++)
@@ -199,8 +205,8 @@ namespace TMC
                                 continue;
 
                             // tileset position -- accounts for X/Y flipping
-                            var setX = tilesetSelection.X + (chkTilesetFlipX.Checked ? tilesetSelection.Width - 1 - x : x);
-                            var setY = tilesetSelection.Y + (chkTilesetFlipY.Checked ? tilesetSelection.Height - 1 - y : y);
+                            var setX = tilesetSelection.X + (btnTilesetFlipX.Checked ? tilesetSelection.Width - 1 - x : x);
+                            var setY = tilesetSelection.Y + (btnTilesetFlipY.Checked ? tilesetSelection.Height - 1 - y : y);
 
                             // tile at position
                             var tile = setX + setY * tilesPerRow;
@@ -213,8 +219,8 @@ namespace TMC
                             tilemap[mapX, mapY].Index = (short)tile;
                             if (mnuAllowFlipping.Checked)
                             {
-                                tilemap[mapX, mapY].FlipX = chkTilesetFlipX.Checked;
-                                tilemap[mapX, mapY].FlipY = chkTilesetFlipY.Checked;
+                                tilemap[mapX, mapY].FlipX = btnTilesetFlipX.Checked;
+                                tilemap[mapX, mapY].FlipY = btnTilesetFlipY.Checked;
                             }
                         }
                     }                  
@@ -235,14 +241,14 @@ namespace TMC
                 if (rModeTilemap.Checked)
                 {
                     var t = tilemap[tilemapMouseCurrent];
-                    var w = cTilesetWidth.Value;
+                    var w = tilesetWidth;
 
                     tilesetSelection = new Rectangle(t.Index % w, t.Index / w, 1, 1);
 
                     if (mnuAllowFlipping.Checked)
                     {
-                        chkTilesetFlipX.Checked = t.FlipX;
-                        chkTilesetFlipY.Checked = t.FlipY;
+                        btnTilesetFlipX.Checked = t.FlipX;
+                        btnTilesetFlipY.Checked = t.FlipY;
                     }
                 }
                 else
@@ -261,7 +267,7 @@ namespace TMC
             else if (me.Button == MouseButtons.Middle)
             {
                 var dst = rModeTilemap.Checked ?
-                    (tilesetSelection.X + tilesetSelection.Y * cTilesetWidth.Value) : paletteSelection;
+                    (tilesetSelection.X + tilesetSelection.Y * tilesetWidth) : paletteSelection;
                 var src = rModeTilemap.Checked ?
                     tilemap[tilemapMouseCurrent].Index : tilemap[tilemapMouseCurrent].Palette;
 
@@ -363,53 +369,54 @@ namespace TMC
             UpdateTilemap();
         }
 
-        private void bTilemapResize_Click(object sender, EventArgs e)
+        private void btnTilemapResize_Click(object sender, EventArgs e)
         {
             if (tilemap == null || tileset == null)
                 return;
 
-            if (tilemap.Width != tTilemapWidth.Value || tilemap.Height != tTilemapHeight.Value)
+            if (short.TryParse(textTilemapWidth.Text, out var width) &&
+                short.TryParse(textTilemapHeight.Text, out var height) &&
+                (width != tilemap.Width || height != tilemap.Height))
             {
-                tilemap.Resize(tTilemapWidth.Value, tTilemapHeight.Value);
-
+                tilemap.Resize(width, height);
                 UpdateTilemap();
             }
         }
 
-        private void bTilemapUp_Click(object sender, EventArgs e)
+        private void btnTilemapShiftLeft_Click(object sender, EventArgs e)
         {
-            if (tilemap == null)
-                return;
-
-            tilemap.ShiftUp();
-            UpdateTilemap();
+            if (tilemap != null)
+            {
+                tilemap.ShiftLeft();
+                UpdateTilemap();
+            }
         }
 
-        private void bTilemapDown_Click(object sender, EventArgs e)
+        private void btnTilemapShiftUp_Click(object sender, EventArgs e)
         {
-            if (tilemap == null)
-                return;
-
-            tilemap.ShiftDown();
-            UpdateTilemap();
+            if (tilemap != null)
+            {
+                tilemap.ShiftUp();
+                UpdateTilemap();
+            }
         }
 
-        private void bTilemapLeft_Click(object sender, EventArgs e)
+        private void btnTilemapShiftDown_Click(object sender, EventArgs e)
         {
-            if (tilemap == null)
-                return;
-
-            tilemap.ShiftLeft();
-            UpdateTilemap();
+            if (tilemap != null)
+            {
+                tilemap.ShiftDown();
+                UpdateTilemap();
+            }
         }
 
-        private void bTilemapRight_Click(object sender, EventArgs e)
+        private void btnTilemapShiftRight_Click(object sender, EventArgs e)
         {
-            if (tilemap == null)
-                return;
-
-            tilemap.ShiftRight();
-            UpdateTilemap();
+            if (tilemap != null)
+            {
+                tilemap.ShiftRight();
+                UpdateTilemap();
+            }
         }
     }
 }
