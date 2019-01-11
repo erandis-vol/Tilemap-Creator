@@ -311,7 +311,7 @@ namespace TMC
                     return;
 
                 // replace palette for every tile
-                tileset.SwapColors(d.Colors);
+                tileset.SwapColors(d.Palette);
 
                 // redraw tileset
                 UpdateTileset(false);
@@ -353,13 +353,13 @@ namespace TMC
                 switch (saveFileDialog1.FilterIndex)
                 {
                     case 1:
-                        Palette.Save(tileset.Palette, saveFileDialog1.FileName, PaletteFormat.PAL);
+                        tileset.Palette.Save(saveFileDialog1.FileName, PaletteFormat.PAL);
                         break;
                     case 2:
-                        Palette.Save(tileset.Palette, saveFileDialog1.FileName, PaletteFormat.ACT);
+                        tileset.Palette.Save(saveFileDialog1.FileName, PaletteFormat.ACT);
                         break;
                     case 3:
-                        Palette.Save(tileset.Palette, saveFileDialog1.FileName, PaletteFormat.GPL);
+                        tileset.Palette.Save(saveFileDialog1.FileName, PaletteFormat.GPL);
                         break;
                 }
             }

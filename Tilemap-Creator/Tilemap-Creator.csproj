@@ -52,7 +52,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\BitDepth.cs" />
+    <Compile Include="Core\ColorExtensions.cs" />
     <Compile Include="Core\DirectBitmap.cs" />
+    <Compile Include="Core\PaletteFormat.cs" />
     <Compile Include="Core\Tile.cs" />
     <Compile Include="Core\TilemapEntry.cs" />
     <Compile Include="Core\TilemapFormat.cs" />

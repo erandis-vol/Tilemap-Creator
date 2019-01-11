@@ -11,9 +11,6 @@ namespace TMC.Core
     {
         public const int TileSize = 8;
 
-        private Tile[] tiles;
-        private Color[] palette;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Tileset"/> class from the specified source image.
         /// </summary>
@@ -29,89 +26,37 @@ namespace TMC.Core
             // Create the tiles
             var width = source.Width / 8;
             var height = source.Height / 8;
-            tiles = new Tile[width * height];
+            Tiles = new Tile[width * height];
 
             // Copy image data from source
             using (var fb = DirectBitmap.FromImage(source))
             {
-                if ((source.PixelFormat & PixelFormat.Indexed) == PixelFormat.Indexed)
+                // Create the palette
+                Palette = Palette.Create(source);
+
+                // Create the tiles
+                for (int y = 0; y < height; y++)
                 {
-                    // Copy the colors from the existing palette
-                    switch (source.PixelFormat)
+                    for (int x = 0; x < width; x++)
                     {
-                        case PixelFormat.Format1bppIndexed:
-                            palette = new Color[1 << 1];
-                            break;
+                        ref var tile = ref Tiles[x + y * width];
 
-                        case PixelFormat.Format4bppIndexed:
-                            palette = new Color[1 << 4];
-                            break;
-
-                        case PixelFormat.Format8bppIndexed:
-                            palette = new Color[1 << 8];
-                            break;
-
-                        default:
-                            throw new ArgumentException("Unsupported image format.", nameof(source));
-                    }
-
-                    source.Palette.Entries.CopyTo(palette, 0);
-
-                    // Copy the tiles
-                    for (int y = 0; y < height; y++)
-                    {
-                        for (int x = 0; x < width; x++)
+                        for (int j = 0; j < 8; j++)
                         {
-                            ref var tile = ref tiles[x + y * width];
-
-                            for (int j = 0; j < 8; j++)
+                            for (int i = 0; i < 8; i++)
                             {
-                                for (int i = 0; i < 8; i++)
-                                {
-                                    // Find the color index
-                                    var index = palette.IndexOf(Color.FromArgb(fb.Pixels[(x * 8 + i) + (y * 8 + j) * fb.Width]));
-                                    if (index < 0)
-                                        throw new IndexOutOfRangeException();
+                                var color = Color.FromArgb(fb.Pixels[(x * 8 + i) + (y * 8 + j) * fb.Width]);
 
-                                    // Copy to the tile
-                                    tile[i, j] = index;
-                                }
+                                // Find the color index
+                                var index = Palette.IndexOf(color);
+                                if (index < 0)
+                                    throw new IndexOutOfRangeException();
+
+                                // Copy to the tile
+                                tile[i, j] = index;
                             }
                         }
                     }
-                }
-                else
-                {
-                    // Create a new palette while copying tiles
-                    var colors = new List<Color>();
-
-                    for (int y = 0; y < height; y++)
-                    {
-                        for (int x = 0; x < width; x++)
-                        {
-                            ref var tile = ref tiles[x + y * width];
-
-                            for (int j = 0; j < 8; j++)
-                            {
-                                for (int i = 0; i < 8; i++)
-                                {
-                                    var color = Color.FromArgb(fb.Pixels[(x * 8 + i) + (y * 8 + j) * fb.Width]).Quantize();
-
-                                    var index = colors.IndexOf(color);
-                                    if (index < 0)
-                                    {
-                                        colors.Add(color);
-                                        index = colors.Count - 1;
-                                    }
-
-                                    tile[i, j] = index;
-                                }
-                            }
-                        }
-                    }
-
-                    // Set the palette
-                    palette = colors.ToArray();
                 }
             }
         }
@@ -120,10 +65,10 @@ namespace TMC.Core
         /// Initialzies a new instance of the <see cref="Tileset"/> with the specified tile array.
         /// </summary>
         /// <param name="tiles">The tiles.</param>
-        protected Tileset(Tile[] tiles, Color[] palette)
+        protected Tileset(Tile[] tiles, Palette palette)
         {
-            this.tiles = tiles;
-            this.palette = palette;
+            Tiles = tiles;
+            Palette = palette;
         }
 
         #region Methods
@@ -133,7 +78,7 @@ namespace TMC.Core
         /// </summary>
         /// <param name="index">The index of the tile.</param>
         /// <returns></returns>
-        public ref Tile this[int index] => ref tiles[index];
+        public ref Tile this[int index] => ref Tiles[index];
 
         /// <summary>
         /// Creates a new <see cref="Tileset"/> from the specified source image.
@@ -216,7 +161,7 @@ namespace TMC.Core
             }
 
             // The process is now finished
-            return (new Tileset(tiles.ToArray(), tileset.palette), tilemap);
+            return (new Tileset(tiles.ToArray(), tileset.Palette), tilemap);
         }
 
         /// <summary>
@@ -229,24 +174,24 @@ namespace TMC.Core
             if (columns <= 0)
                 throw new ArgumentOutOfRangeException(nameof(columns));
 
-            var rows = (tiles.Length / columns) + (tiles.Length % columns > 0 ? 1 : 0);
+            var rows = (Tiles.Length / columns) + (Tiles.Length % columns > 0 ? 1 : 0);
             var fb = new DirectBitmap(columns * 8, rows * 8);
 
-            for (int i = 0; i < tiles.Length; i++)
+            for (int i = 0; i < Tiles.Length; i++)
             {
                 // Get the destination
                 var x = i % columns;
                 var y = i / columns;
 
                 // Get the tile to draw
-                ref var tile = ref tiles[i];
+                ref var tile = ref Tiles[i];
 
                 // Draw the tile
                 for (int j = 0; j < 8; j++)
                 {
                     for (int k = 0; k < 8; k++)
                     {
-                        fb.SetPixel(x * 8 + k, y * 8 + j, palette[tile[k, j]]);
+                        fb.SetPixel(x * 8 + k, y * 8 + j, Palette[tile[k, j]]);
                     }
                 }
             }
@@ -278,13 +223,13 @@ namespace TMC.Core
         private void SaveBMP(string filename, int columns)
         {
             var width = columns * 8;
-            var height = (tiles.Length / columns + (tiles.Length % columns > 0 ? 1 : 0)) * 8;
+            var height = (Tiles.Length / columns + (Tiles.Length % columns > 0 ? 1 : 0)) * 8;
 
             // Creates a pixel buffer for the tiles
             var pixels = new int[width * height];
-            for (int i = 0; i < tiles.Length; i++)
+            for (int i = 0; i < Tiles.Length; i++)
             {
-                ref var tile = ref tiles[i];
+                ref var tile = ref Tiles[i];
 
                 for (int y = 0; y < 8; y++)
                 {
@@ -297,7 +242,7 @@ namespace TMC.Core
 
             using (var bw = new BinaryWriter(File.Create(filename)))
             {
-                if (palette.Length <= 16)
+                if (Palette.Length <= 16)
                 {
                     var rowSize = ((4 * width + 31) / 32) * 4;
                     var pixelSize = rowSize * height;
@@ -325,7 +270,7 @@ namespace TMC.Core
                     // color table
                     for (int i = 0; i < 16; i++)
                     {
-                        var color = (i < palette.Length ? palette[i] : Color.Black);
+                        var color = (i < Palette.Length ? Palette[i] : Color.Black);
 
                         bw.Write(color.B);
                         bw.Write(color.G);
@@ -355,7 +300,7 @@ namespace TMC.Core
                         }
                     }
                 }
-                else if (palette.Length <= 256)
+                else if (Palette.Length <= 256)
                 {
                     var rowSize = ((8 * width + 31) / 32) * 4;
                     var pixelSize = rowSize * height;
@@ -383,7 +328,7 @@ namespace TMC.Core
                     // color table
                     for (int i = 0; i < 256; i++)
                     {
-                        var color = (i < palette.Length ? palette[i] : Color.Black);
+                        var color = (i < Palette.Length ? Palette[i] : Color.Black);
 
                         bw.Write(color.B);
                         bw.Write(color.G);
@@ -397,7 +342,7 @@ namespace TMC.Core
                         // copy colors for this row
                         for (int x = 0; x < width; x++)
                         {
-                            ref var tile = ref tiles[x + y * columns];
+                            ref var tile = ref Tiles[x + y * columns];
                             bw.Write((byte)tile[0, 0]);
                         }
 
@@ -439,7 +384,7 @@ namespace TMC.Core
                         // Copy colors for this row
                         for (int x = 0; x < width; x++)
                         {
-                            var color = palette[pixels[x + y * width]];
+                            var color = Palette[pixels[x + y * width]];
                             bw.Write(color.B);
                             bw.Write(color.G);
                             bw.Write(color.R);
@@ -457,13 +402,13 @@ namespace TMC.Core
 
         private void SaveBIN(string filename)
         {
-            if (palette.Length <= 16)
+            if (Palette.Length <= 16)
             {
-                File.WriteAllBytes(filename, BitDepth.Encode4(tiles));
+                File.WriteAllBytes(filename, BitDepth.Encode4(Tiles));
             }
-            else if (palette.Length <= 256)
+            else if (Palette.Length <= 256)
             {
-                File.WriteAllBytes(filename, BitDepth.Encode8(tiles));
+                File.WriteAllBytes(filename, BitDepth.Encode8(Tiles));
             }
             else
             {
@@ -479,9 +424,9 @@ namespace TMC.Core
         {
             var columns = new List<int>();
 
-            for (int i = 1;i <= tiles.Length; i++)
+            for (int i = 1;i <= Tiles.Length; i++)
             {
-                if (tiles.Length % i == 0) columns.Add(i);
+                if (Tiles.Length % i == 0) columns.Add(i);
             }
 
             return columns.ToArray();
@@ -493,26 +438,27 @@ namespace TMC.Core
         /// <param name="colorCount">The maximum number of colors.</param>
         public void ReduceColors(int colorCount)
         {
-            if (palette == null || palette.Length <= colorCount) return;
+            if (Palette == null || Palette.Length <= colorCount)
+                return;
 
             // Create the quantizer and add the palette
             var quantizer = new OctreeQuantizer();
-            quantizer.AddColors(palette);
+            quantizer.AddColors(Palette);
 
             // Create the reduced palette
             var reducedPalette = quantizer.GetPalette(colorCount);
 
             // Update all tiles to reflect the reduced colors
-            for (int i = 0; i < tiles.Length; i++)
+            for (int i = 0; i < Tiles.Length; i++)
             {
-                ref var tile = ref tiles[i];
+                ref var tile = ref Tiles[i];
 
                 for (int y = 0; y < 8; y++)
                 {
                     for (int x = 0; x < 8; x++)
                     {
                         // Get the original color
-                        var pixel = palette[tile[x, y]];
+                        var pixel = Palette[tile[x, y]];
 
                         // Get the closets match from the quantizer
                         var index = quantizer.GetPaletteIndex(pixel);
@@ -524,14 +470,14 @@ namespace TMC.Core
             }
 
             // Replace the old palette
-            palette = reducedPalette.ToArray();
+            Palette = new Palette(reducedPalette);
         }
 
         /// <summary>
         /// Swaps the colors by the order specified in a new palette.
         /// </summary>
-        /// <param name="newColors">Specifies the order of the new palette.</param>
-        public void SwapColors(Color[] newColors)
+        /// <param name="palette">Specifies the order of the new palette.</param>
+        public void SwapColors(Palette palette)
         {
             throw new NotImplementedException();
         }
@@ -543,12 +489,17 @@ namespace TMC.Core
         /// <summary>
         /// Gets the number of tiles.
         /// </summary>
-        public int Length => tiles.Length;
+        public int Length => Tiles.Length;
+
+        /// <summary>
+        /// Gets the tiles.
+        /// </summary>
+        public Tile[] Tiles { get; }
 
         /// <summary>
         /// Gets the palette.
         /// </summary>
-        public Color[] Palette => palette;
+        public Palette Palette { get; private set; }
 
         #endregion
     }
