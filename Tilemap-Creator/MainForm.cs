@@ -141,7 +141,7 @@ namespace TMC
                 }
 
                 // Create Tilemap/Tileset
-                (tileset, tilemap) = Tileset.Create(bmp, mnuAllowFlipping.Checked);
+                (tileset, tilemap) = Tileset.Create(bmp, true);
             }
 
             // fill sizes for Tileset
@@ -404,15 +404,6 @@ namespace TMC
         private void mnuStatusBar_Click(object sender, EventArgs e)
         {
             statusStrip1.Visible = mnuStatusBar.Checked;
-        }
-
-        private void mnuAllowFlip_Click(object sender, EventArgs e)
-        {
-            btnTilesetFlipX.Enabled = mnuAllowFlipping.Checked;
-            btnTilesetFlipY.Enabled = mnuAllowFlipping.Checked;
-
-            btnTilesetFlipX.Checked = false;
-            btnTilesetFlipY.Checked = false;
         }
 
         private void mnuAbout_Click(object sender, EventArgs e)

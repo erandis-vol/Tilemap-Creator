@@ -54,8 +54,6 @@
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuGrid = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuStatusBar = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuSettings = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuAllowFlipping = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -68,6 +66,7 @@
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.pTileset = new TMC.Controls.InterpolatedPictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lTilesetSelection = new System.Windows.Forms.Label();
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
@@ -78,6 +77,7 @@
             this.btnTilesetFlipX = new System.Windows.Forms.ToolStripButton();
             this.btnTilesetFlipY = new System.Windows.Forms.ToolStripButton();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.pTilemap = new TMC.Controls.InterpolatedPictureBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.rModePalette = new System.Windows.Forms.RadioButton();
             this.rModeTilemap = new System.Windows.Forms.RadioButton();
@@ -91,8 +91,6 @@
             this.btnTilemapShiftUp = new System.Windows.Forms.ToolStripButton();
             this.btnTilemapShiftDown = new System.Windows.Forms.ToolStripButton();
             this.btnTilemapShiftRight = new System.Windows.Forms.ToolStripButton();
-            this.pTileset = new TMC.Controls.InterpolatedPictureBox();
-            this.pTilemap = new TMC.Controls.InterpolatedPictureBox();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -100,13 +98,13 @@
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pTileset)).BeginInit();
             this.panel1.SuspendLayout();
             this.toolStrip2.SuspendLayout();
             this.panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pTilemap)).BeginInit();
             this.panel3.SuspendLayout();
             this.toolStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pTileset)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pTilemap)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -116,7 +114,6 @@
             this.mnuTileset,
             this.mnuTilemap,
             this.mnuView,
-            this.mnuSettings,
             this.mnuHelp});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -284,7 +281,7 @@
             this.mnuZoomIn.Name = "mnuZoomIn";
             this.mnuZoomIn.ShortcutKeyDisplayString = "Ctrl++";
             this.mnuZoomIn.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Oemplus)));
-            this.mnuZoomIn.Size = new System.Drawing.Size(168, 22);
+            this.mnuZoomIn.Size = new System.Drawing.Size(180, 22);
             this.mnuZoomIn.Text = "Zoom In";
             this.mnuZoomIn.Click += new System.EventHandler(this.mnuZoomIn_Click);
             // 
@@ -293,14 +290,14 @@
             this.mnuZoomOut.Name = "mnuZoomOut";
             this.mnuZoomOut.ShortcutKeyDisplayString = "Ctrl+-";
             this.mnuZoomOut.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.OemMinus)));
-            this.mnuZoomOut.Size = new System.Drawing.Size(168, 22);
+            this.mnuZoomOut.Size = new System.Drawing.Size(180, 22);
             this.mnuZoomOut.Text = "Zoom Out";
             this.mnuZoomOut.Click += new System.EventHandler(this.mnuZoomOut_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(165, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
             // 
             // mnuGrid
             // 
@@ -309,7 +306,7 @@
             this.mnuGrid.CheckState = System.Windows.Forms.CheckState.Checked;
             this.mnuGrid.Name = "mnuGrid";
             this.mnuGrid.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
-            this.mnuGrid.Size = new System.Drawing.Size(168, 22);
+            this.mnuGrid.Size = new System.Drawing.Size(180, 22);
             this.mnuGrid.Text = "Grid";
             this.mnuGrid.Click += new System.EventHandler(this.mnuGrid_Click);
             // 
@@ -319,27 +316,9 @@
             this.mnuStatusBar.CheckOnClick = true;
             this.mnuStatusBar.CheckState = System.Windows.Forms.CheckState.Checked;
             this.mnuStatusBar.Name = "mnuStatusBar";
-            this.mnuStatusBar.Size = new System.Drawing.Size(168, 22);
+            this.mnuStatusBar.Size = new System.Drawing.Size(180, 22);
             this.mnuStatusBar.Text = "Status bar";
             this.mnuStatusBar.Click += new System.EventHandler(this.mnuStatusBar_Click);
-            // 
-            // mnuSettings
-            // 
-            this.mnuSettings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuAllowFlipping});
-            this.mnuSettings.Name = "mnuSettings";
-            this.mnuSettings.Size = new System.Drawing.Size(61, 20);
-            this.mnuSettings.Text = "Settings";
-            // 
-            // mnuAllowFlipping
-            // 
-            this.mnuAllowFlipping.Checked = true;
-            this.mnuAllowFlipping.CheckOnClick = true;
-            this.mnuAllowFlipping.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.mnuAllowFlipping.Name = "mnuAllowFlipping";
-            this.mnuAllowFlipping.Size = new System.Drawing.Size(180, 22);
-            this.mnuAllowFlipping.Text = "Allow Tile Flipping";
-            this.mnuAllowFlipping.Click += new System.EventHandler(this.mnuAllowFlip_Click);
             // 
             // mnuHelp
             // 
@@ -449,6 +428,21 @@
             this.panel2.Size = new System.Drawing.Size(247, 497);
             this.panel2.TabIndex = 2;
             // 
+            // pTileset
+            // 
+            this.pTileset.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            this.pTileset.Location = new System.Drawing.Point(0, 0);
+            this.pTileset.Margin = new System.Windows.Forms.Padding(2);
+            this.pTileset.Name = "pTileset";
+            this.pTileset.Size = new System.Drawing.Size(12, 13);
+            this.pTileset.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pTileset.TabIndex = 1;
+            this.pTileset.TabStop = false;
+            this.pTileset.Paint += new System.Windows.Forms.PaintEventHandler(this.pTileset_Paint);
+            this.pTileset.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pTileset_MouseDown);
+            this.pTileset.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pTileset_MouseMove);
+            this.pTileset.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pTileset_MouseUp);
+            // 
             // panel1
             // 
             this.panel1.Controls.Add(this.lTilesetSelection);
@@ -545,6 +539,21 @@
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(550, 497);
             this.panel4.TabIndex = 2;
+            // 
+            // pTilemap
+            // 
+            this.pTilemap.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            this.pTilemap.Location = new System.Drawing.Point(0, 0);
+            this.pTilemap.Margin = new System.Windows.Forms.Padding(2);
+            this.pTilemap.Name = "pTilemap";
+            this.pTilemap.Size = new System.Drawing.Size(12, 13);
+            this.pTilemap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pTilemap.TabIndex = 1;
+            this.pTilemap.TabStop = false;
+            this.pTilemap.Paint += new System.Windows.Forms.PaintEventHandler(this.pTilemap_Paint);
+            this.pTilemap.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pTilemap_MouseDown);
+            this.pTilemap.MouseLeave += new System.EventHandler(this.pTilemap_MouseLeave);
+            this.pTilemap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pTilemap_MouseMove);
             // 
             // panel3
             // 
@@ -680,36 +689,6 @@
             this.btnTilemapShiftRight.Text = "Shift Tilemap Right";
             this.btnTilemapShiftRight.Click += new System.EventHandler(this.btnTilemapShiftRight_Click);
             // 
-            // pTileset
-            // 
-            this.pTileset.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-            this.pTileset.Location = new System.Drawing.Point(0, 0);
-            this.pTileset.Margin = new System.Windows.Forms.Padding(2);
-            this.pTileset.Name = "pTileset";
-            this.pTileset.Size = new System.Drawing.Size(12, 13);
-            this.pTileset.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pTileset.TabIndex = 1;
-            this.pTileset.TabStop = false;
-            this.pTileset.Paint += new System.Windows.Forms.PaintEventHandler(this.pTileset_Paint);
-            this.pTileset.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pTileset_MouseDown);
-            this.pTileset.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pTileset_MouseMove);
-            this.pTileset.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pTileset_MouseUp);
-            // 
-            // pTilemap
-            // 
-            this.pTilemap.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-            this.pTilemap.Location = new System.Drawing.Point(0, 0);
-            this.pTilemap.Margin = new System.Windows.Forms.Padding(2);
-            this.pTilemap.Name = "pTilemap";
-            this.pTilemap.Size = new System.Drawing.Size(12, 13);
-            this.pTilemap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pTilemap.TabIndex = 1;
-            this.pTilemap.TabStop = false;
-            this.pTilemap.Paint += new System.Windows.Forms.PaintEventHandler(this.pTilemap_Paint);
-            this.pTilemap.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pTilemap_MouseDown);
-            this.pTilemap.MouseLeave += new System.EventHandler(this.pTilemap_MouseLeave);
-            this.pTilemap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pTilemap_MouseMove);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -737,17 +716,17 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pTileset)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.toolStrip2.ResumeLayout(false);
             this.toolStrip2.PerformLayout();
             this.panel4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pTilemap)).EndInit();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pTileset)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pTilemap)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -785,8 +764,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem mnuGrid;
         private System.Windows.Forms.ToolStripMenuItem mnuStatusBar;
-        private System.Windows.Forms.ToolStripMenuItem mnuSettings;
-        private System.Windows.Forms.ToolStripMenuItem mnuAllowFlipping;
         private System.Windows.Forms.ToolStripMenuItem mnuHelp;
         private System.Windows.Forms.ToolStripMenuItem mnuAbout;
         private System.Windows.Forms.ToolStripMenuItem mnuNewTilemap;

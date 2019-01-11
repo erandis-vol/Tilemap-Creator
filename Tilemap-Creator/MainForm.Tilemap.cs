@@ -217,11 +217,8 @@ namespace TMC
 
                             // set selection
                             tilemap[mapX, mapY].Index = (short)tile;
-                            if (mnuAllowFlipping.Checked)
-                            {
-                                tilemap[mapX, mapY].FlipX = btnTilesetFlipX.Checked;
-                                tilemap[mapX, mapY].FlipY = btnTilesetFlipY.Checked;
-                            }
+                            tilemap[mapX, mapY].FlipX = btnTilesetFlipX.Checked;
+                            tilemap[mapX, mapY].FlipY = btnTilesetFlipY.Checked;
                         }
                     }                  
                 }
@@ -244,12 +241,8 @@ namespace TMC
                     var w = tilesetWidth;
 
                     tilesetSelection = new Rectangle(t.Index % w, t.Index / w, 1, 1);
-
-                    if (mnuAllowFlipping.Checked)
-                    {
-                        btnTilesetFlipX.Checked = t.FlipX;
-                        btnTilesetFlipY.Checked = t.FlipY;
-                    }
+                    btnTilesetFlipX.Checked = t.FlipX;
+                    btnTilesetFlipY.Checked = t.FlipY;
                 }
                 else
                 {
