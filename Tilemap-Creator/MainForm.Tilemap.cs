@@ -8,42 +8,41 @@ namespace TMC
 {
     partial class MainForm
     {
-        Tilemap tilemap;
-        DirectBitmap tilemapImage;
-
-        Point tilemapMouseCurrent = new Point(-1, -1);
-
         private static Brush[] palettemapBrushes;
         private static Font palettemapFont;
+
+        private Tilemap tilemap;
+        private DirectBitmap tilemapImage;
+
+        private Point tilemapMouseCurrent = new Point(-1, -1);
 
         // Updates Tilemap image (forced redraw)
         private void UpdateTilemap()
         {
-            if (tilemap == null || tileset == null) return;
-            ignore = true;
-
-            // set size info
-            textTilemapWidth.Text = tilemap.Width.ToString();
-            textTilemapHeight.Text = tilemap.Height.ToString();
-
-            // draw tilemap
-            if (tilemapImage == null)
+            if (tilemap != null && tileset != null)
             {
-                tilemapImage = new DirectBitmap(tilemap.Width * 8, tilemap.Height * 8);
-            }
-            if (tilemapImage.Width != tilemap.Width * 8 ||
-                tilemapImage.Height != tilemap.Height * 8)
-            {
-                tilemapImage.Dispose();
-                tilemapImage = new DirectBitmap(tilemap.Width * 8, tilemap.Height * 8);
-            }
+                ignore = true;
 
-            tilemap.Draw(tilemapImage, tileset);
+                // set size info
+                textTilemapWidth.Text = tilemap.Width.ToString();
+                textTilemapHeight.Text = tilemap.Height.ToString();
 
-            // finished
-            pTilemap.Size = new Size(tilemapImage.Width * zoom, tilemapImage.Height * zoom);
-            pTilemap.Image = tilemapImage;
-            ignore = false;
+                // draw tilemap
+                if (tilemapImage == null ||
+                    tilemapImage.Width != tilemap.Width << 3 ||
+                    tilemapImage.Height != tilemap.Height << 3)
+                {
+                    tilemapImage?.Dispose();
+                    tilemapImage = new DirectBitmap(tilemap.Width << 3, tilemap.Height << 3);
+                }
+
+                tilemap.Draw(tilemapImage, tileset);
+
+                // finished
+                pTilemap.Size = new Size(tilemapImage.Width * zoom, tilemapImage.Height * zoom);
+                pTilemap.Image = tilemapImage;
+                ignore = false;
+            }
         }
 
         private void DrawPalettemap(Graphics g)
