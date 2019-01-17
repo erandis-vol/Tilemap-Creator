@@ -17,11 +17,11 @@ namespace TMC.Core
         /// <param name="source">The source image.</param>
         public Tileset(Bitmap source)
         {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
             if (source.Width < 8 || source.Height < 8)
                 throw new ArgumentException("Image must be at least 8x8 pixels.", nameof(source));
-
-            if (source.Width / 8 * source.Height / 8 > 0x400)
-                throw new ArgumentException("Image is too large, ensure it has no more than 0x400 (1024) tiles.", nameof(source));
 
             // Create the tiles
             var width = source.Width / 8;
