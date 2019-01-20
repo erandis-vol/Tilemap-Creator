@@ -476,10 +476,45 @@ namespace TMC.Core
         /// <summary>
         /// Swaps the colors by the order specified in a new palette.
         /// </summary>
-        /// <param name="palette">Specifies the order of the new palette.</param>
-        public void SwapColors(Palette palette)
+        /// <param name="swapped">Specifies the order of the new palette.</param>
+        /// <remarks>
+        /// In cases where palettes have repeated colors, this can have the side-effect of
+        /// "optimizing" the colors to the first palette index that matches.
+        /// </remarks>
+        public void SwapColors(Palette swapped)
         {
-            throw new NotImplementedException();
+            if (swapped == null)
+                throw new ArgumentNullException(nameof(swapped));
+
+            if (swapped.Length != Palette.Length)
+                throw new ArgumentException();
+
+            // Create a map between palettes
+            int[] map = new int[swapped.Length];
+            for (int i = 0; i < swapped.Length; i++)
+            {
+                int index = swapped.IndexOf(Palette[i]);
+                if (index == -1)
+                {
+                    throw new ArgumentException("Swapped palette does not contain all colors.", nameof(swapped));
+                }
+
+                map[i] = index;
+            }
+
+            // Update all tiles using map
+            for (int i = 0; i < Tiles.Length; i++)
+            {
+                ref Tile tile = ref Tiles[i];
+
+                for (int j = 0; j < 64; j++)
+                {
+                    tile[j] = map[tile[j]];
+                }
+            }
+
+            // Replace the palette
+            Palette = new Palette(swapped);
         }
 
         #endregion
