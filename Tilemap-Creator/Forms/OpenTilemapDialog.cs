@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using TMC.Core;
 
@@ -9,73 +10,100 @@ namespace TMC.Forms
 {
     public partial class OpenTilemapDialog : Form
     {
-        Size[] friendlySizes;
+        private List<Size> sizes = new List<Size>();
+        private FileInfo selectedFile;
 
-        public OpenTilemapDialog(string filename)
+        public OpenTilemapDialog()
         {
             InitializeComponent();
-
-            textBox1.Text = File = filename;
-            cFormat.SelectedIndex = 0;
         }
 
-        private void cFormat_SelectedIndexChanged(object sender, EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
-            Bluh();
-        }
-
-        void Bluh()
-        {
-            var file = new FileInfo(File);
-            var sizes = new List<Size>();
-
-            // calculates possible sizes for the given tilemap
-            var l = (int)(Format == TilemapFormat.RotationScaling ? file.Length : file.Length / 2);
-            for (int i = 1; i <= l; i++)
+            if (selectedFile != null && selectedFile.Exists)
             {
-                if (l % i == 0)
-                    sizes.Add(new Size(i, l / i));
-
-                // this second calculation lets us catch
-                // some tilemaps that may not be perfectly sized
-                // (FRLG town map tilemap needs this)
-                if ((l - 8) % i == 0)
-                    sizes.Add(new Size(i, (l - 8) / i));
+                cmbFormat.SelectedIndex = 0;
             }
 
-            cSize.Items.Clear();
-            foreach (var size in sizes)
-                cSize.Items.Add($"{size.Width} x {size.Height}");
-
-            friendlySizes = sizes.ToArray();
-            cSize.SelectedIndex = 0;
+            base.OnLoad(e);
         }
 
-        public string File { get; private set; }
-
-        public Size FriendlySize
+        private void cmbFormat_SelectedIndexChanged(object sender, EventArgs e)
         {
-            get
+            UpdateSizes();
+        }
+
+        private void UpdateSizes()
+        {
+            sizes.Clear();
+
+            // Calculate the length of the tilemap
+            int length = (int)selectedFile.Length;
+            if (SelectedFormat != TilemapFormat.RotationScaling)
+                length /= 2;
+
+            // Calculates possible sizes for the given tilemap
+            for (int i = 1; i <= length; i++)
             {
-                return friendlySizes[cSize.SelectedIndex];
+                if (length % i == 0)
+                    sizes.Add(new Size(i, length / i));
+
+                // This second calculation lets us catch
+                // tilemaps that may not be perfectly sized
+                if ((length - 8) % i == 0)
+                    sizes.Add(new Size(i, (length - 8) / i));
             }
+
+            cmbSize.Items.Clear();
+            cmbSize.Items.AddRange(sizes.Select(x => $"{x.Width} x {x.Height}").ToArray());
+            cmbSize.SelectedIndex = 0;
         }
 
-        public TilemapFormat Format
+        /// <summary>
+        /// Gets or sets the selected file.
+        /// </summary>
+        public string SelectedFile
         {
-            get
+            get => selectedFile.FullName;
+            set
             {
-                switch (cFormat.SelectedIndex)
+                if (selectedFile == null || selectedFile.FullName != value)
                 {
-                    case 0:
-                        return TilemapFormat.Text4;
-                    case 1:
-                        return TilemapFormat.Text8;
-                    case 2:
-                        return TilemapFormat.RotationScaling;
+                    selectedFile = new FileInfo(value);
+                    txtFileName.Text = selectedFile.FullName;
 
-                    default:    // should never happen
-                        throw new Exception();
+                    UpdateSizes();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the selected size.
+        /// </summary>
+        public Size SelectedSize => sizes[cmbSize.SelectedIndex];
+
+        /// <summary>
+        /// Gets the selected format.
+        /// </summary>
+        public TilemapFormat SelectedFormat
+        {
+            get
+            {
+                if (cmbFormat.SelectedIndex == 0)
+                {
+                    return TilemapFormat.Text4;
+                }
+                else if (cmbFormat.SelectedIndex == 1)
+                {
+                    return TilemapFormat.Text8;
+                }
+                else if (cmbFormat.SelectedIndex == 2)
+                {
+                    return TilemapFormat.RotationScaling;
+                }
+                else
+                {
+                    return TilemapFormat.Text4;
                 }
             }
         }

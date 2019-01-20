@@ -69,15 +69,15 @@ namespace TMC
             if (openFileDialog1.ShowDialog() != DialogResult.OK)
                 return;
 
-            using (var oa = new OpenTilemapDialog(openFileDialog1.FileName))
+            using (var otd = new OpenTilemapDialog { SelectedFile = openFileDialog1.FileName })
             {
-                if (oa.ShowDialog() != DialogResult.OK)
+                if (otd.ShowDialog() != DialogResult.OK)
                     return;
 
-                tilemap = new Tilemap(oa.File, oa.Format, oa.FriendlySize.Width);
+                tilemap = new Tilemap(otd.SelectedFile, otd.SelectedFormat, otd.SelectedSize.Width);
                 tilemapFileOptions = new TilemapFileOptions {
-                    FileName = oa.File,
-                    Format = oa.Format,
+                    FileName = otd.SelectedFile,
+                    Format = otd.SelectedFormat,
                     Padding = 0 // TODO: We should detect this 
                 };
 

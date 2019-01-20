@@ -28,25 +28,27 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.txtFileName = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.cSize = new System.Windows.Forms.ComboBox();
-            this.bCancel = new System.Windows.Forms.Button();
-            this.bOpen = new System.Windows.Forms.Button();
+            this.cmbSize = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.cFormat = new System.Windows.Forms.ComboBox();
+            this.cmbFormat = new System.Windows.Forms.ComboBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.btnOpen = new System.Windows.Forms.Button();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // textBox1
+            // txtFileName
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtFileName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(12, 25);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(238, 20);
-            this.textBox1.TabIndex = 15;
+            this.txtFileName.Location = new System.Drawing.Point(12, 25);
+            this.txtFileName.Name = "txtFileName";
+            this.txtFileName.ReadOnly = true;
+            this.txtFileName.Size = new System.Drawing.Size(225, 20);
+            this.txtFileName.TabIndex = 15;
             // 
             // label2
             // 
@@ -66,38 +68,16 @@
             this.label1.TabIndex = 13;
             this.label1.Text = "Size:";
             // 
-            // cSize
+            // cmbSize
             // 
-            this.cSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.cmbSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cSize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cSize.FormattingEnabled = true;
-            this.cSize.Location = new System.Drawing.Point(12, 102);
-            this.cSize.Name = "cSize";
-            this.cSize.Size = new System.Drawing.Size(238, 21);
-            this.cSize.TabIndex = 12;
-            // 
-            // bCancel
-            // 
-            this.bCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.bCancel.Location = new System.Drawing.Point(175, 129);
-            this.bCancel.Name = "bCancel";
-            this.bCancel.Size = new System.Drawing.Size(75, 23);
-            this.bCancel.TabIndex = 11;
-            this.bCancel.Text = "Cancel";
-            this.bCancel.UseVisualStyleBackColor = true;
-            // 
-            // bOpen
-            // 
-            this.bOpen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bOpen.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.bOpen.Location = new System.Drawing.Point(94, 129);
-            this.bOpen.Name = "bOpen";
-            this.bOpen.Size = new System.Drawing.Size(75, 23);
-            this.bOpen.TabIndex = 10;
-            this.bOpen.Text = "Open";
-            this.bOpen.UseVisualStyleBackColor = true;
+            this.cmbSize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbSize.FormattingEnabled = true;
+            this.cmbSize.Location = new System.Drawing.Point(12, 102);
+            this.cmbSize.Name = "cmbSize";
+            this.cmbSize.Size = new System.Drawing.Size(225, 21);
+            this.cmbSize.TabIndex = 12;
             // 
             // label3
             // 
@@ -108,35 +88,66 @@
             this.label3.TabIndex = 17;
             this.label3.Text = "Format:";
             // 
-            // cFormat
+            // cmbFormat
             // 
-            this.cFormat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.cmbFormat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cFormat.FormattingEnabled = true;
-            this.cFormat.Items.AddRange(new object[] {
+            this.cmbFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbFormat.FormattingEnabled = true;
+            this.cmbFormat.Items.AddRange(new object[] {
             "Text mode, 4 bits per pixel",
             "Text mode, 8 bits per pixel",
             "Rotation/scaling mode"});
-            this.cFormat.Location = new System.Drawing.Point(12, 62);
-            this.cFormat.Name = "cFormat";
-            this.cFormat.Size = new System.Drawing.Size(238, 21);
-            this.cFormat.TabIndex = 16;
-            this.cFormat.SelectedIndexChanged += new System.EventHandler(this.cFormat_SelectedIndexChanged);
+            this.cmbFormat.Location = new System.Drawing.Point(12, 62);
+            this.cmbFormat.Name = "cmbFormat";
+            this.cmbFormat.Size = new System.Drawing.Size(225, 21);
+            this.cmbFormat.TabIndex = 16;
+            this.cmbFormat.SelectedIndexChanged += new System.EventHandler(this.cmbFormat_SelectedIndexChanged);
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.panel1.Controls.Add(this.btnCancel);
+            this.panel1.Controls.Add(this.btnOpen);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(0, 136);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(249, 47);
+            this.panel1.TabIndex = 18;
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point(162, 12);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.TabIndex = 1;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            // 
+            // btnOpen
+            // 
+            this.btnOpen.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnOpen.Location = new System.Drawing.Point(81, 12);
+            this.btnOpen.Name = "btnOpen";
+            this.btnOpen.Size = new System.Drawing.Size(75, 23);
+            this.btnOpen.TabIndex = 0;
+            this.btnOpen.Text = "Open";
+            this.btnOpen.UseVisualStyleBackColor = true;
             // 
             // OpenTilemapDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(262, 164);
+            this.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.ClientSize = new System.Drawing.Size(249, 183);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.cFormat);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.cmbFormat);
+            this.Controls.Add(this.txtFileName);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.cSize);
-            this.Controls.Add(this.bCancel);
-            this.Controls.Add(this.bOpen);
+            this.Controls.Add(this.cmbSize);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -145,19 +156,21 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Open Tilemap";
             this.TopMost = true;
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox txtFileName;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox cSize;
-        private System.Windows.Forms.Button bCancel;
-        private System.Windows.Forms.Button bOpen;
+        private System.Windows.Forms.ComboBox cmbSize;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox cFormat;
+        private System.Windows.Forms.ComboBox cmbFormat;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnOpen;
     }
 }
