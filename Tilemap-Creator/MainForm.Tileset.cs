@@ -251,6 +251,14 @@ namespace TMC
             }
         }
 
+        private void cmbTilesetWidth_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!(char.IsDigit(e.KeyChar) || char.IsControl(e.KeyChar)))
+            {
+                e.Handled = true;
+            }
+        }
+
         private void cmbTilesetWidth_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (!ignore)

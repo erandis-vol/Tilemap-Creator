@@ -118,6 +118,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
+            this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.menuStrip1.Size = new System.Drawing.Size(800, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
@@ -281,7 +282,7 @@
             this.mnuZoomIn.Name = "mnuZoomIn";
             this.mnuZoomIn.ShortcutKeyDisplayString = "Ctrl++";
             this.mnuZoomIn.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Oemplus)));
-            this.mnuZoomIn.Size = new System.Drawing.Size(180, 22);
+            this.mnuZoomIn.Size = new System.Drawing.Size(168, 22);
             this.mnuZoomIn.Text = "Zoom In";
             this.mnuZoomIn.Click += new System.EventHandler(this.mnuZoomIn_Click);
             // 
@@ -290,14 +291,14 @@
             this.mnuZoomOut.Name = "mnuZoomOut";
             this.mnuZoomOut.ShortcutKeyDisplayString = "Ctrl+-";
             this.mnuZoomOut.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.OemMinus)));
-            this.mnuZoomOut.Size = new System.Drawing.Size(180, 22);
+            this.mnuZoomOut.Size = new System.Drawing.Size(168, 22);
             this.mnuZoomOut.Text = "Zoom Out";
             this.mnuZoomOut.Click += new System.EventHandler(this.mnuZoomOut_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(165, 6);
             // 
             // mnuGrid
             // 
@@ -306,7 +307,7 @@
             this.mnuGrid.CheckState = System.Windows.Forms.CheckState.Checked;
             this.mnuGrid.Name = "mnuGrid";
             this.mnuGrid.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
-            this.mnuGrid.Size = new System.Drawing.Size(180, 22);
+            this.mnuGrid.Size = new System.Drawing.Size(168, 22);
             this.mnuGrid.Text = "Grid";
             this.mnuGrid.Click += new System.EventHandler(this.mnuGrid_Click);
             // 
@@ -316,7 +317,7 @@
             this.mnuStatusBar.CheckOnClick = true;
             this.mnuStatusBar.CheckState = System.Windows.Forms.CheckState.Checked;
             this.mnuStatusBar.Name = "mnuStatusBar";
-            this.mnuStatusBar.Size = new System.Drawing.Size(180, 22);
+            this.mnuStatusBar.Size = new System.Drawing.Size(168, 22);
             this.mnuStatusBar.Text = "Status bar";
             this.mnuStatusBar.Click += new System.EventHandler(this.mnuStatusBar_Click);
             // 
@@ -465,6 +466,7 @@
             // 
             // toolStrip2
             // 
+            this.toolStrip2.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cmbTilesetWidth,
             this.toolStripLabel2,
@@ -474,17 +476,20 @@
             this.btnTilesetFlipY});
             this.toolStrip2.Location = new System.Drawing.Point(0, 0);
             this.toolStrip2.Name = "toolStrip2";
+            this.toolStrip2.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.toolStrip2.Size = new System.Drawing.Size(247, 25);
             this.toolStrip2.TabIndex = 3;
             this.toolStrip2.Text = "toolStrip2";
             // 
             // cmbTilesetWidth
             // 
+            this.cmbTilesetWidth.AutoToolTip = true;
             this.cmbTilesetWidth.Name = "cmbTilesetWidth";
             this.cmbTilesetWidth.Size = new System.Drawing.Size(75, 25);
             this.cmbTilesetWidth.Text = "1";
-            this.cmbTilesetWidth.ToolTipText = "Tilemap Width";
+            this.cmbTilesetWidth.ToolTipText = "Tileset Width";
             this.cmbTilesetWidth.SelectedIndexChanged += new System.EventHandler(this.cmbTilesetWidth_SelectedIndexChanged);
+            this.cmbTilesetWidth.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cmbTilesetWidth_KeyPress);
             this.cmbTilesetWidth.TextChanged += new System.EventHandler(this.cmbTilesetWidth_TextChanged);
             // 
             // toolStripLabel2
@@ -596,6 +601,7 @@
             // 
             // toolStrip1
             // 
+            this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.textTilemapWidth,
             this.toolStripLabel1,
@@ -608,6 +614,7 @@
             this.btnTilemapShiftRight});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.toolStrip1.Size = new System.Drawing.Size(550, 25);
             this.toolStrip1.TabIndex = 3;
             this.toolStrip1.Text = "toolStrip1";
@@ -619,6 +626,7 @@
             this.textTilemapWidth.Size = new System.Drawing.Size(40, 25);
             this.textTilemapWidth.Text = "1";
             this.textTilemapWidth.ToolTipText = "Tilemap Width";
+            this.textTilemapWidth.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textTilemapWidth_KeyPress);
             // 
             // toolStripLabel1
             // 
@@ -633,6 +641,7 @@
             this.textTilemapHeight.Size = new System.Drawing.Size(40, 25);
             this.textTilemapHeight.Text = "1";
             this.textTilemapHeight.ToolTipText = "Tilemap Height";
+            this.textTilemapHeight.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textTilemapHeight_KeyPress);
             // 
             // btnTilemapResize
             // 

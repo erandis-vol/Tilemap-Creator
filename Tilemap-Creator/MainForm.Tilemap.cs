@@ -361,6 +361,22 @@ namespace TMC
             UpdateTilemap();
         }
 
+        private void textTilemapWidth_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!(char.IsDigit(e.KeyChar) || char.IsControl(e.KeyChar)))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textTilemapHeight_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!(char.IsDigit(e.KeyChar) || char.IsControl(e.KeyChar)))
+            {
+                e.Handled = true;
+            }
+        }
+
         private void btnTilemapResize_Click(object sender, EventArgs e)
         {
             if (tilemap == null || tileset == null)
