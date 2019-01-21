@@ -54,7 +54,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(176, 26);
             this.label2.TabIndex = 1;
-            this.label2.Text = "Version 2.0.0 (XX/XX/2019)\r\nCopyright (c) 2013–2019 erandis-vol";
+            this.label2.Text = "Version 1.1.0\r\nCopyright (c) 2013–2019 erandis-vol";
             // 
             // button1
             // 
