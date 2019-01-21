@@ -386,6 +386,12 @@ namespace TMC
                 short.TryParse(textTilemapHeight.Text, out var height) &&
                 (width != tilemap.Width || height != tilemap.Height))
             {
+                if (width < 1)
+                    width = 1;
+
+                if (height < 1)
+                    height = 1;
+
                 tilemap.Resize(width, height);
                 UpdateTilemap();
             }
