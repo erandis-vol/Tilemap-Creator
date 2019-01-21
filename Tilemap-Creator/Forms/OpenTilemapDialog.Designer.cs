@@ -155,7 +155,6 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Open Tilemap";
-            this.TopMost = true;
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
