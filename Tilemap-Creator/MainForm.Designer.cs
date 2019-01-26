@@ -66,7 +66,6 @@
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.pTileset = new TMC.Controls.InterpolatedPictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lTilesetSelection = new System.Windows.Forms.Label();
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
@@ -74,10 +73,7 @@
             this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
             this.txtTilesetHeight = new System.Windows.Forms.ToolStripTextBox();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-            this.btnTilesetFlipX = new System.Windows.Forms.ToolStripButton();
-            this.btnTilesetFlipY = new System.Windows.Forms.ToolStripButton();
             this.panel4 = new System.Windows.Forms.Panel();
-            this.pTilemap = new TMC.Controls.InterpolatedPictureBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.rModePalette = new System.Windows.Forms.RadioButton();
             this.rModeTilemap = new System.Windows.Forms.RadioButton();
@@ -85,8 +81,12 @@
             this.textTilemapWidth = new System.Windows.Forms.ToolStripTextBox();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.textTilemapHeight = new System.Windows.Forms.ToolStripTextBox();
-            this.btnTilemapResize = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.pTileset = new TMC.Controls.InterpolatedPictureBox();
+            this.btnTilesetFlipX = new System.Windows.Forms.ToolStripButton();
+            this.btnTilesetFlipY = new System.Windows.Forms.ToolStripButton();
+            this.pTilemap = new TMC.Controls.InterpolatedPictureBox();
+            this.btnTilemapResize = new System.Windows.Forms.ToolStripButton();
             this.btnTilemapShiftLeft = new System.Windows.Forms.ToolStripButton();
             this.btnTilemapShiftUp = new System.Windows.Forms.ToolStripButton();
             this.btnTilemapShiftDown = new System.Windows.Forms.ToolStripButton();
@@ -98,13 +98,13 @@
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pTileset)).BeginInit();
             this.panel1.SuspendLayout();
             this.toolStrip2.SuspendLayout();
             this.panel4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pTilemap)).BeginInit();
             this.panel3.SuspendLayout();
             this.toolStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pTileset)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pTilemap)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -429,21 +429,6 @@
             this.panel2.Size = new System.Drawing.Size(247, 497);
             this.panel2.TabIndex = 2;
             // 
-            // pTileset
-            // 
-            this.pTileset.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-            this.pTileset.Location = new System.Drawing.Point(0, 0);
-            this.pTileset.Margin = new System.Windows.Forms.Padding(2);
-            this.pTileset.Name = "pTileset";
-            this.pTileset.Size = new System.Drawing.Size(12, 13);
-            this.pTileset.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pTileset.TabIndex = 1;
-            this.pTileset.TabStop = false;
-            this.pTileset.Paint += new System.Windows.Forms.PaintEventHandler(this.pTileset_Paint);
-            this.pTileset.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pTileset_MouseDown);
-            this.pTileset.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pTileset_MouseMove);
-            this.pTileset.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pTileset_MouseUp);
-            // 
             // panel1
             // 
             this.panel1.Controls.Add(this.lTilesetSelection);
@@ -511,28 +496,6 @@
             this.toolStripSeparator7.Name = "toolStripSeparator7";
             this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
             // 
-            // btnTilesetFlipX
-            // 
-            this.btnTilesetFlipX.CheckOnClick = true;
-            this.btnTilesetFlipX.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnTilesetFlipX.Image = global::TMC.Properties.Resources.shape_flip_horizontal;
-            this.btnTilesetFlipX.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnTilesetFlipX.Name = "btnTilesetFlipX";
-            this.btnTilesetFlipX.Size = new System.Drawing.Size(23, 22);
-            this.btnTilesetFlipX.Text = "Flip X";
-            this.btnTilesetFlipX.ToolTipText = "Flip X";
-            // 
-            // btnTilesetFlipY
-            // 
-            this.btnTilesetFlipY.CheckOnClick = true;
-            this.btnTilesetFlipY.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnTilesetFlipY.Image = global::TMC.Properties.Resources.shape_flip_vertical;
-            this.btnTilesetFlipY.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnTilesetFlipY.Name = "btnTilesetFlipY";
-            this.btnTilesetFlipY.Size = new System.Drawing.Size(23, 22);
-            this.btnTilesetFlipY.Text = "Flip Y";
-            this.btnTilesetFlipY.ToolTipText = "Flip Y";
-            // 
             // panel4
             // 
             this.panel4.AutoScroll = true;
@@ -544,21 +507,6 @@
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(550, 497);
             this.panel4.TabIndex = 2;
-            // 
-            // pTilemap
-            // 
-            this.pTilemap.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-            this.pTilemap.Location = new System.Drawing.Point(0, 0);
-            this.pTilemap.Margin = new System.Windows.Forms.Padding(2);
-            this.pTilemap.Name = "pTilemap";
-            this.pTilemap.Size = new System.Drawing.Size(12, 13);
-            this.pTilemap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pTilemap.TabIndex = 1;
-            this.pTilemap.TabStop = false;
-            this.pTilemap.Paint += new System.Windows.Forms.PaintEventHandler(this.pTilemap_Paint);
-            this.pTilemap.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pTilemap_MouseDown);
-            this.pTilemap.MouseLeave += new System.EventHandler(this.pTilemap_MouseLeave);
-            this.pTilemap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pTilemap_MouseMove);
             // 
             // panel3
             // 
@@ -643,25 +591,77 @@
             this.textTilemapHeight.ToolTipText = "Tilemap Height";
             this.textTilemapHeight.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textTilemapHeight_KeyPress);
             // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
+            // 
+            // pTileset
+            // 
+            this.pTileset.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            this.pTileset.Location = new System.Drawing.Point(0, 0);
+            this.pTileset.Margin = new System.Windows.Forms.Padding(2);
+            this.pTileset.Name = "pTileset";
+            this.pTileset.Size = new System.Drawing.Size(12, 13);
+            this.pTileset.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pTileset.TabIndex = 1;
+            this.pTileset.TabStop = false;
+            this.pTileset.Paint += new System.Windows.Forms.PaintEventHandler(this.pTileset_Paint);
+            this.pTileset.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pTileset_MouseDown);
+            this.pTileset.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pTileset_MouseMove);
+            this.pTileset.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pTileset_MouseUp);
+            // 
+            // btnTilesetFlipX
+            // 
+            this.btnTilesetFlipX.CheckOnClick = true;
+            this.btnTilesetFlipX.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnTilesetFlipX.Image = global::TMC.Properties.Resources.layer_flip;
+            this.btnTilesetFlipX.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnTilesetFlipX.Name = "btnTilesetFlipX";
+            this.btnTilesetFlipX.Size = new System.Drawing.Size(23, 22);
+            this.btnTilesetFlipX.Text = "Flip X";
+            this.btnTilesetFlipX.ToolTipText = "Flip X";
+            // 
+            // btnTilesetFlipY
+            // 
+            this.btnTilesetFlipY.CheckOnClick = true;
+            this.btnTilesetFlipY.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnTilesetFlipY.Image = global::TMC.Properties.Resources.layer_flip_vertical;
+            this.btnTilesetFlipY.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnTilesetFlipY.Name = "btnTilesetFlipY";
+            this.btnTilesetFlipY.Size = new System.Drawing.Size(23, 22);
+            this.btnTilesetFlipY.Text = "Flip Y";
+            this.btnTilesetFlipY.ToolTipText = "Flip Y";
+            // 
+            // pTilemap
+            // 
+            this.pTilemap.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            this.pTilemap.Location = new System.Drawing.Point(0, 0);
+            this.pTilemap.Margin = new System.Windows.Forms.Padding(2);
+            this.pTilemap.Name = "pTilemap";
+            this.pTilemap.Size = new System.Drawing.Size(12, 13);
+            this.pTilemap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pTilemap.TabIndex = 1;
+            this.pTilemap.TabStop = false;
+            this.pTilemap.Paint += new System.Windows.Forms.PaintEventHandler(this.pTilemap_Paint);
+            this.pTilemap.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pTilemap_MouseDown);
+            this.pTilemap.MouseLeave += new System.EventHandler(this.pTilemap_MouseLeave);
+            this.pTilemap.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pTilemap_MouseMove);
+            // 
             // btnTilemapResize
             // 
             this.btnTilemapResize.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnTilemapResize.Image = global::TMC.Properties.Resources.arrow_inout;
+            this.btnTilemapResize.Image = global::TMC.Properties.Resources.image_resize;
             this.btnTilemapResize.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnTilemapResize.Name = "btnTilemapResize";
             this.btnTilemapResize.Size = new System.Drawing.Size(23, 22);
             this.btnTilemapResize.Text = "Resize Tilemap";
             this.btnTilemapResize.Click += new System.EventHandler(this.btnTilemapResize_Click);
             // 
-            // toolStripSeparator6
-            // 
-            this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
-            // 
             // btnTilemapShiftLeft
             // 
             this.btnTilemapShiftLeft.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnTilemapShiftLeft.Image = global::TMC.Properties.Resources.arrow_left;
+            this.btnTilemapShiftLeft.Image = global::TMC.Properties.Resources.arrow_180;
             this.btnTilemapShiftLeft.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnTilemapShiftLeft.Name = "btnTilemapShiftLeft";
             this.btnTilemapShiftLeft.Size = new System.Drawing.Size(23, 22);
@@ -671,7 +671,7 @@
             // btnTilemapShiftUp
             // 
             this.btnTilemapShiftUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnTilemapShiftUp.Image = global::TMC.Properties.Resources.arrow_up;
+            this.btnTilemapShiftUp.Image = global::TMC.Properties.Resources.arrow_090;
             this.btnTilemapShiftUp.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnTilemapShiftUp.Name = "btnTilemapShiftUp";
             this.btnTilemapShiftUp.Size = new System.Drawing.Size(23, 22);
@@ -681,7 +681,7 @@
             // btnTilemapShiftDown
             // 
             this.btnTilemapShiftDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnTilemapShiftDown.Image = global::TMC.Properties.Resources.arrow_down;
+            this.btnTilemapShiftDown.Image = global::TMC.Properties.Resources.arrow_270;
             this.btnTilemapShiftDown.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnTilemapShiftDown.Name = "btnTilemapShiftDown";
             this.btnTilemapShiftDown.Size = new System.Drawing.Size(23, 22);
@@ -691,7 +691,7 @@
             // btnTilemapShiftRight
             // 
             this.btnTilemapShiftRight.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnTilemapShiftRight.Image = global::TMC.Properties.Resources.arrow_right;
+            this.btnTilemapShiftRight.Image = global::TMC.Properties.Resources.arrow;
             this.btnTilemapShiftRight.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnTilemapShiftRight.Name = "btnTilemapShiftRight";
             this.btnTilemapShiftRight.Size = new System.Drawing.Size(23, 22);
@@ -725,17 +725,17 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pTileset)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.toolStrip2.ResumeLayout(false);
             this.toolStrip2.PerformLayout();
             this.panel4.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pTilemap)).EndInit();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pTileset)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pTilemap)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

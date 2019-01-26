@@ -63,9 +63,9 @@ namespace TMC.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap arrow_down {
+        internal static System.Drawing.Bitmap arrow {
             get {
-                object obj = ResourceManager.GetObject("arrow_down", resourceCulture);
+                object obj = ResourceManager.GetObject("arrow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -73,9 +73,9 @@ namespace TMC.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap arrow_inout {
+        internal static System.Drawing.Bitmap arrow_090 {
             get {
-                object obj = ResourceManager.GetObject("arrow_inout", resourceCulture);
+                object obj = ResourceManager.GetObject("arrow_090", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -83,9 +83,9 @@ namespace TMC.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap arrow_left {
+        internal static System.Drawing.Bitmap arrow_180 {
             get {
-                object obj = ResourceManager.GetObject("arrow_left", resourceCulture);
+                object obj = ResourceManager.GetObject("arrow_180", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -93,9 +93,9 @@ namespace TMC.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap arrow_right {
+        internal static System.Drawing.Bitmap arrow_270 {
             get {
-                object obj = ResourceManager.GetObject("arrow_right", resourceCulture);
+                object obj = ResourceManager.GetObject("arrow_270", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -103,9 +103,9 @@ namespace TMC.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap arrow_up {
+        internal static System.Drawing.Bitmap image_resize {
             get {
-                object obj = ResourceManager.GetObject("arrow_up", resourceCulture);
+                object obj = ResourceManager.GetObject("image_resize", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -113,9 +113,9 @@ namespace TMC.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap shape_flip_horizontal {
+        internal static System.Drawing.Bitmap layer_flip {
             get {
-                object obj = ResourceManager.GetObject("shape_flip_horizontal", resourceCulture);
+                object obj = ResourceManager.GetObject("layer_flip", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -123,9 +123,9 @@ namespace TMC.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap shape_flip_vertical {
+        internal static System.Drawing.Bitmap layer_flip_vertical {
             get {
-                object obj = ResourceManager.GetObject("shape_flip_vertical", resourceCulture);
+                object obj = ResourceManager.GetObject("layer_flip_vertical", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

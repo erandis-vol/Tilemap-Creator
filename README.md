@@ -6,4 +6,4 @@ Tilemap Creator is a tool that allows for the creation of tilesets and tilemaps 
 Attributions
 ------------
 
-This project makes use of the [Silk Icons by Mark James](http://www.famfamfam.com/lab/icons/silk/).
+This project makes use of the [Fugue Icons by Yusuke Kamiyamane](http://p.yusukekamiyamane.com/).
