@@ -57,6 +57,12 @@ namespace TMC
             UpdateTilemap();
         }
 
+        private void mnuClearTilemap_Click(object sender, EventArgs e)
+        {
+            tilemap?.Clear();
+            UpdateTilemap();
+        }
+
         private void mnuOpenTilemap_Click(object sender, EventArgs e)
         {
             if (tileset == null)

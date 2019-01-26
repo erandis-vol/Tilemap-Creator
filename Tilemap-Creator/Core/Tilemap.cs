@@ -286,7 +286,7 @@ namespace TMC.Core
                     this[x, y - 1] = this[x, y];
 
             for (int x = 0; x < width; x++)
-                this[x, height - 1] = new TilemapEntry();
+                this[x, height - 1] = default(TilemapEntry);
         }
 
         public void ShiftDown()
@@ -296,7 +296,7 @@ namespace TMC.Core
                     this[x, y + 1] = this[x, y];
 
             for (int x = 0; x < width; x++)
-                this[x, 0] = new TilemapEntry();
+                this[x, 0] = default(TilemapEntry);
         }
 
         public void ShiftLeft()
@@ -306,7 +306,7 @@ namespace TMC.Core
                     this[x - 1, y] = this[x, y];
 
             for (int y = 0; y < height; y++)
-                this[width - 1, y] = new TilemapEntry();
+                this[width - 1, y] = default(TilemapEntry);
         }
 
         public void ShiftRight()
@@ -316,7 +316,19 @@ namespace TMC.Core
                     this[x + 1, y] = this[x, y];
 
             for (int y = 0; y < height; y++)
-                this[0, y] = new TilemapEntry();
+                this[0, y] = default(TilemapEntry);
+        }
+
+        public void Clear() => Fill(default(TilemapEntry));
+
+        public void Fill(short index) => Fill(new TilemapEntry { Index = index });
+
+        public void Fill(TilemapEntry entry)
+        {
+            for (int i = 0; i < tiles.Length; i++)
+            {
+                tiles[i] = entry;
+            }
         }
 
         /// <summary>

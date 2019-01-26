@@ -43,7 +43,6 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuExportColors = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuTilemap = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuNewTilemap = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuOpenTilemap = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSaveTilemap = new System.Windows.Forms.ToolStripMenuItem();
@@ -91,6 +90,8 @@
             this.btnTilemapShiftUp = new System.Windows.Forms.ToolStripButton();
             this.btnTilemapShiftDown = new System.Windows.Forms.ToolStripButton();
             this.btnTilemapShiftRight = new System.Windows.Forms.ToolStripButton();
+            this.mnuImportColors = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuClearTilemap = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -135,118 +136,111 @@
             this.mnuPalette});
             this.mnuTileset.Name = "mnuTileset";
             this.mnuTileset.Size = new System.Drawing.Size(53, 20);
-            this.mnuTileset.Text = "Tileset";
+            this.mnuTileset.Text = "Tile&set";
             // 
             // mnuCreateTileset
             // 
             this.mnuCreateTileset.Name = "mnuCreateTileset";
             this.mnuCreateTileset.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
-            this.mnuCreateTileset.Size = new System.Drawing.Size(146, 22);
-            this.mnuCreateTileset.Text = "Create";
+            this.mnuCreateTileset.Size = new System.Drawing.Size(180, 22);
+            this.mnuCreateTileset.Text = "&Create";
             this.mnuCreateTileset.Click += new System.EventHandler(this.mnuCreateTileset_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(143, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // mnuOpenTileset
             // 
             this.mnuOpenTileset.Name = "mnuOpenTileset";
             this.mnuOpenTileset.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.mnuOpenTileset.Size = new System.Drawing.Size(146, 22);
-            this.mnuOpenTileset.Text = "Open";
+            this.mnuOpenTileset.Size = new System.Drawing.Size(180, 22);
+            this.mnuOpenTileset.Text = "&Open";
             this.mnuOpenTileset.Click += new System.EventHandler(this.mnuOpenTileset_Click);
             // 
             // mnuSaveTileset
             // 
             this.mnuSaveTileset.Name = "mnuSaveTileset";
             this.mnuSaveTileset.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.mnuSaveTileset.Size = new System.Drawing.Size(146, 22);
-            this.mnuSaveTileset.Text = "Save";
+            this.mnuSaveTileset.Size = new System.Drawing.Size(180, 22);
+            this.mnuSaveTileset.Text = "&Save";
             this.mnuSaveTileset.Click += new System.EventHandler(this.mnuSaveTileset_Click);
             // 
             // mnuSaveTilesetAs
             // 
             this.mnuSaveTilesetAs.Name = "mnuSaveTilesetAs";
-            this.mnuSaveTilesetAs.Size = new System.Drawing.Size(146, 22);
-            this.mnuSaveTilesetAs.Text = "Save As...";
+            this.mnuSaveTilesetAs.Size = new System.Drawing.Size(180, 22);
+            this.mnuSaveTilesetAs.Text = "Save &As...";
             this.mnuSaveTilesetAs.Click += new System.EventHandler(this.mnuSaveTilesetAs_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(143, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // mnuPalette
             // 
             this.mnuPalette.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuReduceColors,
-            this.mnuSwapColors,
+            this.mnuImportColors,
+            this.mnuExportColors,
             this.toolStripSeparator3,
-            this.mnuExportColors});
+            this.mnuReduceColors,
+            this.mnuSwapColors});
             this.mnuPalette.Name = "mnuPalette";
-            this.mnuPalette.Size = new System.Drawing.Size(146, 22);
-            this.mnuPalette.Text = "Colors";
+            this.mnuPalette.Size = new System.Drawing.Size(180, 22);
+            this.mnuPalette.Text = "Co&lors";
             // 
             // mnuReduceColors
             // 
             this.mnuReduceColors.Name = "mnuReduceColors";
-            this.mnuReduceColors.Size = new System.Drawing.Size(113, 22);
-            this.mnuReduceColors.Text = "Reduce";
+            this.mnuReduceColors.Size = new System.Drawing.Size(180, 22);
+            this.mnuReduceColors.Text = "&Reduce";
             this.mnuReduceColors.Click += new System.EventHandler(this.mnuReduceColors_Click);
             // 
             // mnuSwapColors
             // 
             this.mnuSwapColors.Name = "mnuSwapColors";
-            this.mnuSwapColors.Size = new System.Drawing.Size(113, 22);
-            this.mnuSwapColors.Text = "Swap";
+            this.mnuSwapColors.Size = new System.Drawing.Size(180, 22);
+            this.mnuSwapColors.Text = "&Swap";
             this.mnuSwapColors.Click += new System.EventHandler(this.mnuSwapColors_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(110, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
             // 
             // mnuExportColors
             // 
             this.mnuExportColors.Name = "mnuExportColors";
-            this.mnuExportColors.Size = new System.Drawing.Size(113, 22);
-            this.mnuExportColors.Text = "Export";
+            this.mnuExportColors.Size = new System.Drawing.Size(180, 22);
+            this.mnuExportColors.Text = "E&xport";
             this.mnuExportColors.Click += new System.EventHandler(this.mnuExportColors_Click);
             // 
             // mnuTilemap
             // 
             this.mnuTilemap.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuNewTilemap,
+            this.mnuClearTilemap,
             this.toolStripSeparator5,
             this.mnuOpenTilemap,
             this.mnuSaveTilemap,
             this.mnuSaveTilemapAs});
             this.mnuTilemap.Name = "mnuTilemap";
             this.mnuTilemap.Size = new System.Drawing.Size(62, 20);
-            this.mnuTilemap.Text = "Tilemap";
-            // 
-            // mnuNewTilemap
-            // 
-            this.mnuNewTilemap.Name = "mnuNewTilemap";
-            this.mnuNewTilemap.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.mnuNewTilemap.Size = new System.Drawing.Size(178, 22);
-            this.mnuNewTilemap.Text = "New";
-            this.mnuNewTilemap.Click += new System.EventHandler(this.mnuNewTilemap_Click);
+            this.mnuTilemap.Text = "Tile&map";
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(175, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(177, 6);
             // 
             // mnuOpenTilemap
             // 
             this.mnuOpenTilemap.Name = "mnuOpenTilemap";
             this.mnuOpenTilemap.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.O)));
-            this.mnuOpenTilemap.Size = new System.Drawing.Size(178, 22);
-            this.mnuOpenTilemap.Text = "Open";
+            this.mnuOpenTilemap.Size = new System.Drawing.Size(180, 22);
+            this.mnuOpenTilemap.Text = "&Open";
             this.mnuOpenTilemap.Click += new System.EventHandler(this.mnuOpenTilemap_Click);
             // 
             // mnuSaveTilemap
@@ -254,15 +248,15 @@
             this.mnuSaveTilemap.Name = "mnuSaveTilemap";
             this.mnuSaveTilemap.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
-            this.mnuSaveTilemap.Size = new System.Drawing.Size(178, 22);
-            this.mnuSaveTilemap.Text = "Save";
+            this.mnuSaveTilemap.Size = new System.Drawing.Size(180, 22);
+            this.mnuSaveTilemap.Text = "&Save";
             this.mnuSaveTilemap.Click += new System.EventHandler(this.mnuSaveTilemap_Click);
             // 
             // mnuSaveTilemapAs
             // 
             this.mnuSaveTilemapAs.Name = "mnuSaveTilemapAs";
-            this.mnuSaveTilemapAs.Size = new System.Drawing.Size(178, 22);
-            this.mnuSaveTilemapAs.Text = "Save As...";
+            this.mnuSaveTilemapAs.Size = new System.Drawing.Size(180, 22);
+            this.mnuSaveTilemapAs.Text = "Save &As...";
             this.mnuSaveTilemapAs.Click += new System.EventHandler(this.mnuSaveTilemapAs_Click);
             // 
             // mnuView
@@ -275,15 +269,15 @@
             this.mnuStatusBar});
             this.mnuView.Name = "mnuView";
             this.mnuView.Size = new System.Drawing.Size(44, 20);
-            this.mnuView.Text = "View";
+            this.mnuView.Text = "&View";
             // 
             // mnuZoomIn
             // 
             this.mnuZoomIn.Name = "mnuZoomIn";
             this.mnuZoomIn.ShortcutKeyDisplayString = "Ctrl++";
             this.mnuZoomIn.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Oemplus)));
-            this.mnuZoomIn.Size = new System.Drawing.Size(168, 22);
-            this.mnuZoomIn.Text = "Zoom In";
+            this.mnuZoomIn.Size = new System.Drawing.Size(180, 22);
+            this.mnuZoomIn.Text = "Zoom &In";
             this.mnuZoomIn.Click += new System.EventHandler(this.mnuZoomIn_Click);
             // 
             // mnuZoomOut
@@ -291,14 +285,14 @@
             this.mnuZoomOut.Name = "mnuZoomOut";
             this.mnuZoomOut.ShortcutKeyDisplayString = "Ctrl+-";
             this.mnuZoomOut.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.OemMinus)));
-            this.mnuZoomOut.Size = new System.Drawing.Size(168, 22);
-            this.mnuZoomOut.Text = "Zoom Out";
+            this.mnuZoomOut.Size = new System.Drawing.Size(180, 22);
+            this.mnuZoomOut.Text = "Zoom &Out";
             this.mnuZoomOut.Click += new System.EventHandler(this.mnuZoomOut_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(165, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
             // 
             // mnuGrid
             // 
@@ -307,8 +301,8 @@
             this.mnuGrid.CheckState = System.Windows.Forms.CheckState.Checked;
             this.mnuGrid.Name = "mnuGrid";
             this.mnuGrid.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
-            this.mnuGrid.Size = new System.Drawing.Size(168, 22);
-            this.mnuGrid.Text = "Grid";
+            this.mnuGrid.Size = new System.Drawing.Size(180, 22);
+            this.mnuGrid.Text = "&Grid";
             this.mnuGrid.Click += new System.EventHandler(this.mnuGrid_Click);
             // 
             // mnuStatusBar
@@ -317,8 +311,8 @@
             this.mnuStatusBar.CheckOnClick = true;
             this.mnuStatusBar.CheckState = System.Windows.Forms.CheckState.Checked;
             this.mnuStatusBar.Name = "mnuStatusBar";
-            this.mnuStatusBar.Size = new System.Drawing.Size(168, 22);
-            this.mnuStatusBar.Text = "Status bar";
+            this.mnuStatusBar.Size = new System.Drawing.Size(180, 22);
+            this.mnuStatusBar.Text = "&Status bar";
             this.mnuStatusBar.Click += new System.EventHandler(this.mnuStatusBar_Click);
             // 
             // mnuHelp
@@ -327,14 +321,13 @@
             this.mnuAbout});
             this.mnuHelp.Name = "mnuHelp";
             this.mnuHelp.Size = new System.Drawing.Size(44, 20);
-            this.mnuHelp.Text = "Help";
+            this.mnuHelp.Text = "&Help";
             // 
             // mnuAbout
             // 
             this.mnuAbout.Name = "mnuAbout";
-            this.mnuAbout.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.mnuAbout.Size = new System.Drawing.Size(237, 22);
-            this.mnuAbout.Text = "About Tilemap Creator";
+            this.mnuAbout.Size = new System.Drawing.Size(195, 22);
+            this.mnuAbout.Text = "&About Tilemap Creator";
             this.mnuAbout.Click += new System.EventHandler(this.mnuAbout_Click);
             // 
             // statusStrip1
@@ -615,7 +608,7 @@
             // 
             this.btnTilesetFlipX.CheckOnClick = true;
             this.btnTilesetFlipX.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnTilesetFlipX.Image = global::TMC.Properties.Resources.layer_flip;
+            this.btnTilesetFlipX.Image = ((System.Drawing.Image)(resources.GetObject("btnTilesetFlipX.Image")));
             this.btnTilesetFlipX.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnTilesetFlipX.Name = "btnTilesetFlipX";
             this.btnTilesetFlipX.Size = new System.Drawing.Size(23, 22);
@@ -626,7 +619,7 @@
             // 
             this.btnTilesetFlipY.CheckOnClick = true;
             this.btnTilesetFlipY.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnTilesetFlipY.Image = global::TMC.Properties.Resources.layer_flip_vertical;
+            this.btnTilesetFlipY.Image = ((System.Drawing.Image)(resources.GetObject("btnTilesetFlipY.Image")));
             this.btnTilesetFlipY.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnTilesetFlipY.Name = "btnTilesetFlipY";
             this.btnTilesetFlipY.Size = new System.Drawing.Size(23, 22);
@@ -651,7 +644,7 @@
             // btnTilemapResize
             // 
             this.btnTilemapResize.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnTilemapResize.Image = global::TMC.Properties.Resources.image_resize;
+            this.btnTilemapResize.Image = ((System.Drawing.Image)(resources.GetObject("btnTilemapResize.Image")));
             this.btnTilemapResize.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnTilemapResize.Name = "btnTilemapResize";
             this.btnTilemapResize.Size = new System.Drawing.Size(23, 22);
@@ -661,7 +654,7 @@
             // btnTilemapShiftLeft
             // 
             this.btnTilemapShiftLeft.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnTilemapShiftLeft.Image = global::TMC.Properties.Resources.arrow_180;
+            this.btnTilemapShiftLeft.Image = ((System.Drawing.Image)(resources.GetObject("btnTilemapShiftLeft.Image")));
             this.btnTilemapShiftLeft.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnTilemapShiftLeft.Name = "btnTilemapShiftLeft";
             this.btnTilemapShiftLeft.Size = new System.Drawing.Size(23, 22);
@@ -671,7 +664,7 @@
             // btnTilemapShiftUp
             // 
             this.btnTilemapShiftUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnTilemapShiftUp.Image = global::TMC.Properties.Resources.arrow_090;
+            this.btnTilemapShiftUp.Image = ((System.Drawing.Image)(resources.GetObject("btnTilemapShiftUp.Image")));
             this.btnTilemapShiftUp.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnTilemapShiftUp.Name = "btnTilemapShiftUp";
             this.btnTilemapShiftUp.Size = new System.Drawing.Size(23, 22);
@@ -681,7 +674,7 @@
             // btnTilemapShiftDown
             // 
             this.btnTilemapShiftDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnTilemapShiftDown.Image = global::TMC.Properties.Resources.arrow_270;
+            this.btnTilemapShiftDown.Image = ((System.Drawing.Image)(resources.GetObject("btnTilemapShiftDown.Image")));
             this.btnTilemapShiftDown.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnTilemapShiftDown.Name = "btnTilemapShiftDown";
             this.btnTilemapShiftDown.Size = new System.Drawing.Size(23, 22);
@@ -697,6 +690,19 @@
             this.btnTilemapShiftRight.Size = new System.Drawing.Size(23, 22);
             this.btnTilemapShiftRight.Text = "Shift Tilemap Right";
             this.btnTilemapShiftRight.Click += new System.EventHandler(this.btnTilemapShiftRight_Click);
+            // 
+            // mnuImportColors
+            // 
+            this.mnuImportColors.Name = "mnuImportColors";
+            this.mnuImportColors.Size = new System.Drawing.Size(180, 22);
+            this.mnuImportColors.Text = "I&mport";
+            // 
+            // mnuClearTilemap
+            // 
+            this.mnuClearTilemap.Name = "mnuClearTilemap";
+            this.mnuClearTilemap.Size = new System.Drawing.Size(180, 22);
+            this.mnuClearTilemap.Text = "&Clear";
+            this.mnuClearTilemap.Click += new System.EventHandler(this.mnuClearTilemap_Click);
             // 
             // MainForm
             // 
@@ -775,7 +781,6 @@
         private System.Windows.Forms.ToolStripMenuItem mnuStatusBar;
         private System.Windows.Forms.ToolStripMenuItem mnuHelp;
         private System.Windows.Forms.ToolStripMenuItem mnuAbout;
-        private System.Windows.Forms.ToolStripMenuItem mnuNewTilemap;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem mnuSwapColors;
         private System.Windows.Forms.ToolStripStatusLabel lTile;
@@ -805,6 +810,8 @@
         private System.Windows.Forms.ToolStripButton btnTilesetFlipY;
         private System.Windows.Forms.ToolStripTextBox txtTilesetHeight;
         private System.Windows.Forms.Label lTilesetSelection;
+        private System.Windows.Forms.ToolStripMenuItem mnuImportColors;
+        private System.Windows.Forms.ToolStripMenuItem mnuClearTilemap;
     }
 }
 
