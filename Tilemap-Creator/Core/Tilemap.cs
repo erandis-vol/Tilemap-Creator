@@ -145,47 +145,53 @@ namespace TMC.Core
             var padding  = tilemapFileOptions.Padding;
 
             using (var fs = File.Create(filename))
-            using (var bw = new BinaryWriter(fs))
             {
-                // --------------------------------
+                // TODO: SaveC, SaveNSCR
+                SaveGBA(fs, format, padding);
+            }
+        }
+
+        private void SaveGBA(Stream stream, TilemapFormat format, int padding)
+        {
+            using (var writer = new BinaryWriter(stream))
+            {
                 for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
                     {
-                        var tile = this[x, y];
+                        ref TilemapEntry tile = ref this[x, y];
 
                         if (format == TilemapFormat.Text4)
-                            bw.Write((ushort)(
+                        {
+                            writer.Write((ushort)(
                                 (tile.Index & 0x3FF) |
                                 (tile.FlipX ? 0x400 : 0) |
                                 (tile.FlipY ? 0x800 : 0) |
                                 (tile.Palette << 12)
                             ));
+                        }
                         else if (format == TilemapFormat.Text8)
-                            bw.Write((ushort)(
+                        {
+                            writer.Write((ushort)(
                                 (tile.Index & 0x3FF) |
                                 (tile.FlipX ? 0x400 : 0) |
                                 (tile.FlipY ? 0x800 : 0)
                             ));
-                        else
-                            bw.Write((byte)tile.Index);
+                        }
+                        else // TilemapFormat.RotationScaling
+                        {
+                            writer.Write((byte)tile.Index);
+                        }
                     }
                 }
 
-                // --------------------------------
                 for (int i = 0; i < padding; i++)
                 {
-                    bw.Write(byte.MinValue);
+                    writer.Write(byte.MinValue);
                 }
             }
         }
 
-        /// <summary>
-        /// Save this <see cref="Tilemap"/> as C array.
-        /// </summary>
-        /// <param name="filename"></param>
-        /// <param name="format"></param>
-        /// <param name="extraBytes"></param>
         private void SaveC(string filename, TilemapFormat format, int extraBytes = 0)
         {
             var variableName = Path.GetFileNameWithoutExtension(filename).ToLower().Replace(' ', '_');
@@ -225,57 +231,72 @@ namespace TMC.Core
             }
         }
 
-        private void SaveNSCR(string filename, TilemapFormat bitDepth, int extraBytes)
+        private void SaveNSCR(Stream stream, TilemapFormat format, int extraBytes)
         {
-            // http://llref.emutalk.net/docs/?file=xml/nscr.xml#xml-doc
-            // there are actually a lot of options for this format
+            const uint MagicNscr = 0x4E534352u;
+            const uint MagicScrn = 0x4E524353u;
 
-            if (bitDepth == TilemapFormat.RotationScaling)
+            // http://llref.emutalk.net/docs/?file=xml/nscr.xml#xml-doc
+
+            if (format == TilemapFormat.RotationScaling)
                 throw new NotSupportedException();
 
-            using (var fs = File.Create(filename))
-            using (var bw = new BinaryWriter(fs))
-            {
-                // NSCR header
-                bw.Write(0x4E534352);
-                bw.Write(0x0100FEFF);
-                bw.Write(0);
-                bw.Write(16);
-                bw.Write(1);
+            int dataSize = width * height;
+            if (format != TilemapFormat.RotationScaling)
+                dataSize *= 2;
 
-                // NRCS section
-                bw.Write(0x4E524353);
-                bw.Write(20 + width * height * 2);
-                bw.Write((ushort)(width << 3));     // width in pixels
-                bw.Write((ushort)(height << 3));    // height in pixels -- max size = 0x1FFF by 0x1FFF
-                bw.Write((ushort)0);
-                bw.Write((ushort)0);
-                bw.Write(width * height * 2);
+            using (var writer = new BinaryWriter(stream))
+            {
+                // Nitro header section
+                writer.Write(MagicNscr);                // NSCR
+                writer.Write(0x0100FEFF);               // version, byte order
+                writer.Write(0);                        // file size
+                writer.Write(16);                       // header size, always 16
+                writer.Write(1);                        // sections, always 1 for this format
+
+                // Screen section
+                writer.Write(MagicScrn);                // SCRN
+                writer.Write(20 + dataSize);            // section size
+                writer.Write((ushort)(width << 3));     // width in pixels
+                writer.Write((ushort)(height << 3));    // height in pixels -- max size = 0x1FFF by 0x1FFF
+                writer.Write((ushort)0);                // internal screen size
+                writer.Write((ushort)0);                // bg type
+                writer.Write(dataSize);                 // data size
+
+                // TODO: To finish this, we need to determine the screen size and BG type
 
                 for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
                     {
                         var tile = this[x, y];
-                        if (bitDepth == TilemapFormat.Text4)
-                            bw.Write((ushort)(
+                        if (format == TilemapFormat.Text4)
+                        {
+                            writer.Write((ushort)(
                                 (tile.Index & 0x3FF) |
                                 (tile.FlipX ? 0x400 : 0) |
                                 (tile.FlipY ? 0x800 : 0) |
                                 (tile.Palette << 12)
                             ));
-                        else //if (format == TilemapFormat.Text8)
-                            bw.Write((ushort)(
+                        }
+                        else if (format == TilemapFormat.Text8)
+                        {
+                            writer.Write((ushort)(
                                 (tile.Index & 0x3FF) |
                                 (tile.FlipX ? 0x400 : 0) |
                                 (tile.FlipY ? 0x800 : 0)
                             ));
+                        }
+                        else
+                        {
+                            writer.Write((byte)tile.Index);
+                        }
                     }
                 }
 
                 // Adjust file size in header
-                bw.BaseStream.Position = 8L;
-                bw.Write(bw.BaseStream.Length);
+                writer.BaseStream.Position = 8L;
+                writer.Write((int)writer.BaseStream.Length);
             }
         }
 
