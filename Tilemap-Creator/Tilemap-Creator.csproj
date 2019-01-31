@@ -56,7 +56,7 @@
     <Compile Include="Core\ColorExtensions.cs" />
     <Compile Include="Core\DirectBitmap.cs" />
     <Compile Include="Core\PaletteFormat.cs" />
-    <Compile Include="Core\Tile.cs" />
+    <Compile Include="Core\TilesetEntry.cs" />
     <Compile Include="Core\TilemapEntry.cs" />
     <Compile Include="Core\TilemapFormat.cs" />
     <Compile Include="Core\TilemapFileOptions.cs" />

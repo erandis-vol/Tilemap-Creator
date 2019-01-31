@@ -7,7 +7,7 @@
     {
         #region Encode
 
-        private static void EncodeTile4(ref Tile tile, ref byte[] bytes, int index)
+        private static void EncodeTile4(ref TilesetEntry tile, ref byte[] bytes, int index)
         {
             for (int y = 0; y < 8; y++)
             {
@@ -18,7 +18,7 @@
             }
         }
 
-        public static byte[] Encode4(Tile[] tiles)
+        public static byte[] Encode4(TilesetEntry[] tiles)
         {
             var bytes = new byte[tiles.Length << 5]; // * 32
 
@@ -30,7 +30,7 @@
             return bytes;
         }
 
-        private static void EncodeTile8(ref Tile tile, ref byte[] bytes, int index)
+        private static void EncodeTile8(ref TilesetEntry tile, ref byte[] bytes, int index)
         {
             for (int y = 0; y < 8; y++)
             {
@@ -41,7 +41,7 @@
             }
         }
 
-        public static byte[] Encode8(Tile[] tiles)
+        public static byte[] Encode8(TilesetEntry[] tiles)
         {
             var bytes = new byte[tiles.Length << 6]; // * 64
 
@@ -57,9 +57,9 @@
 
         #region Decode
 
-        public static Tile[] DecodeTiles4(byte[] bytes)
+        public static TilesetEntry[] DecodeTiles4(byte[] bytes)
         {
-            var tiles = new Tile[bytes.Length >> 5]; // / (8 * 8 / 2)
+            var tiles = new TilesetEntry[bytes.Length >> 5]; // / (8 * 8 / 2)
 
             for (int i = 0; i < tiles.Length; i++)
             {
@@ -69,9 +69,9 @@
             return tiles;
         }
 
-        public static Tile[] Decode8(byte[] bytes)
+        public static TilesetEntry[] Decode8(byte[] bytes)
         {
-            var tiles = new Tile[bytes.Length >> 6]; // / (8 * 8)
+            var tiles = new TilesetEntry[bytes.Length >> 6]; // / (8 * 8)
 
             for (int i = 0; i < tiles.Length; i++)
             {
@@ -81,7 +81,7 @@
             return tiles;
         }
 
-        private static void DecodeTile4(ref byte[] bytes, int index, ref Tile tile)
+        private static void DecodeTile4(ref byte[] bytes, int index, ref TilesetEntry tile)
         {
             for (int y = 0; y < 8; y++)
             {
@@ -93,7 +93,7 @@
             }
         }
 
-        private static void DecodeTile8(ref byte[] bytes, int index, ref Tile tile)
+        private static void DecodeTile8(ref byte[] bytes, int index, ref TilesetEntry tile)
         {
             for (int y = 0; y < 8; y++)
             {

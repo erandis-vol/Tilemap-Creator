@@ -26,7 +26,7 @@ namespace TMC.Core
             // Create the tiles
             var width = source.Width / 8;
             var height = source.Height / 8;
-            Tiles = new Tile[width * height];
+            Tiles = new TilesetEntry[width * height];
 
             // Copy image data from source
             using (var fb = DirectBitmap.FromImage(source))
@@ -65,7 +65,7 @@ namespace TMC.Core
         /// Initialzies a new instance of the <see cref="Tileset"/> with the specified tile array.
         /// </summary>
         /// <param name="tiles">The tiles.</param>
-        protected Tileset(Tile[] tiles, Palette palette)
+        protected Tileset(TilesetEntry[] tiles, Palette palette)
         {
             Tiles = tiles;
             Palette = palette;
@@ -78,7 +78,7 @@ namespace TMC.Core
         /// </summary>
         /// <param name="index">The index of the tile.</param>
         /// <returns></returns>
-        public ref Tile this[int index] => ref Tiles[index];
+        public ref TilesetEntry this[int index] => ref Tiles[index];
 
         /// <summary>
         /// Creates a new <see cref="Tileset"/> from the specified source image.
@@ -100,7 +100,7 @@ namespace TMC.Core
             tilemap[0] = new TilemapEntry();
 
             // Scan the tileset for repeated tiles
-            var tiles = new List<Tile> { tileset[0] };
+            var tiles = new List<TilesetEntry> { tileset[0] };
             var current = 1;
 
             for (int i = 1; i < tileset.Length; i++)
@@ -505,7 +505,7 @@ namespace TMC.Core
             // Update all tiles using map
             for (int i = 0; i < Tiles.Length; i++)
             {
-                ref Tile tile = ref Tiles[i];
+                ref TilesetEntry tile = ref Tiles[i];
 
                 for (int j = 0; j < 64; j++)
                 {
@@ -529,7 +529,7 @@ namespace TMC.Core
         /// <summary>
         /// Gets the tiles.
         /// </summary>
-        public Tile[] Tiles { get; }
+        public TilesetEntry[] Tiles { get; }
 
         /// <summary>
         /// Gets the palette.

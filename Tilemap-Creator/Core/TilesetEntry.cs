@@ -7,7 +7,7 @@ namespace TMC.Core
     /// Represents an 8x8 array of pixel data.
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct Tile
+    public struct TilesetEntry
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         private struct Row
@@ -70,6 +70,19 @@ namespace TMC.Core
                     && p5 == other.p5
                     && p6 == other.p6
                     && p7 == other.p7;
+            }
+
+            public override int GetHashCode()
+            {
+                return p0.GetHashCode() ^ p1.GetHashCode() ^
+                       p2.GetHashCode() ^ p3.GetHashCode() ^
+                       p4.GetHashCode() ^ p5.GetHashCode() ^
+                       p6.GetHashCode() ^ p7.GetHashCode();
+            }
+
+            public override bool Equals(object obj)
+            {
+                return (obj is Row) && Equals((Row)obj);
             }
 
             public static bool operator ==(Row r1, Row r2)
@@ -154,7 +167,7 @@ namespace TMC.Core
         /// <param name="flipX">Determines whether <paramref name="other"/> is to be flipped from left to right.</param>
         /// <param name="flipY">Determines whether <paramref name="other"/> is to be flipped from top to bottom.</param>
         /// <returns><c>true</c> if the tiles are equivalent; otherwise, <c>false</c>.</returns>
-        public unsafe bool Equals(ref Tile other, bool flipX = false, bool flipY = false)
+        public unsafe bool Equals(ref TilesetEntry other, bool flipX = false, bool flipY = false)
         {
             if (flipX || flipY)
             {
