@@ -168,6 +168,10 @@
     <None Include="Resources\arrow.png" />
     <None Include="Resources\layer-flip.png" />
     <None Include="Resources\layer-flip-vertical.png" />
+    <None Include="Resources\information.png" />
+    <None Include="Resources\magnifier-zoom-in.png" />
+    <None Include="Resources\magnifier-zoom-out.png" />
+    <None Include="Resources\information1.png" />
     <Content Include="tmc.ico" />
   </ItemGroup>
   <ItemGroup />

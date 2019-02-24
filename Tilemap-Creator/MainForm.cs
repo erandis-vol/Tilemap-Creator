@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Text;
 using System.IO;
 using System.Windows.Forms;
 using TMC.Core;
@@ -25,25 +26,53 @@ namespace TMC
         {
             InitializeComponent();
 
-            mnuSaveTileset.Enabled = false;
-            mnuSaveTilesetAs.Enabled = false;
-            mnuPalette.Enabled = false;
-
-            mnuOpenTilemap.Enabled = false;
-            mnuSaveTilemap.Enabled = false;
-            mnuSaveTilemapAs.Enabled = false;
+            //saveToolStripMenuItem1.Enabled = false;
+            //saveToolStripMenuItem2.Enabled = false;
+            //saveAsToolStripMenuItem1.Enabled = false;
+            //saveAsToolStripMenuItem2.Enabled = false;
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
-            DrawPalette();
+            if (palettesetImage == null)
+            {
+                palettesetImage = new Bitmap(32, 32);
+
+                using (var gfx = Graphics.FromImage(palettesetImage))
+                using (var fnt = new Font("Arial", 5.5f, FontStyle.Regular))
+                {
+                    gfx.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
+
+                    for (int i = 0; i < 16; i++)
+                    {
+                        using (var brush = new SolidBrush(palettemapColors[i]))
+                        {
+                            gfx.FillRectangle(brush, i % 4 * 8, i / 4 * 8, 8, 8);
+                            gfx.DrawString(i.ToString("X"), fnt, Brushes.Black, 1 + i % 4 * 8, i / 4 * 8);
+                        }
+                    }
+                }
+            }
+
+            base.OnLoad(e);
         }
 
-        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        protected override void OnFormClosed(FormClosedEventArgs e)
         {
-            tilesetImage?.Dispose();
-            tilemapImage?.Dispose();
-            palettesetImage?.Dispose();
+            try
+            {
+                tilesetImage?.Dispose();
+                tilesetImage = null;
+
+                tilemapImage?.Dispose();
+                tilemapImage = null;
+
+                palettesetImage?.Dispose();
+                palettesetImage = null;
+            }
+            catch { }
+
+            base.OnFormClosed(e);
         }
 
         private void mnuNewTilemap_Click(object sender, EventArgs e)
@@ -63,7 +92,7 @@ namespace TMC
             UpdateTilemap();
         }
 
-        private void mnuOpenTilemap_Click(object sender, EventArgs e)
+        private void openToolStripMenuItem2_Click(object sender, EventArgs e)
         {
             if (tileset == null)
                 return;
@@ -91,11 +120,11 @@ namespace TMC
             }
         }
 
-        private void mnuSaveTilemap_Click(object sender, EventArgs e)
+        private void saveToolStripMenuItem2_Click(object sender, EventArgs e)
         {
             if (tilemapFileOptions == null)
             {
-                mnuSaveTilemapAs.PerformClick();
+                //saveAsToolStripMenuItem2.PerformClick();
             }
             else
             {
@@ -103,7 +132,7 @@ namespace TMC
             }
         }
 
-        private void mnuSaveTilemapAs_Click(object sender, EventArgs e)
+        private void saveAsToolStripMenuItem2_Click(object sender, EventArgs e)
         {
             saveFileDialog1.FileName = "";
             saveFileDialog1.Title = "Save Tilemap";
@@ -164,15 +193,13 @@ namespace TMC
             UpdateTileset(true);
             UpdateTilemap();
 
-            mnuOpenTilemap.Enabled = true;
-            mnuSaveTilemap.Enabled = true;
-            mnuSaveTilemapAs.Enabled = true;
-            mnuSaveTileset.Enabled = true;
-            mnuSaveTilesetAs.Enabled = true;
-            mnuPalette.Enabled = true;
+            //saveToolStripMenuItem1.Enabled = true;
+            //saveToolStripMenuItem2.Enabled = true;
+            //saveAsToolStripMenuItem1.Enabled = true;
+            //saveAsToolStripMenuItem2.Enabled = true;
         }
 
-        private void mnuOpenTileset_Click(object sender, EventArgs e)
+        private void openToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             // TODO: ask to save old Tileset/Tilemap
             openFileDialog1.FileName = "";
@@ -222,19 +249,17 @@ namespace TMC
             tilemapFileOptions = null;
             UpdateTilemap();
 
-            mnuOpenTilemap.Enabled = true;
-            mnuSaveTilemap.Enabled = true;
-            mnuSaveTilemapAs.Enabled = true;
-            mnuSaveTileset.Enabled = true;
-            mnuSaveTilesetAs.Enabled = true;
-            mnuPalette.Enabled = true;
+            //saveToolStripMenuItem1.Enabled = true;
+            //saveToolStripMenuItem2.Enabled = true;
+            //saveAsToolStripMenuItem1.Enabled = true;
+            //saveAsToolStripMenuItem2.Enabled = true;
         }
 
-        private void mnuSaveTileset_Click(object sender, EventArgs e)
+        private void saveToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             if (tilesetFileOptions == null)
             {
-                mnuSaveTilesetAs.PerformClick();
+                //saveAsToolStripMenuItem1.PerformClick();
             }
             else
             {
@@ -260,7 +285,7 @@ namespace TMC
             }
         }
 
-        private void mnuSaveTilesetAs_Click(object sender, EventArgs e)
+        private void saveAsToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             saveFileDialog1.FileName = "";
             saveFileDialog1.Title = "Save Tileset";
@@ -409,10 +434,30 @@ namespace TMC
 
         private void mnuStatusBar_Click(object sender, EventArgs e)
         {
-            statusStrip1.Visible = mnuStatusBar.Checked;
+            //statusStrip1.Visible = mnuStatusBar.Checked;
         }
 
-        private void mnuAbout_Click(object sender, EventArgs e)
+        private void menuItemOpen_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void menuItemSave_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void menuItemSaveAs_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void menuItemExit_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void menuItemAbout_Click(object sender, EventArgs e)
         {
             using (var dialog = new AboutDialog())
             {

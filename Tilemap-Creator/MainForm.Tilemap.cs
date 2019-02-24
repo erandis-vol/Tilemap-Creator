@@ -14,6 +14,9 @@ namespace TMC
         private Tilemap tilemap;
         private DirectBitmap tilemapImage;
 
+        private Stack<Tilemap> tilemapUndoStack = new Stack<Tilemap>();
+        private Stack<Tilemap> tilemapRedoStack = new Stack<Tilemap>();
+
         private Point tilemapMouseCurrent = new Point(-1, -1);
 
         // Updates Tilemap image (forced redraw)
@@ -104,7 +107,7 @@ namespace TMC
             );
 
             // Draw grid
-            if (mnuGrid.Checked)
+            if (false)
             {
                 using (var pen = new Pen(new SolidBrush(GridColor), 1f))
                 using (var penS = new Pen(new SolidBrush(GridSelectionColor), 1f))

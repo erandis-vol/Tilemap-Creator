@@ -11,13 +11,14 @@ namespace TMC
 {
     partial class MainForm
     {
-        Tileset tileset;
-        DirectBitmap tilesetImage;
+        private Tileset tileset;
+        private DirectBitmap tilesetImage;
 
-        Rectangle tilesetSelection = new Rectangle(0, 0, 1, 1);
+        private Rectangle tilesetSelection = new Rectangle(0, 0, 1, 1);
 
-        Point tilesetMouseStart = new Point(-1, -1), tilesetMouseCurrent = new Point(-1, -1);
-        bool tilesetMouseDown = false;
+        private Point tilesetMouseStart = new Point(-1, -1),
+                      tilesetMouseCurrent = new Point(-1, -1);
+        private bool tilesetMouseDown = false;
 
         private static readonly Color[] palettemapColors = //new Color[]
         {
@@ -46,7 +47,8 @@ namespace TMC
         // Updates Tileset size and image
         void UpdateTileset(bool clearSelection)
         {
-            if (tileset == null) return;
+            if (tileset == null)
+                return;
 
             ignore = true;
             if (rModeTilemap.Checked)
@@ -83,27 +85,6 @@ namespace TMC
             ignore = false;
         }
 
-        void DrawPalette()
-        {
-            palettesetImage?.Dispose();
-            palettesetImage = new Bitmap(4 * 8, 4 * 8);
-
-            using (var g = Graphics.FromImage(palettesetImage))
-            using (var font = new Font("Arial", 5.5f, FontStyle.Regular))
-            {
-                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
-
-                for (int i = 0; i < 16; i++)
-                {
-                    using (var b = new SolidBrush(palettemapColors[i]))
-                    {
-                        g.FillRectangle(b, i % 4 * 8, i / 4 * 8, 8, 8);
-                        g.DrawString(i.ToString("X"), font, Brushes.Black, 1 + i % 4 * 8, i / 4 * 8);
-                    }
-                }
-            }
-        }
-
         private void pTileset_Paint(object sender, PaintEventArgs e)
         {
             if (tileset == null) return;
@@ -111,7 +92,7 @@ namespace TMC
             if (rModeTilemap.Checked)
             {
                 // draw grid
-                if (mnuGrid.Checked)
+                if (false)
                 {
                     using (var pen = new Pen(new SolidBrush(GridColor), 1f))
                     {
@@ -132,14 +113,13 @@ namespace TMC
                 }
 
                 // draw current selection
-                e.Graphics.DrawRectangle
-                        (
-                        Pens.Yellow,
-                        tilesetSelection.X * zoom * Tileset.TileSize,
-                        tilesetSelection.Y * zoom * Tileset.TileSize,
-                        tilesetSelection.Width * zoom * Tileset.TileSize - 1,
-                        tilesetSelection.Height * zoom * Tileset.TileSize - 1
-                        );
+                e.Graphics.DrawRectangle(
+                    Pens.Yellow,
+                    tilesetSelection.X * zoom * Tileset.TileSize,
+                    tilesetSelection.Y * zoom * Tileset.TileSize,
+                    tilesetSelection.Width * zoom * Tileset.TileSize - 1,
+                    tilesetSelection.Height * zoom * Tileset.TileSize - 1
+                );
 
                 if (tilesetMouseDown)
                 { 
@@ -154,27 +134,25 @@ namespace TMC
                     var bounds = new Rectangle(upperLeft.X, upperLeft.Y,
                         bottomRight.X - upperLeft.X + 1, bottomRight.Y - upperLeft.Y + 1);
 
-                    e.Graphics.DrawRectangle
-                        (
+                    e.Graphics.DrawRectangle(
                         Pens.Red,
                         bounds.X * zoom * Tileset.TileSize,
                         bounds.Y * zoom * Tileset.TileSize,
                         bounds.Width * zoom * Tileset.TileSize - 1,
                         bounds.Height * zoom * Tileset.TileSize - 1
-                        );
+                    );
                 }
             }
             else
             {
                 // draw selection
-                e.Graphics.DrawRectangle
-                    (
+                e.Graphics.DrawRectangle(
                     Pens.Red,
                     paletteSelection % 4 * zoom * 8, 
                     paletteSelection / 4 * zoom * 8, 
-                    zoom * 7, 
-                    zoom * 7
-                    );
+                    zoom * Tileset.TileSize - 1, 
+                    zoom * Tileset.TileSize
+                );
             }
         }
 
