@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TilemapCreator
+namespace TilemapCreator.Core
 {
     public class Tilemap
     {

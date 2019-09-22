@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace TilemapCreator
+namespace TilemapCreator.Core
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public unsafe struct Tile : IEquatable<Tile>
