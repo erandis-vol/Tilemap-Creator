@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>18b67a0f-f394-462e-a821-21797054522d</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>TilemapCreator</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Bgr555.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BitDepth.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Palette.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tile.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tilemap.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TilemapTile.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tileset.cs" />
+  </ItemGroup>
+</Project>

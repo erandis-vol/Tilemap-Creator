@@ -3,9 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TilemapCreator.WinForms", "TilemapCreator.WinForms\TilemapCreator.WinForms.csproj", "{3DDFA15D-BADB-4B4E-B563-2A58B8F85F3D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TilemapCreator.WinForms", "TilemapCreator.WinForms\TilemapCreator.WinForms.csproj", "{3DDFA15D-BADB-4B4E-B563-2A58B8F85F3D}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "TilemapCreator", "TilemapCreator\TilemapCreator.shproj", "{18B67A0F-F394-462E-A821-21797054522D}"
 EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		TilemapCreator\TilemapCreator.projitems*{18b67a0f-f394-462e-a821-21797054522d}*SharedItemsImports = 13
+		TilemapCreator\TilemapCreator.projitems*{3ddfa15d-badb-4b4e-b563-2a58b8f85f3d}*SharedItemsImports = 5
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

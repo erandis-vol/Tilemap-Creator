@@ -4,6 +4,10 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RootNamespace>TilemapCreator</RootNamespace>
   </PropertyGroup>
+
+  <Import Project="..\TilemapCreator\TilemapCreator.projitems" Label="Shared" />
 
 </Project>
