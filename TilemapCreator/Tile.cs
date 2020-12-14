@@ -8,6 +8,7 @@ namespace TilemapCreator
     /// Represents an 8x8 array of pixel data.
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    [Obsolete]
     public struct Tile
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)]

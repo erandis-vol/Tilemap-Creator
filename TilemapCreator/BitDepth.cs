@@ -1,16 +1,60 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace TilemapCreator
 {
+    // All methods expect tile data.
+
     /// <summary>
     /// Provides method for encoding and decoding bit depth.
     /// </summary>
     public static class BitDepth
     {
-        #region Encode
+        public static byte[] Encode4(Tileset tileset)
+        {
+            // assume tiles are well-formed and suited for 4bpp encoding
+            var tiles = new byte[tileset.Length * 32];
+            var index = 0; // using an indexer is slightly more efficient
+            for (var tile = 0; tile < tileset.Length; tile++)
+            {
+                for (int y = 0; y < 8; y++)
+                {
+                    for (int x = 0; x < 4; x++)
+                    {
+                        // l | (r << 4)
+                        var l = tileset.GetPixel(tile, x * 2, y);
+                        var r = tileset.GetPixel(tile, x * 2 + 1, y);
+                        Debug.Assert(l >= 0 && l <= 0xF, "tileset is not 4bpp");
+                        Debug.Assert(r >= 0 && r <= 0xF, "tileset is not 4bpp");
+                        tiles[index++] = (byte)((l & 0xF) | ((r & 0xF) << 4));
+                    }
+                }
+            }
+            return tiles;
+        }
 
+        public static byte[] Encode8(Tileset tileset)
+        {
+            var tiles = new byte[tileset.Length * 64];
+            var index = 0;
+            for (int i = 0; i < tileset.Length; i++)
+            {
+                for (int y = 0; y < 8; y++)
+                {
+                    for (int x = 0; x < 8; x++)
+                    {
+                        var pixel = tileset.GetPixel(i, x, y);
+                        Debug.Assert(pixel >= 0 && pixel <= 0xFF, "tileset is not 8bpp");
+                        tiles[index++] = (byte)pixel;
+                    }
+                }
+            }
+            return tiles;
+        }
+
+        /*
         public static byte[] Encode4(Tile[] tiles)
         {
             var bytes = new byte[tiles.Length << 5]; // * 32
@@ -56,10 +100,6 @@ namespace TilemapCreator
                 }
             }
         }
-
-        #endregion
-
-        #region Decode
 
         public static Tile[] DecodeTiles4(byte[] bytes)
         {
@@ -107,7 +147,6 @@ namespace TilemapCreator
                 }
             }
         }
-
-        #endregion
+        */
     }
 }

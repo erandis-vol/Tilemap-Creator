@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TilemapCreator.Controls;
 
 namespace TilemapCreator
 {
@@ -19,6 +20,8 @@ namespace TilemapCreator
         public MainForm()
         {
             InitializeComponent();
+            menuStrip1.Renderer = new MyMenuRenderer();
+            toolStrip1.Renderer = new MyToolStripRenderer();
         }
 
         private void menuTilesetOpen_Click(object sender, EventArgs e)
@@ -167,8 +170,8 @@ namespace TilemapCreator
             watch.Stop();
             Debug.WriteLine($"Image loaded in: {watch.Elapsed.TotalSeconds} s");
 
-            pictureBox1.Image?.Dispose();
-            pictureBox1.Image = image;
+            pictureTileset.Image?.Dispose();
+            pictureTileset.Image = image;
         }
     }
 }
