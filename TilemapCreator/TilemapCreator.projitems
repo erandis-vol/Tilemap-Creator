@@ -17,5 +17,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Tilemap.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TilemapTile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tileset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TilesetFormat.cs" />
   </ItemGroup>
 </Project>

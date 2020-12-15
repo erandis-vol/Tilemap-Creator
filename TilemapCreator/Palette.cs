@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -25,6 +26,18 @@ namespace TilemapCreator
             if (_colors.Length == 0)
                 throw new ArgumentException("Collection does not contain colors.", nameof(colors));
         }
+
+#if DEBUG
+        // creates a random palette for testing
+        public static Palette CreateRandom(int length)
+        {
+            var random = new Random();
+            var colors = new List<Bgr555>(length);
+            for (int i = 0; i < length; i++)
+                colors.Add(new Bgr555(random.Next(0, 0x1F), random.Next(0, 0x1F), random.Next(0, 0x1F)));
+            return new Palette(colors);
+        }
+#endif
 
         public Bgr555 this[int index]
         {

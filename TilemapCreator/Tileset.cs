@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 
 namespace TilemapCreator
 {
-    public class Tileset
+    public partial class Tileset
     {
         public const int TileSize = 8;
         private int[] _tiles;
@@ -15,13 +16,43 @@ namespace TilemapCreator
             _tiles = new int[length * 64];
         }
 
-        public Tileset(int[] tiles)
+        private Tileset(int[] tiles)
         {
-            if (tiles is null)
-                throw new ArgumentNullException(nameof(tiles));
-            if (tiles.Length < 64 || tiles.Length % 64 != 0)
-                throw new ArgumentException();
+            //if (tiles is null)
+            //    throw new ArgumentNullException(nameof(tiles));
+            //if (tiles.Length < 64 || tiles.Length % 64 != 0)
+            //    throw new ArgumentException();
+            Debug.Assert(tiles != null, "tile data is null");
+            Debug.Assert(tiles.Length > 64, "tile data is < 64 length");
+            Debug.Assert(tiles.Length % 64 == 0, "tile data is not aligned");
             _tiles = tiles;
+        }
+
+        public static (Tileset Tileset, Palette Palette) Load(string filename, TilesetFormat format, TilesetLoadOptions options)
+        {
+            using (var stream = File.OpenRead(filename))
+            {
+                return format switch
+                {
+                    TilesetFormat.Bmp => LoadBmp(stream),
+                    TilesetFormat.Png => LoadPng(stream),
+                    TilesetFormat.Gba => (LoadGba(stream, options), null),
+                    _ => throw new ArgumentException("Unsupported tileset format.", nameof(format))
+                };
+            }
+        }
+
+        private static Tileset LoadGba(Stream stream, TilesetLoadOptions options)
+        {
+            if (options.BitDepth != 4 && options.BitDepth != 8)
+                throw new ArgumentException("Only 4 BPP and 8 BPP tilesets are supported.", nameof(options));
+
+            throw new NotImplementedException();
+        }
+
+        public void Save(string filename, TilesetFormat format, TilesetSaveOptions options)
+        {
+            throw new NotImplementedException();
         }
 
         public int this[int tile, int x, int y]
@@ -208,5 +239,17 @@ namespace TilemapCreator
         /// Gets the total number of tiles in the tileset.
         /// </summary>
         public int Length => _tiles.Length / 64;
+    }
+
+    public struct TilesetLoadOptions
+    {
+        public int BitDepth { get; set; }
+    }
+
+    public struct TilesetSaveOptions
+    {
+        public int Width { get; set; }
+
+        public int BitDepth { get; set; }
     }
 }
