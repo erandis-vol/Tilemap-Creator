@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -81,6 +82,121 @@ namespace TilemapCreator
                 }
             }
             return besti;
+        }
+
+        public void Save(string filename, PaletteFormat format)
+        {
+            using var stream = File.Create(filename);
+            switch (format)
+            {
+                case PaletteFormat.Pal:
+                    SavePal(stream);
+                    break;
+
+                case PaletteFormat.Act:
+                    if (_colors.Length > 256)
+                        throw new ArgumentException("Palette contains too many colors to save.", nameof(format));
+                    SaveAct(stream);
+                    break;
+
+                case PaletteFormat.Gba:
+                    SaveGba(stream);
+                    break;
+
+                default:
+                    throw new ArgumentException("Unsupported palette format.", nameof(format));
+            }
+        }
+
+        // windows/photoshop palette format
+        private void SavePal(Stream stream)
+        {
+            using var writer = new StreamWriter(stream);
+            writer.WriteLine("JASC-PAL");
+            writer.WriteLine("0100");
+            writer.WriteLine(_colors.Length);
+            for (int i = 0; i < _colors.Length; i++)
+            {
+                var color = _colors[i];
+                writer.Write(color.R << 3);
+                writer.Write(' ');
+                writer.Write(color.G << 3);
+                writer.Write(' ');
+                writer.Write(color.B << 3);
+                writer.WriteLine();
+            }
+        }
+
+        // ACT palette format
+        private void SaveAct(Stream stream)
+        {
+            using var writer = new BinaryWriter(stream);
+            // ACT must be 256 colors in size
+            for (int i = 0; i < 256; i++)
+            {
+                if (i < _colors.Length)
+                {
+                    var color = _colors[i];
+                    writer.Write(color.R << 3);
+                    writer.Write(color.G << 3);
+                    writer.Write(color.B << 3);
+                }
+                else
+                {
+                    writer.Write((byte)0);
+                    writer.Write((byte)0);
+                    writer.Write((byte)0);
+                }
+            }
+        }
+
+        // GBA raw palette format
+        private void SaveGba(Stream stream)
+        {
+            using var writer = new BinaryWriter(stream);
+            for (int i = 0; i < _colors.Length; i++)
+            {
+                writer.Write(_colors[i].ToUInt16());
+            }
+        }
+
+        // TODO: NDS palette format
+        private void SaveNclr(Stream stream)
+        {
+            using var writer = new BinaryWriter(stream);
+
+            if (_colors.Length != 256 && _colors.Length != 16)
+                throw new ArgumentException("Palette should contain exactly 16 or 256 colors.");
+
+            var is4bpp = _colors.Length == 16;
+
+            // header section
+            writer.Write((byte)'R'); // NCLR
+            writer.Write((byte)'L');
+            writer.Write((byte)'C');
+            writer.Write((byte)'N');
+            writer.Write((byte)0xFF); // bom
+            writer.Write((byte)0xFE);
+            writer.Write((byte)0); // version
+            writer.Write((byte)1);
+            writer.Write(is4bpp ? 0x0 : 0x228); // file size
+            writer.Write((ushort)16); // header size
+            writer.Write((ushort)1); // sections
+
+            // palette section
+            writer.Write((byte)'T'); // PLTT
+            writer.Write((byte)'T');
+            writer.Write((byte)'L');
+            writer.Write((byte)'P');
+            writer.Write(is4bpp ? 0x38 : 0x218); // section size -- color data + 36
+            writer.Write((ushort)(is4bpp ? 3 : 4)); // bit depth: 3 = 4bpp, 4 = 8 bpp
+            writer.Write((ushort)0); // could also be 0xA
+            writer.Write(0); // could also be 1
+            writer.Write(is4bpp ? 0x20 : 0x200); // "memory size"? tends to be size of color data in bytes
+            writer.Write(0x10); // data offset -- start of section + 8
+
+            for (int i = 0; i < _colors.Length; i++)
+                writer.Write(_colors[i].ToUInt16());
         }
 
         /// <summary>

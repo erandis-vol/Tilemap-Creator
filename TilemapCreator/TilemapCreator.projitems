@@ -13,6 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)BitDepth.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Palette.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PaletteFormat.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Tilemap.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TilemapTile.cs" />
