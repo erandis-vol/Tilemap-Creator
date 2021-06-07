@@ -28,7 +28,7 @@ namespace TilemapCreator
             _tiles = tiles;
         }
 
-        public static (Tileset Tileset, Palette Palette) Load(string filename, TilesetFormat format, TilesetLoadOptions options)
+        public static (Tileset Tileset, Palette? Palette) Load(string filename, TilesetFormat format, TilesetLoadOptions options)
         {
             using (var stream = File.OpenRead(filename))
             {

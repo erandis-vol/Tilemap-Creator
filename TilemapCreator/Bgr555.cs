@@ -42,7 +42,7 @@ namespace TilemapCreator
 
         public bool Equals(Bgr555 other) => _value == other._value;
 
-        public override bool Equals(object obj) => obj is Bgr555 other && Equals(other);
+        public override bool Equals(object? obj) => obj is Bgr555 other && Equals(other);
 
         public override int GetHashCode() => HashCode.Combine(_value);
 

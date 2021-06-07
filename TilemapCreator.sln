@@ -7,10 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TilemapCreator.WinForms", "
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "TilemapCreator", "TilemapCreator\TilemapCreator.shproj", "{18B67A0F-F394-462E-A821-21797054522D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TilemapCreator.Avalonia", "TilemapCreator.Avalonia\TilemapCreator.Avalonia.csproj", "{AAB015D6-8F60-4DCB-9CE2-8834457ABC73}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		TilemapCreator\TilemapCreator.projitems*{18b67a0f-f394-462e-a821-21797054522d}*SharedItemsImports = 13
 		TilemapCreator\TilemapCreator.projitems*{3ddfa15d-badb-4b4e-b563-2a58b8f85f3d}*SharedItemsImports = 5
+		TilemapCreator\TilemapCreator.projitems*{aab015d6-8f60-4dcb-9ce2-8834457abc73}*SharedItemsImports = 5
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +24,10 @@ Global
 		{3DDFA15D-BADB-4B4E-B563-2A58B8F85F3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3DDFA15D-BADB-4B4E-B563-2A58B8F85F3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3DDFA15D-BADB-4B4E-B563-2A58B8F85F3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAB015D6-8F60-4DCB-9CE2-8834457ABC73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAB015D6-8F60-4DCB-9CE2-8834457ABC73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAB015D6-8F60-4DCB-9CE2-8834457ABC73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAB015D6-8F60-4DCB-9CE2-8834457ABC73}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
