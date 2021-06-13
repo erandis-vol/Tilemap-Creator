@@ -4,6 +4,41 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="TilemapCreator.MainWindow"
-        Title="TilemapCreator">
-    Welcome to Avalonia!
+        Title="Tilemap Creator">
+  <DockPanel LastChildFill="True">
+    <Menu DockPanel.Dock="Top">
+      <MenuItem Header="Tile_map">
+        <MenuItem Header="_New" />
+        <MenuItem Header="_Open" />
+        <Separator />
+        <MenuItem Header="_Save" />
+        <MenuItem Header="Save _As..." />
+        <Separator />
+        <MenuItem Header="E_xit" />
+      </MenuItem>
+      <MenuItem Header="Tile_set">
+        <MenuItem Header="_New" />
+        <MenuItem Header="_Open" />
+        <Separator />
+        <MenuItem Header="_Save" />
+        <MenuItem Header="Save _As..." />
+      </MenuItem>
+      <MenuItem Header="_Edit">
+        <MenuItem Header="_Undo" />
+        <MenuItem Header="_Redo" />
+      </MenuItem>
+      <MenuItem Header="_View" />
+      <MenuItem Header="_Help">
+        <MenuItem Header="_About Tilemap Creator" />
+      </MenuItem>
+    </Menu>
+    <Label DockPanel.Dock="Top" Background="Gray">Toolbar</Label>
+    <Label DockPanel.Dock="Bottom" Background="Gray">Status</Label>
+    <Grid ColumnDefinitions="*,Auto,144" RowDefinitions="*,120">
+      <Label Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Background="Yellow">Tilemap</Label>
+      <GridSplitter Grid.Column="1" />
+      <Label Grid.Column="2" Grid.Row="0" Background="Green">Tileset</Label>
+      <Label Grid.Column="2" Grid.Row="1" Background="Pink">Palette</Label>
+    </Grid>
+  </DockPanel>
 </Window>
