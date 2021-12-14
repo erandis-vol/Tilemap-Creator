@@ -105,7 +105,7 @@ namespace TilemapCreator
             // determine valid dimensions, pick the one which often may match the original size
             comboTilesetWidth.Items.Clear();
             var tilesetSizes = tileset.GetSuggestedDimensions();
-            for (int i = 0; i < tilesetSizes.Count; i++)
+            for (int i = 0; i < tilesetSizes.Length; i++)
                 comboTilesetWidth.Items.Add(tilesetSizes[i]);
 
             // cache tileset image
@@ -117,7 +117,7 @@ namespace TilemapCreator
 
             // draw the tileset image
             var tilesetColors = tileset.GetColorCount();
-            var tw = tilesetSizes[tilesetSizes.Count / 2];
+            var tw = tilesetSizes[tilesetSizes.Length / 2];
             var th = tileset.Length / tw;
 
             var image = new Bitmap(tw * 8, th * 8);

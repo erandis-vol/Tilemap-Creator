@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -14,11 +12,11 @@ namespace TilemapCreator.Forms
     public partial class OpenTilesetDialog : Form
     {
         private bool _loading;
-        private Tileset _tileset;
-        private string _tilesetFileName;
-        private Palette _tilesetPalette;
-        private Palette _palette;
-        private string _paletteFileName;
+        private Tileset? _tileset;
+        private string? _tilesetFileName;
+        private Palette? _tilesetPalette;
+        private Palette? _palette;
+        private string? _paletteFileName;
 
         public OpenTilesetDialog()
         {
@@ -54,7 +52,21 @@ namespace TilemapCreator.Forms
             if (LoadTileset(filename, format))
             {
                 textBox1.Text = filename;
+
+                // check for a previously loaded palette, which may no longer work
+                if (_tilesetPalette != null && _palette != null && _tilesetPalette.Length > _palette.Length)
+                {
+                    Debug.WriteLine("Loaded palette has too few colors, clearing out.");
+                    _palette = null;
+                    _paletteFileName = null;
+                    textBox2.Clear();
+                }
+
                 RefreshPreview();
+            }
+            else
+            {
+                textBox1.Clear();
             }
 
             _loading = false;
@@ -74,10 +86,23 @@ namespace TilemapCreator.Forms
                 return;
 
             var filename = dialog.FileName;
-            if (LoadPalette(filename))
+            var format = Path.GetExtension(filename)?.ToUpper() switch
+            {
+                ".PAL" => PaletteFormat.Pal,
+                ".ACT" => PaletteFormat.Act,
+                ".BIN" => PaletteFormat.Gba,
+                ".RAW" => PaletteFormat.Gba,
+                _ => throw new NotImplementedException()
+            };
+
+            if (LoadPalette(filename, format))
             {
                 textBox2.Text = filename;
                 RefreshPreview();
+            }
+            else
+            {
+                textBox2.Clear();
             }
         }
 
@@ -96,7 +121,7 @@ namespace TilemapCreator.Forms
         {
             // load the tileset and palette
             Tileset tileset;
-            Palette palette;
+            Palette? palette;
             try
             {
                 (tileset, palette) = Tileset.Load(filename, format, default);
@@ -119,19 +144,39 @@ namespace TilemapCreator.Forms
             // determine valid dimensions, pick the one which often may match the original size
             var tilesetSizes = tileset.GetSuggestedDimensions();
             comboPreviewWidth.Items.Clear();
-            for (int i = 0; i < tilesetSizes.Count; i++)
+            for (int i = 0; i < tilesetSizes.Length; i++)
                 comboPreviewWidth.Items.Add(tilesetSizes[i]);
-            comboPreviewWidth.SelectedIndex = tilesetSizes.Count / 2;
+            comboPreviewWidth.SelectedIndex = tilesetSizes.Length / 2;
 
             return true;
         }
 
         // loads a palette
-        private bool LoadPalette(string filename)
+        private bool LoadPalette(string filename, PaletteFormat format)
         {
-            _palette = null;
-            _paletteFileName = null;
-            return false;
+            try
+            {
+                var palette = Palette.Load(filename, format);
+
+                // check that palette size is compatible with tileset
+                if (_tilesetPalette != null && palette.Length < _tilesetPalette.Length)
+                {
+                    MessageBox.Show("Palette does not contain enough colors for the tileset.",
+                    "Invalid Palette", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+
+                _palette = palette;
+                _paletteFileName = filename;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to load palette file:" + Environment.NewLine + ex.Message,
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            return true;
         }
 
         private void RefreshPreview()
@@ -178,15 +223,14 @@ namespace TilemapCreator.Forms
 
         private void comboPreviewWidth_TextChanged(object sender, EventArgs e)
         {
-            Debug.WriteLine("TextChanged");
             if (!_loading)
             {
                 RefreshPreview();
             }
         }
 
-        public Tileset GetTileset() => _tileset;
+        public Tileset? GetTileset() => _tileset;
 
-        public Palette GetPalette() => _palette ?? _tilesetPalette;
+        public Palette? GetPalette() => _palette ?? _tilesetPalette;
     }
 }

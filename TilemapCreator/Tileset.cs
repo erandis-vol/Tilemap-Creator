@@ -109,7 +109,7 @@ namespace TilemapCreator
 
         // determines the sizes that will result in "perfect" dimensions
         // e.g. 1024 tiles could be 32 x 32 or 24 x 48
-        public IReadOnlyList<int> GetSuggestedDimensions()
+        public int[] GetSuggestedDimensions()
         {
             var columns = new List<int>();
             var length = _tiles.Length / 64;
@@ -118,7 +118,7 @@ namespace TilemapCreator
                 if (length % i == 0)
                     columns.Add(i);
             }
-            return columns.AsReadOnly();
+            return columns.ToArray();
         }
 
         // gets how many unique colors are in the tileset
@@ -137,8 +137,72 @@ namespace TilemapCreator
         // checks whether a palette can be used for the tileset
         public bool CheckPalette(Palette palette) => GetColorCount() <= palette.Length;
 
+        public bool CompareTiles(int tile1, int tile2, bool flipX, bool flipY)
+        {
+            if (tile1 < 0 || tile1 >= Length)
+                throw new ArgumentOutOfRangeException(nameof(tile1));
+            if (tile2 < 0 || tile2 >= Length)
+                throw new ArgumentOutOfRangeException(nameof(tile2));
+            var span1 = _tiles.AsSpan(tile1 * 64, 64);
+            var span2 = _tiles.AsSpan(tile2 * 64, 64);
+            if (flipX && flipY)
+            {
+                for (int ay = 0; ay < 8; ay++)
+                {
+                    for (int ax = 0; ax < 8; ax++)
+                    {
+                        var bx = 7 - ax;
+                        var by = 7 - ay;
+                        var ai = ax + ay * 8;
+                        var bi = bx + by * 8;
+                        if (span1[ai] != span2[bi])
+                            return false;
+                    }
+                }
+            }
+            else if (flipX)
+            {
+                for (int ay = 0; ay < 8; ay++)
+                {
+                    for (int ax = 0; ax < 8; ax++)
+                    {
+                        var bx = 7 - ax;
+                        var by = ay;
+                        var ai = ax + ay * 8;
+                        var bi = bx + by * 8;
+                        if (span1[ai] != span2[bi])
+                            return false;
+                    }
+                }
+            }
+            else if (flipY)
+            {
+                for (int ay = 0; ay < 8; ay++)
+                {
+                    for (int ax = 0; ax < 8; ax++)
+                    {
+                        var bx = ax;
+                        var by = 7 - ay;
+                        var ai = ax + ay * 8;
+                        var bi = bx + by * 8;
+                        if (span1[ai] != span2[bi])
+                            return false;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < span1.Length; i++)
+                {
+                    if (span1[i] != span2[i])
+                        return false;
+                }
+            }
+            return true;
+        }
+
         // checks whether the specified tiles match
-        public unsafe bool CompareTiles(int tile1, int tile2, bool flipX, bool flipY)
+        private unsafe bool CompareUnsafe(int tile1, int tile2, bool flipX, bool flipY)
         {
             if (tile1 < 0 || tile1 >= Length)
                 throw new ArgumentOutOfRangeException(nameof(tile1));
@@ -147,15 +211,46 @@ namespace TilemapCreator
             // TODO: investigate whether spans are faster
             fixed (int* pixels1 = &_tiles[tile1 * 64], pixels2 = &_tiles[tile2 * 64])
             {
-                if (flipX || flipY)
+                if (flipX && flipY)
                 {
-                    // TODO: we could make this even faster by covering each case separately
                     for (int ay = 0; ay < 8; ay++)
                     {
                         for (int ax = 0; ax < 8; ax++)
                         {
-                            var bx = flipX ? (7 - ax) : ax;
-                            var by = flipY ? (7 - ay) : ay;
+                            //var bx = flipX ? (7 - ax) : ax;
+                            //var by = flipY ? (7 - ay) : ay;
+                            var bx = 7 - ax;
+                            var by = 7 - ay;
+                            var ai = ax + ay * 8;
+                            var bi = bx + by * 8;
+                            if (pixels1[ai] != pixels2[bi])
+                                return false;
+                        }
+                    }
+                }
+                else if (flipX)
+                {
+                    for (int ay = 0; ay < 8; ay++)
+                    {
+                        for (int ax = 0; ax < 8; ax++)
+                        {
+                            var bx = 7 - ax;
+                            var by = ay;
+                            var ai = ax + ay * 8;
+                            var bi = bx + by * 8;
+                            if (pixels1[ai] != pixels2[bi])
+                                return false;
+                        }
+                    }
+                }
+                else if (flipY)
+                {
+                    for (int ay = 0; ay < 8; ay++)
+                    {
+                        for (int ax = 0; ax < 8; ax++)
+                        {
+                            var bx = ax;
+                            var by = 7 - ay;
                             var ai = ax + ay * 8;
                             var bi = bx + by * 8;
                             if (pixels1[ai] != pixels2[bi])
@@ -173,6 +268,13 @@ namespace TilemapCreator
                 }
             }
             return true;
+        }
+
+        private bool Compare(ReadOnlySpan<int> tile1, ReadOnlySpan<int> tile2, bool flipX, bool flipY)
+        {
+            Debug.Assert(tile1.Length == 64, "tile1.Length != 64");
+            Debug.Assert(tile2.Length == 64, "tile2.Length != 64");
+            return false;
         }
 
         // draws the specified tile at (x, y)

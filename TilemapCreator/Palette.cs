@@ -40,6 +40,73 @@ namespace TilemapCreator
         }
 #endif
 
+        // Creates a new grayscale palette with the specified length.
+        public static Palette CreateGrayscale(int length)
+        {
+            if (length <= 0)
+                throw new ArgumentOutOfRangeException(nameof(length));
+
+            var colors = new Bgr555[length];
+            if (length <= 16)
+            {
+                // Single set of 16 colors, stepping by 2
+                for (int i = 0; i < colors.Length; i++)
+                {
+                    var g = i << 1;
+                    colors[i] = new Bgr555(g, g, g);
+                }
+            }
+            else
+            {
+                // Split palette into runs of 32 colors
+                for (int i = 0; i < colors.Length; i++)
+                {
+                    var g = i % 32;
+                    colors[i] = new Bgr555(g, g, g);
+                }
+            }
+            return new Palette(colors);
+        }
+
+        public static Palette Load(string filename, PaletteFormat format)
+        {
+            return format switch
+            {
+                PaletteFormat.Pal => LoadPal(filename),
+                _ => throw new NotSupportedException($"Palette format {format} is not supported for loading.")
+            };
+        }
+
+        private static Palette LoadPal(string filename)
+        {
+            using var reader = new StreamReader(filename);
+            if (reader.ReadLine() != "JASC-PAL")
+                throw new InvalidDataException("Invalid palette. Expected \"JASC-PAL\".");
+            if (reader.ReadLine() != "0100")
+                throw new InvalidDataException("Unsupported palette format.");
+            if (!int.TryParse(reader.ReadLine(), out var length))
+                throw new InvalidDataException("Invalid palette length.");
+
+            var colors = new Bgr555[length];
+            for (int i = 0; i < colors.Length; i++)
+            {
+                try
+                {
+                    var color = reader.ReadLine()!.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    var r = byte.Parse(color[0]);
+                    var g = byte.Parse(color[1]);
+                    var b = byte.Parse(color[2]);
+                    colors[i] = new Bgr555(r / 8, g / 8, b / 8);
+                }
+                catch (Exception ex)
+                {
+                    throw new InvalidDataException($"Invalid color format on line {i + 4}.", ex);
+                }
+            }
+
+            return new Palette(colors);
+        }
+
         public Bgr555 this[int index]
         {
             get => _colors[index];

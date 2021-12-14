@@ -28,7 +28,7 @@ namespace TilemapCreator
             _scan0 = (int*)_bitmapData.Scan0;
             _stride = _bitmapData.Stride / 4;
             _isLocked = true;
-            Debug.WriteLine("Locking image.");
+            //Debug.WriteLine("FastBitmapData: Locking image.");
         }
 
         public void Dispose() => Unlock();
@@ -37,7 +37,7 @@ namespace TilemapCreator
         {
             if (_isLocked)
             {
-                Debug.WriteLine("Unlocking image.");
+                //Debug.WriteLine("FastBitmapData: Unlocking image.");
                 _bitmap.UnlockBits(_bitmapData);
             }
         }
