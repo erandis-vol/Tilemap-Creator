@@ -42,7 +42,7 @@ namespace TilemapCreator
             if (y < 0 || y >= Height)
                 throw new ArgumentOutOfRangeException(nameof(y));
             var index = x + y * Width;
-            Debug.Assert(index > 0 && index < _tiles.Length);
+            Debug.Assert(index >= 0 && index < _tiles.Length);
             _tiles[index].Tile = tile;
             _tiles[index].FlipX = flipX;
             _tiles[index].FlipY = flipY;

@@ -61,9 +61,11 @@ namespace TilemapCreator
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.textTilesetHeight = new System.Windows.Forms.ToolStripTextBox();
             this.toolStrip3 = new System.Windows.Forms.ToolStrip();
+            this.pictureTilemap = new System.Windows.Forms.PictureBox();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
@@ -73,6 +75,7 @@ namespace TilemapCreator
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureTileset)).BeginInit();
             this.toolStrip2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureTilemap)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -238,6 +241,10 @@ namespace TilemapCreator
             this.splitContainer1.Location = new System.Drawing.Point(0, 49);
             this.splitContainer1.Name = "splitContainer1";
             // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.pictureTilemap);
+            // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
@@ -345,6 +352,7 @@ namespace TilemapCreator
             // 
             this.comboTilesetWidth.Name = "comboTilesetWidth";
             this.comboTilesetWidth.Size = new System.Drawing.Size(75, 25);
+            this.comboTilesetWidth.TextChanged += new System.EventHandler(this.comboTilesetWidth_TextChanged);
             // 
             // toolStripLabel1
             // 
@@ -366,6 +374,15 @@ namespace TilemapCreator
             this.toolStrip3.TabIndex = 0;
             this.toolStrip3.Text = "toolStrip3";
             // 
+            // pictureTilemap
+            // 
+            this.pictureTilemap.Location = new System.Drawing.Point(0, 0);
+            this.pictureTilemap.Name = "pictureTilemap";
+            this.pictureTilemap.Size = new System.Drawing.Size(8, 8);
+            this.pictureTilemap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pictureTilemap.TabIndex = 1;
+            this.pictureTilemap.TabStop = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -383,6 +400,8 @@ namespace TilemapCreator
             this.menuStrip1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
@@ -397,6 +416,7 @@ namespace TilemapCreator
             ((System.ComponentModel.ISupportInitialize)(this.pictureTileset)).EndInit();
             this.toolStrip2.ResumeLayout(false);
             this.toolStrip2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureTilemap)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -435,6 +455,7 @@ namespace TilemapCreator
         private System.Windows.Forms.ToolStripTextBox textTilesetHeight;
         private System.Windows.Forms.ToolStripComboBox comboTilesetWidth;
         private System.Windows.Forms.ToolStripMenuItem menuAbout;
+        private System.Windows.Forms.PictureBox pictureTilemap;
     }
 }
 

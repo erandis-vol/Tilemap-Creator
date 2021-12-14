@@ -119,6 +119,8 @@ namespace TilemapCreator.Forms
         // loads a tileset and (possibly) the embeded palette
         private bool LoadTileset(string filename, TilesetFormat format)
         {
+            var stopwatch = Stopwatch.StartNew();
+
             // load the tileset and palette
             Tileset tileset;
             Palette? palette;
@@ -132,6 +134,9 @@ namespace TilemapCreator.Forms
                 Debug.WriteLine(ex);
                 return false;
             }
+
+            stopwatch.Stop();
+            Debug.WriteLine($"Tileset loaded in {stopwatch.Elapsed.TotalSeconds} s");
 
             Debug.Assert(tileset != null, "tileset is null");
             Debug.Assert(palette != null, "palette is null"); // it will be when gba is implemented
@@ -202,12 +207,17 @@ namespace TilemapCreator.Forms
                 height++;
             textPreviewHeight.Text = height.ToString();
 
+            var stopwatch = Stopwatch.StartNew();
+
             // draw the preview
             var image = new Bitmap(width * 8, height * 8);
             using (var fb = image.FastLock())
             {
                 _tileset.Draw(fb, width, palette);
             }
+
+            stopwatch.Stop();
+            Debug.WriteLine($"Preview drawn in {stopwatch.Elapsed.TotalSeconds} s");
 
             pictureBox1.Image?.Dispose();
             pictureBox1.Image = image;
